@@ -1,0 +1,21 @@
+dependencies:
+- name: dotnet-chart
+  repository: file://../api_chart
+  version: 0.1.0
+- name: dotnet-migration
+  repository: file://../migration_chart
+  version: 0.1.0
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.5.5
+- name: minio
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.7.0
+- name: dragonfly
+  repository: oci://ghcr.io/dragonflydb/dragonfly/helm
+  version: v1.9.0
+- name: dragonfly
+  repository: oci://ghcr.io/dragonflydb/dragonfly/helm
+  version: v1.9.0
+digest: sha256:11bced4567aaaa1ccb3f3f9a2daac0c4ad81656ae680c5c779aaa33bd1ca8318
+generated: "2023-09-14T10:47:03.370349+08:00"

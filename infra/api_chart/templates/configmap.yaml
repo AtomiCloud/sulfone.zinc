@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dotnet-chart.fullname-with-suffix" (dict "arg" "config" "root" .) }}
+  labels: {{- include "dotnet-chart.labels" . | nindent 4 }}
+  annotations: {{- include "dotnet-chart.annotations" . | nindent 4 }}
+data:
+  settings.{{ .Values.serviceTree.landscape }}.yaml: |
+    {{- $path := printf "%ssettings.%s.yaml" "app/" .Values.serviceTree.landscape -}}
+    {{- $fileContent := .Files.Get $path -}}
+    {{- $config := fromYaml $fileContent -}}
+    {{- $final := merge .Values.appSettings $config -}}
+    {{- toYaml $final | nindent 4 }}

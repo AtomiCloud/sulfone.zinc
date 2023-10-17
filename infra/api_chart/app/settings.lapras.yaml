@@ -1,0 +1,56 @@
+$schema: ./schema.json
+# Native
+App:
+  Landscape: lapras
+  EnableSwagger: true
+  GenerateConfig: true
+Swagger:
+  Title: Lapras CarboxylicAcid Carbon API
+# OTEL
+Logs:
+  Exporter:
+    Console:
+      Enabled: false
+    Otlp:
+      Enabled: true
+Trace:
+  Exporter:
+    Otlp:
+      Enabled: true
+
+Metrics:
+  Exporter:
+    Otlp:
+      Enabled: true
+
+# Infra-based
+Database:
+  Main:
+    Host: carboxylicacid-carbon-main-database
+    User: admin
+    Password: supersecret
+    AutoMigrate: true
+Cache:
+  Main:
+    Password: supersecret
+    Endpoints:
+      - carboxylicacid-carbon-main-cache:6379
+    SSL: false
+  Alt:
+    Password: supersecret
+    Endpoints:
+      - carboxylicacid-carbon-alt-cache:6379
+    SSL: false
+BlockStorage:
+  Main:
+    Host: carboxylicacid-carbon-main-storage
+    Bucket: carboxylicacid-carbon-main
+    Port: 9000
+    AccessKey: admin
+    SecretKey: supersecret
+    Scheme: http
+    UseSSL: false
+    EnsureBucketCreation: true
+    Policy: Public # or Private
+# external
+HttpClient: {}

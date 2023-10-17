@@ -1,0 +1,532 @@
+api:
+  enabled: true
+  atomiLabels:
+    landscape: tauros
+    platform: carboxylicacid
+    service: dotnet
+    module: api
+  imagePullSecrets: []
+  nameOverride: "api"
+  fullnameOverride: ""
+
+  replicaCount: 1
+
+  appSettings:
+    App:
+      Landscape: tauros
+      Platform: carboxylicacid
+      Service: dotnet
+      Module: api
+      Version: 1.0.0
+      EnableSwagger: true
+      DefaultCors: AllowAll
+      Mode: Server
+    Kestrel:
+      Endpoints:
+        Http:
+          Url: http://+:9000
+    AllowedHosts: "*"
+    Logging:
+      LogLevel:
+        Default: None
+      Console:
+        LogLevel:
+          Default: Information
+      #    FormatterName: json
+      #    FormatterOptions:
+      #      SingleLine: false
+      #      IncludeScopes: true
+      #      JsonWriterOptions:
+      #        Indented: true
+      OpenTelemetry:
+        IncludeFormattedMessage: true
+        IncludeScopes: true
+        ParseStateValues: true
+    Logs:
+      Exporter:
+        Console:
+          Enabled: false
+        Otlp:
+          Enabled: false
+          Endpoint: ""
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          Timeout: 30000
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Trace:
+      Instrument:
+        EFCore:
+          Enabled: true
+          SetDbStatementForStoredProcedure: true
+          SetDbStatementForText: true
+        AspNetCore:
+          Enabled: true
+          GrpcSupport: true
+          RecordException: true
+        HttpClient:
+          Enabled: true
+          RecordException: true
+        SqlClient:
+          Enabled: false
+          RecordException: true
+          SetDbStatementForStoredProcedure: true
+          EnableConnectionLevelAttributes: true
+          SetDbStatementForText: true
+        GrpcClient:
+          Enabled: true
+          RecordException: true
+      Exporter:
+        Console:
+          Enabled: false
+        Otlp:
+          Enabled: true
+          Endpoint: "http://otel-oltp-collector.default.svc:4317"
+          Timeout: 30000
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Metrics:
+      Instrument:
+        AspNetCore: true
+        HttpClient: true
+        Process: true
+        Runtime: true
+      Exporter:
+        Console:
+          Enabled: false
+          ExportInterval: 1000
+        Otlp:
+          Enabled: false
+          Endpoint: ""
+          ExportInterval: 1000
+          Timeout: 30000
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Swagger:
+      Title: Tauros CarboxylicAcid .NET API
+      Description: Tauros CarboxylicAcid .NEt API
+      OpenApiContact:
+        Name: kirinnee
+        Email: kirinnee97@gmail.com
+        Url: https://kirinnee.dev
+    Cors:
+      - Name: AllowAll
+        SupportsCredentials: true
+        PreflightMaxAge: 600
+    ErrorPortal:
+      Enabled: true
+      Scheme: http
+      Host: localhost:3000
+      EnableExceptionResponse: true
+    Database:
+      Main:
+        Host: carboxylicacid-dotnet-main-database
+        Port: 5432
+        User: user
+        Password: supersecret
+        Database: api
+        AutoMigrate: false
+        Timeout: 30
+    BlockStorage:
+      Main:
+        Host: carboxylicacid-dotnet-main-storage
+        Port: 9000
+        Scheme: http
+        AccessKey: rootuser
+        SecretKey: supersecret
+        UseSSL: false
+        EnsureBucketCreation: false
+        Bucket: carboxylicacid-dotnet-main
+        Policy: Public # or Private
+    Cache:
+      Enabled: true
+      Settings:
+        AbortConnect: true
+        AllowAdmin: false
+        ConnectRetry: 3
+        Password: supersecret
+        SSL: false
+        SyncTimeout: 5000
+        Endpoints:
+          - carboxylicacid-dotnet-main-cache:6379
+    SearchEngine:
+      Main:
+        Host: carboxylicacid-dotnet-search
+        Scheme: http
+        Port: 7700
+        MasterKey: supersecret
+        Create: false
+        PrimaryKey: id
+        Index: Main
+        MigrationTimeout: 60
+        Settings:
+          DisplayedAttributes:
+            - "*"
+          FilterAttributes: []
+          SearchableAttributes:
+            - "*"
+          SortableAttributes:
+            - "*"
+          RankingRules:
+            - words
+            - typo
+            - proximity
+            - attribute
+            - sort
+            - exactness
+          StopWords: []
+          Synonyms: {}
+          DistinctAttribute: null
+          TypoTolerance:
+            Enabled: true
+            MinWordSizeForTypos:
+              OneTypo: 4
+              TwoTypos: 8
+            DisableOnWords: []
+            DisableOnAttributes: []
+          Faceting:
+            MaxValuesPerFacet: 100
+          Pagination:
+            MaxTotalHits: 100000000
+    HttpClient: {}
+    Auth:
+      Enabled: false
+
+  configMountPath: /app/Config/settings.yaml
+
+  image:
+    repository: carboxylicacid-dotnet-api
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+    containerPort: 9000
+
+  ingress:
+    enabled: true
+    ingressClass: traefik
+    hosts:
+      - host: api.dotnet.carboxylicacid.tauros.127-0-0-1.nip.io
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  autoscaling: {}
+  readinessProbe: {}
+
+  livenessProbe: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  topologySpreadConstraints: {}
+
+migration:
+  enabled: true
+  atomiLabels:
+    landscape: tauros
+    platform: carboxylicacid
+    service: dotnet
+    module: migration
+  aspNetEnv: Development
+
+  appSettings:
+    App:
+      Landscape: tauros
+      Platform: carboxylicacid
+      Service: dotnet
+      Module: migration
+      Version: 1.0.0
+      EnableSwagger: false
+      DefaultCors: AllowAll
+      Mode: Migration
+    Logging:
+      LogLevel:
+        Default: None
+      Console:
+        LogLevel:
+          Default: Information
+      #    FormatterName: json
+      #    FormatterOptions:
+      #      SingleLine: false
+      #      IncludeScopes: true
+      #      JsonWriterOptions:
+      #        Indented: true
+      OpenTelemetry:
+        IncludeFormattedMessage: true
+        IncludeScopes: true
+        ParseStateValues: true
+    Logs:
+      Exporter:
+        Console:
+          Enabled: false
+        Otlp:
+          Enabled: false
+          Endpoint: ""
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          Timeout: 30000
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Trace:
+      Instrument:
+        EFCore:
+          Enabled: true
+          SetDbStatementForStoredProcedure: true
+          SetDbStatementForText: true
+        AspNetCore:
+          Enabled: true
+          GrpcSupport: true
+          RecordException: true
+        HttpClient:
+          Enabled: true
+          RecordException: true
+        SqlClient:
+          Enabled: false
+          RecordException: true
+          SetDbStatementForStoredProcedure: true
+          EnableConnectionLevelAttributes: true
+          SetDbStatementForText: true
+        GrpcClient:
+          Enabled: true
+          RecordException: true
+      Exporter:
+        Console:
+          Enabled: false
+        Otlp:
+          Enabled: true
+          Endpoint: "http://otel-oltp-collector.default.svc:4317"
+          Timeout: 30000
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Metrics:
+      Instrument:
+        AspNetCore: true
+        HttpClient: true
+        Process: true
+        Runtime: true
+      Exporter:
+        Console:
+          Enabled: false
+          ExportInterval: 1000
+        Otlp:
+          Enabled: false
+          Endpoint: ""
+          ExportInterval: 1000
+          Timeout: 30000
+          ProcessorType: Batch # or simple
+          Protocol: Grpc # or HttpProtobuf
+          BatchSize: 512
+          QueueSize: 2048
+          Delay: 5000
+          Headers: ""
+    Cors:
+      - Name: AllowAll
+        SupportsCredentials: true
+        PreflightMaxAge: 600
+    ErrorPortal:
+      Enabled: true
+      Scheme: http
+      Host: localhost:3000
+      EnableExceptionResponse: true
+    Database:
+      Main:
+        Host: carboxylicacid-dotnet-main-database
+        Port: 5432
+        User: user
+        Password: supersecret
+        Database: api
+        AutoMigrate: true
+        Timeout: 30
+    BlockStorage:
+      Main:
+        Host: carboxylicacid-dotnet-main-storage
+        Port: 9000
+        Scheme: http
+        AccessKey: rootuser
+        SecretKey: supersecret
+        UseSSL: false
+        EnsureBucketCreation: true
+        Bucket: carboxylicacid-dotnet-main
+        Policy: Public # or Private
+    Cache:
+      Enabled: false
+    SearchEngine:
+      Main:
+        Host: carboxylicacid-dotnet-search
+        Scheme: http
+        Port: 7700
+        MasterKey: supersecret
+        Create: true
+        PrimaryKey: id
+        Index: Main
+        MigrationTimeout: 60
+        Settings:
+          DisplayedAttributes:
+            - "*"
+          FilterAttributes: []
+          SearchableAttributes:
+            - "*"
+          SortableAttributes:
+            - "*"
+          RankingRules:
+            - words
+            - typo
+            - proximity
+            - attribute
+            - sort
+            - exactness
+          StopWords: []
+          Synonyms: {}
+          DistinctAttribute: null
+          TypoTolerance:
+            Enabled: true
+            MinWordSizeForTypos:
+              OneTypo: 4
+              TwoTypos: 8
+            DisableOnWords: []
+            DisableOnAttributes: []
+          Faceting:
+            MaxValuesPerFacet: 100
+          Pagination:
+            MaxTotalHits: 100000000
+    HttpClient: {}
+    Auth:
+      Enabled: false
+
+  backoffLimit: 4
+  configMountPath: /app/Config/settings.yaml
+
+  image:
+    repository: carboxylicacid-dotnet-migration
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: []
+  nameOverride: "migration"
+  fullnameOverride: ""
+
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  topologySpreadConstraints: {}
+
+main-db:
+  nameOverride: main-database
+  primary:
+    persistence:
+      enabled: false
+    service:
+      annotations:
+        kubefwd: "true"
+  auth:
+    username: user
+    password: supersecret
+    database: api
+
+main-storage:
+  nameOverride: main-storage
+  service:
+    annotations:
+      kubefwd: "true"
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - store.dotnet.carboxylicacid.tauros.127-0-0-1.nip.io
+  #    tls: [ ]
+  consoleIngress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - store-console.dotnet.carboxylicacid.tauros.127-0-0-1.nip.io
+  #    tls: [ ]
+  rootUser: rootuser
+  rootPassword: supersecret
+  persistence:
+    enabled: false
+  resources:
+    requests:
+      memory: 512Mi
+  replicas: 1
+  mode: standalone
+
+main-cache:
+  nameOverride: main-cache
+  service:
+    annotations:
+      kubefwd: "true"
+  storage:
+    enabled: false
+  extraArgs:
+    - --requirepass=supersecret
+search:
+  nameOverride: search
+  service:
+    annotations:
+      kubefwd: "true"
+  persistence:
+    enabled: false
+  environment:
+    MEILI_MASTER_KEY: supersecret

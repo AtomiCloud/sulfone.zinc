@@ -1,0 +1,207 @@
+$schema: ./schema.json
+App:
+  Landscape: pichu
+  Platform: carboxylicacid
+  Service: dotnet
+  Module: api
+  Version: 1.0.0
+  EnableSwagger: true
+  DefaultCors: AllowAll
+  Mode: Server
+Kestrel:
+  Endpoints:
+    Http:
+      Url: http://+:9050
+AllowedHosts: "*"
+Logging:
+  LogLevel:
+    Default: None
+  Console:
+    LogLevel:
+      Default: Information
+  OpenTelemetry:
+    IncludeFormattedMessage: true
+    IncludeScopes: true
+    ParseStateValues: true
+Logs:
+  Exporter:
+    Console:
+      Enabled: false
+    Otlp:
+      Enabled: false
+      Endpoint: ""
+      ProcessorType: Batch # or simple
+      Protocol: Grpc # or HttpProtobuf
+      Timeout: 30000
+      BatchSize: 512
+      QueueSize: 2048
+      Delay: 5000
+      Headers: ""
+Trace:
+  Instrument:
+    EFCore:
+      Enabled: true
+      SetDbStatementForStoredProcedure: true
+      SetDbStatementForText: false
+    AspNetCore:
+      Enabled: true
+      GrpcSupport: true
+      RecordException: true
+    HttpClient:
+      Enabled: true
+      RecordException: true
+    SqlClient:
+      Enabled: false
+      RecordException: true
+      SetDbStatementForStoredProcedure: true
+      EnableConnectionLevelAttributes: true
+      SetDbStatementForText: true
+    GrpcClient:
+      Enabled: true
+      RecordException: true
+  Exporter:
+    Console:
+      Enabled: false
+    Otlp:
+      Enabled: false
+      Endpoint: ""
+      Timeout: 30000
+      ProcessorType: Batch # or simple
+      Protocol: Grpc # or HttpProtobuf
+      BatchSize: 512
+      QueueSize: 2048
+      Delay: 5000
+      Headers: ""
+Metrics:
+  Instrument:
+    AspNetCore: true
+    HttpClient: true
+    Process: true
+    Runtime: true
+  Exporter:
+    Console:
+      Enabled: false
+      ExportInterval: 1000
+    Otlp:
+      Enabled: false
+      Endpoint: ""
+      ExportInterval: 1000
+      Timeout: 30000
+      ProcessorType: Batch # or simple
+      Protocol: Grpc # or HttpProtobuf
+      BatchSize: 512
+      QueueSize: 2048
+      Delay: 5000
+      Headers: ""
+Swagger:
+  Title: Pichu CarboxylicAcid .NET API
+  Description: Pichu CarboxylicAcid .NET API
+  OpenApiContact:
+    Name: kirinnee
+    Email: kirinnee97@gmail.com
+    Url: https://kirinnee.dev
+Cors:
+  - Name: AllowAll
+    SupportsCredentials: true
+    PreflightMaxAge: 600
+ErrorPortal:
+  Enabled: false
+  Scheme: http
+  Host: localhost:3000
+  EnableExceptionResponse: false
+Database:
+  Main:
+    Host: carboxylicacid-dotnet-main-database
+    Port: 5432
+    User: user
+    Password: supersecret
+    Database: api
+    AutoMigrate: true
+    Timeout: 30
+BlockStorage:
+  Main:
+    Host: carboxylicacid-dotnet-main-storage
+    Port: 9000
+    Scheme: http
+    AccessKey: rootuser
+    SecretKey: supersecret
+    UseSSL: false
+    EnsureBucketCreation: true
+    Bucket: carboxylicacid-dotnet-main
+    Policy: Public # or Private
+Cache:
+  Enabled: true
+  Settings:
+    AbortConnect: true
+    AllowAdmin: false
+    ConnectRetry: 3
+    Password: supersecret
+    SSL: false
+    SyncTimeout: 5000
+    Endpoints:
+      - carboxylicacid-dotnet-main-cache:6379
+SearchEngine:
+  Main:
+    Host: carboxylicacid-dotnet-search
+    Scheme: http
+    Port: 7700
+    MasterKey: supersecret
+    Create: true
+    PrimaryKey: id
+    Index: Main
+    MigrationTimeout: 60
+    Settings:
+      DisplayedAttributes:
+        - "*"
+      FilterAttributes: []
+      SearchableAttributes:
+        - "*"
+      SortableAttributes:
+        - "*"
+      RankingRules:
+        - words
+        - typo
+        - proximity
+        - attribute
+        - sort
+        - exactness
+      StopWords: []
+      Synonyms: {}
+      DistinctAttribute: null
+      TypoTolerance:
+        Enabled: true
+        MinWordSizeForTypos:
+          OneTypo: 4
+          TwoTypos: 8
+        DisableOnWords: []
+        DisableOnAttributes: []
+      Faceting:
+        MaxValuesPerFacet: 100
+      Pagination:
+        MaxTotalHits: 100000000
+HttpClient:
+  Main:
+    BaseAddress: http://carboxylicacid-analytics:9050
+    Timeout: 30
+    BearerAuth: supersecret
+Auth:
+  Enabled: false
+  Settings:
+    Domain: carboxylicacid
+    Audience: aud
+    TokenValidation:
+      ValidateIssuer: true
+      ValidateAudience: true
+      ValidateLifetime: true
+      ValidateIssuerSigningKey: true
+      ClockSkew: 0
+    Policies:
+      admin/internal:
+        Type: All
+        Scopes:
+          - internal
+          - admin
+      admin:
+        Type: Any
+        Scopes:
+          - admin
