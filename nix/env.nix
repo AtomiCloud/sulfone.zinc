@@ -41,4 +41,10 @@ with packages;
     docker
     helm
   ];
+
+  releaser = [
+    nodejs
+    sg
+    npm
+  ];
 }
