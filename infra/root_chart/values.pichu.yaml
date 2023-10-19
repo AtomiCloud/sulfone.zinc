@@ -21,13 +21,16 @@ api:
     enabled: true
     ingressClass: nginx
     annotations:
-
+      cert-manager.io/cluster-issuer: "entei-zinc-letsencrypt-issuer"
     hosts:
       - host: api.zinc.sulfone.pichu.cluster.atomi.cloud
         paths:
           - path: /
             pathType: ImplementationSpecific
-    tls: []
+    tls:
+      - hosts:
+          - api.zinc.sulfone.pichu.cluster.atomi.cloud
+        secretName: api-zinc-sulfone-cloud-tls
 
 migration:
   enabled: true
