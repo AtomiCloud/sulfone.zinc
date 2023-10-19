@@ -27,7 +27,7 @@ plugins:
       changelogFile: Changelog.md
   - module: "@semantic-release/exec"
     config:
-      prepareCmd: nix-shell nix/shells.nix -A ci --run 'scripts/ci/publish.sh ${nextRelease.version}'
+      prepareCmd: scripts/ci/publish.sh ${nextRelease.version}
   - module: "@semantic-release/git"
     config:
       message: "release: ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
