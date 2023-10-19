@@ -24,8 +24,6 @@ echo "📝 Generating Image tags..."
 echo "📝 Helm version: ${HELM_VERSION}"
 echo "📝 Image version: ${IMAGE_VERSION}"
 
-cd ./infra/chart || exit
-
 echo "📝 Updating Chart.yaml..."
 
 find . -name "Chart.yaml" | while read -r file; do
@@ -47,6 +45,8 @@ onExit() {
   fi
 }
 trap onExit EXIT
+
+cd ./infra/root_chart || exit
 
 # login to registry
 echo "🔐 Logging into docker registry..."
