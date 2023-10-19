@@ -1,4 +1,4 @@
-{ pkgs, pkgs-2305, atomi, atomi_classic, pkgs-sep-12-23 }:
+{ pkgs, pkgs-2305, atomi, atomi_classic, pkgs-oct-19-23 }:
 let
 
   all = {
@@ -25,10 +25,10 @@ let
           hadolint;
       }
     );
-    sep-12-23 = (
-      with pkgs-sep-12-23;
+    oct-19-23 = (
+      with pkgs-oct-19-23;
       {
-
+        nodejs = nodejs_20;
         helm = kubernetes-helm;
         npm = nodePackages.npm;
         inherit
@@ -65,4 +65,4 @@ with all;
 nix-2305 //
 atomipkgs //
 atomipkgs_classic //
-sep-12-23
+oct-19-23
