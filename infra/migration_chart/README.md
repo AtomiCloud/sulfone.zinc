@@ -29,7 +29,7 @@ A Chart to migrate .NET Microservice
 | serviceAccount.name | string | `""` |  |
 | serviceTree.landscape | string | `"lapras"` |  |
 | serviceTree.module | string | `"migration"` |  |
-| serviceTree.platform | string | `"carboxylicacid"` |  |
+| serviceTree.platform | string | `"sulfone"` |  |
 | serviceTree.service | string | `"dotnet"` |  |
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | object | `{}` |  |

@@ -29,7 +29,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0-preview.4.23260.4" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0-preview.4.23259.5" />
-        <PackageReference Include="Mime-Detective" Version="22.12.14" />
+        <PackageReference Include="Mime-Detective" Version="23.10.1" />
         <PackageReference Include="Minio" Version="5.0.0" />
         <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
         <PackageReference Include="NJsonSchema" Version="10.9.0" />
@@ -80,6 +80,14 @@
       <Content Include="..\Tiltfile">
         <Link>Tiltfile</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 

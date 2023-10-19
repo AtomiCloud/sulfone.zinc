@@ -1,7 +1,7 @@
 serviceTree: &serviceTree
   landscape: lapras
-  platform: carboxylicacid
-  service: carbon
+  platform: sulfone
+  service: zinc
   layer: "2"
 
 api:
@@ -22,10 +22,10 @@ api:
     App:
       Mode: Server
 
-  configMountPath: /app/Config/settings.yaml
+  configMountPath: /app/Config
 
   image:
-    repository: carboxylicacid-carbon-api
+    repository: sulfone-zinc-api
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -50,7 +50,7 @@ api:
     enabled: true
     ingressClass: traefik
     hosts:
-      - host: api.dotnet.carboxylicacid.lapras.lvh.me
+      - host: api.zinc.sulfone.lapras.lvh.me
         paths:
           - path: /
             pathType: ImplementationSpecific
@@ -58,7 +58,7 @@ api:
       - secretName: sample
         issuerRef: sample
         hosts:
-          - api.dotnet.carboxylicacid.lapras.lvh.me
+          - api.zinc.sulfone.lapras.lvh.me
 
   resources:
     limits:
@@ -105,10 +105,10 @@ migration:
       Mode: Migration
 
   backoffLimit: 4
-  configMountPath: /app/Config/settings.yaml
+  configMountPath: /app/Config
 
   image:
-    repository: carboxylicacid-dotnet-migration
+    repository: sulfone-zinc-migration
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -126,10 +126,10 @@ migration:
 
   securityContext: {}
   resources:
-    limits:
+    requests:
       cpu: 100m
       memory: 128Mi
-    requests:
+    limits:
       cpu: 500m
       memory: 1Gi
 
@@ -147,38 +147,6 @@ maindb:
     persistence:
       enabled: false
   auth:
-    database: carboxylicacid-carbon
+    database: sulfone-zinc
     username: admin
     password: supersecret
-
-mainstorage:
-  enable: false
-  nameOverride: main-storage
-  auth:
-    rootUser: admin
-    rootPassword: supersecret
-  persistence:
-    enabled: false
-    size: 10Gi
-  replicas: 1
-
-maincache:
-  enable: false
-  nameOverride: "main-cache"
-  resources:
-    limits:
-      cpu: 1
-  storage:
-    enabled: false
-  extraArgs:
-    - --requirepass=supersecret
-altcache:
-  enable: false
-  nameOverride: "alt-cache"
-  resources:
-    limits:
-      cpu: 1
-  storage:
-    enabled: false
-  extraArgs:
-    - --requirepass=supersecret

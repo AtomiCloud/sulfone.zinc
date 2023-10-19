@@ -16,13 +16,25 @@ namespace App.Migrations
           columns: table => new
           {
             Id = table.Column<Guid>(type: "uuid", nullable: false),
-            Name = table.Column<string>(type: "text", nullable: false),
-            Email = table.Column<string>(type: "text", nullable: false)
+            Sub = table.Column<string>(type: "text", nullable: false),
+            Username = table.Column<string>(type: "text", nullable: false)
           },
           constraints: table =>
           {
             table.PrimaryKey("PK_Users", x => x.Id);
           });
+
+      migrationBuilder.CreateIndex(
+          name: "IX_Users_Sub",
+          table: "Users",
+          column: "Sub",
+          unique: true);
+
+      migrationBuilder.CreateIndex(
+          name: "IX_Users_Username",
+          table: "Users",
+          column: "Username",
+          unique: true);
     }
 
     /// <inheritdoc />

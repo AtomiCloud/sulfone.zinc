@@ -34,6 +34,6 @@ public class EntityNotFound : IDomainProblem
   [Description("The Full Name of the type of entity that could not be found")]
   public string TypeName { get; } = string.Empty;
 
-  [Description("The AssemblyQualifiedNAme of the entity that could not be found")]
+  [Description("The AssemblyQualifiedName of the entity that could not be found")]
   public string AssemblyQualifiedName { get; } = string.Empty;
 }

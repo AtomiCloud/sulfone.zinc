@@ -2,11 +2,9 @@ namespace App.Modules.Users.Data;
 
 public record UserData
 {
-  public required Guid Id { get; init; }
+  public Guid Id { get; set; }
 
-  public required string Name { get; init; }
+  public string Sub { get; set; } = string.Empty;
 
-  public required string Email { get; init; }
-
-  public required ushort Age { get; init; }
+  public string Username { get; set; } = string.Empty;
 };

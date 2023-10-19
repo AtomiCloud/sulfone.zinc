@@ -1,6 +1,6 @@
 serviceTree:
   landscape: lapras
-  platform: carboxylicacid
+  platform: sulfone
   service: dotnet
   module: api
 
@@ -12,7 +12,12 @@ appSettings:
   App:
     Mode: Server
 
-configMountPath: /app/App/Config/settings.yaml
+configMountPath: /app/App/Config
+
+command:
+  - /bin/sh
+  - -c
+  - sleep infinity
 
 image:
   repository: dotnet-chart

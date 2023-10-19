@@ -12,7 +12,7 @@ A Chart to deploy .NET Microservice
 | appSettings.App.Mode | string | `"Server"` |  |
 | aspNetEnv | string | `"Development"` |  |
 | autoscaling | object | `{}` |  |
-| configMountPath | string | `"/app/App/Config/settings.yaml"` |  |
+| configMountPath | string | `"/app/App/Config"` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"dotnet-chart"` |  |
@@ -42,7 +42,7 @@ A Chart to deploy .NET Microservice
 | serviceAccount.name | string | `""` |  |
 | serviceTree.landscape | string | `"lapras"` |  |
 | serviceTree.module | string | `"api"` |  |
-| serviceTree.platform | string | `"carboxylicacid"` |  |
+| serviceTree.platform | string | `"sulfone"` |  |
 | serviceTree.service | string | `"dotnet"` |  |
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | object | `{}` |  |

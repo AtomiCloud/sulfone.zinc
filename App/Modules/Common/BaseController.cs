@@ -3,6 +3,7 @@ using App.Error;
 using App.Error.V1;
 using App.StartUp.Registry;
 using CSharp_Result;
+using Domain.Error;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Modules.Common;
@@ -32,8 +33,12 @@ public class AtomiControllerBase : ControllerBase
         EntityNotFound => this.Error(HttpStatusCode.NotFound, d.Problem),
         UnknownFileType unknownFileType => this.Error(HttpStatusCode.NotAcceptable, unknownFileType),
         ValidationError validationError => this.Error(HttpStatusCode.BadRequest, validationError),
+        Unauthorized unauthorizedError => this.Error(HttpStatusCode.Unauthorized, unauthorizedError),
+        EntityConflict entityConflict => this.Error(HttpStatusCode.Conflict, entityConflict),
         _ => throw d
       },
+      AlreadyExistException aee => this.Error(HttpStatusCode.Conflict,
+        new EntityConflict(aee.Message, aee.t)),
       _ => throw e
     };
   }
@@ -79,5 +84,10 @@ public class AtomiControllerBase : ControllerBase
     return entity.IsSuccess()
       ? this.Ok(entity.Get())
       : this.MapException<T>(entity.FailureOrDefault());
+  }
+
+  protected string? Sub()
+  {
+    return this.HttpContext.User?.Identity?.Name;
   }
 }

@@ -196,9 +196,9 @@
       },
       "Mime-Detective": {
         "type": "Direct",
-        "requested": "[22.12.14, )",
-        "resolved": "22.12.14",
-        "contentHash": "4f1XSieo7yq7znNpYsPoe2sOfEKWi8ICRc8cC+9bVTvAqDoNQ/NgiG51K0X186uJffmmwHEXUGaRiA/pPZ73vQ=="
+        "requested": "[23.10.1, )",
+        "resolved": "23.10.1",
+        "contentHash": "CQ+QjmBKMSppTX9P3eVfhRLRrOiM1HI3InaWqcQ7tHf3EE9OZZ1XeTd5gJhmjzQXyn/rMQUk6XKHvhp4XcW2Qw=="
       },
       "Minio": {
         "type": "Direct",
@@ -1758,6 +1758,13 @@
           "System.Reflection.Emit": "4.3.0",
           "System.Reflection.TypeExtensions": "4.5.0",
           "System.Xml.XPath": "4.3.0"
+        }
+      },
+      "domain": {
+        "type": "Project",
+        "dependencies": {
+          "CSharp-Result": "[0.2.0, )",
+          "EntityFrameworkCore.Exceptions.Common": "[6.0.3, )"
         }
       }
     }

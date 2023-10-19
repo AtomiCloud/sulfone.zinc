@@ -1,6 +1,6 @@
 serviceTree:
   landscape: lapras
-  platform: carboxylicacid
+  platform: sulfone
   service: dotnet
   module: migration
 
@@ -54,6 +54,6 @@ topologySpreadConstraints:
     whenUnsatisfiable: ScheduleAnyway
     matchLabels:
       atomi.cloud/landscape: lapras
-      atomi.cloud/platform: carboxylicacid
+      atomi.cloud/platform: sulfone
       atomi.cloud/service: dotnet
       atomi.cloud/module: migration

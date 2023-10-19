@@ -970,6 +970,10 @@
               "type": "string",
               "minLength": 1
             },
+            "Issuer": {
+              "type": "string",
+              "minLength": 1
+            },
             "TokenValidation": {
               "$ref": "#/definitions/Auth/definitions/TokenValidationParametersOption"
             },

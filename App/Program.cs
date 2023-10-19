@@ -1,16 +1,11 @@
 using App.StartUp;
 using App.StartUp.Options;
-using App.Utility;
-using Namotion.Reflection;
-using NJsonSchema;
-using NJsonSchema.Generation;
 
 var landscape =
   Environment.GetEnvironmentVariable("LANDSCAPE")?.ToLower() ??
   throw new ApplicationException("LANDSCAPE not defined");
 /*----------------------------------------*/
 // Bootstrap
-
 
 var builder = Host.CreateApplicationBuilder(args);
 

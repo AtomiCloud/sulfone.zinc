@@ -22,18 +22,3 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     alias: maindb
     condition: maindb.enable
-  - name: minio
-    version: 12.7.0
-    repository: oci://registry-1.docker.io/bitnamicharts
-    alias: mainstorage
-    condition: mainstorage.enable
-  - name: dragonfly
-    repository: oci://ghcr.io/dragonflydb/dragonfly/helm
-    version: v1.9.0
-    alias: maincache
-    condition: maincache.enable
-  - name: dragonfly
-    repository: oci://ghcr.io/dragonflydb/dragonfly/helm
-    version: v1.9.0
-    alias: altcache
-    condition: altcache.enable

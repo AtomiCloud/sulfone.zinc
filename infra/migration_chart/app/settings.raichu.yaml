@@ -1,13 +1,7 @@
 $schema: ./schema.json
 App:
   Landscape: raichu
-  Platform: carboxylicacid
-  Service: dotnet
-  Module: api
-  Version: 1.0.0
-  EnableSwagger: true
-  DefaultCors: AllowAll
-  Mode: Server
+  GenerateConfig: false
 Kestrel:
   Endpoints:
     Http:
@@ -130,7 +124,7 @@ ErrorPortal:
   EnableExceptionResponse: false
 Database:
   Main:
-    Host: carboxylicacid-dotnet-main-database
+    Host: sulfone-dotnet-main-database
     Port: 5432
     User: user
     Password: supersecret
@@ -139,14 +133,14 @@ Database:
     Timeout: 30
 BlockStorage:
   Main:
-    Host: carboxylicacid-dotnet-main-storage
+    Host: sulfone-dotnet-main-storage
     Port: 9000
     Scheme: http
     AccessKey: rootuser
     SecretKey: supersecret
     UseSSL: false
     EnsureBucketCreation: true
-    Bucket: carboxylicacid-dotnet-main
+    Bucket: sulfone-dotnet-main
     Policy: Public # or Private
 Cache:
   Enabled: true
@@ -158,15 +152,15 @@ Cache:
     SSL: false
     SyncTimeout: 5000
     Endpoints:
-      - carboxylicacid-dotnet-main-cache:6379
+      - sulfone-dotnet-main-cache:6379
 HttpClient:
   Main:
-    BaseAddress: http://carboxylicacid-analytics:9050
+    BaseAddress: http://sulfone-analytics:9050
     Timeout: 30
     BearerAuth: supersecret
 SearchEngine:
   Main:
-    Host: carboxylicacid-dotnet-search
+    Host: sulfone-dotnet-search
     Scheme: http
     Port: 7700
     MasterKey: supersecret
@@ -206,7 +200,7 @@ SearchEngine:
 Auth:
   Enabled: false
   Settings:
-    Domain: carboxylicacid
+    Domain: sulfone
     Audience: aud
     TokenValidation:
       ValidateIssuer: true

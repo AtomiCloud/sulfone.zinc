@@ -1,6 +1,6 @@
 serviceTree:
   landscape: lapras
-  platform: carboxylicacid
+  platform: sulfone
   service: dotnet
   module: migration
 

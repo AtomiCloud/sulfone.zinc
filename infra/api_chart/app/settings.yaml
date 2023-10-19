@@ -18,8 +18,8 @@ Logging:
 # Domain
 App:
   Landscape: lapras
-  Platform: carboxylicacid
-  Service: carbon
+  Platform: sulfone
+  Service: zinc
   Module: api
   Mode: Server
   DefaultCors: AllowAll
@@ -28,7 +28,7 @@ App:
   GenerateConfig: false
 Swagger:
   Title: Lapras CarboxylicAcid Carbon API
-  Description: Template for .NET APIs in AtomiCloud
+  Description: "Sulfone-Zinc: Registry API for CyanPrint"
   OpenApiContact:
     Name: kirinnee
     Email: kirinnee97@gmail.com
@@ -49,7 +49,7 @@ Logs:
       Enabled: false
     Otlp:
       Enabled: false
-      Endpoint: "http://otel-oltp-collector.open-telemetry.svc:4317"
+      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
       ProcessorType: Batch # or simple
       Protocol: Grpc # or HttpProtobuf
       Timeout: 30000
@@ -85,7 +85,7 @@ Trace:
       Enabled: false
     Otlp:
       Enabled: false
-      Endpoint: "http://otel-oltp-collector.open-telemetry.svc:4317"
+      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
       Timeout: 30000
       ProcessorType: Batch # or simple
       Protocol: Grpc # or HttpProtobuf
@@ -106,7 +106,7 @@ Metrics:
       ExportInterval: 1000
     Otlp:
       Enabled: false
-      Endpoint: "http://otel-oltp-collector.open-telemetry.svc:4317"
+      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
       ExportInterval: 1000
       Timeout: 30000
       ProcessorType: Batch # or simple
@@ -119,45 +119,15 @@ Metrics:
 # Infra-based
 Database:
   Main:
-    Database: carboxylicacid-carbon
+    Database: sulfone-zinc
     AutoMigrate: false
-    Host: carboxylicacid-carbon-main-database
+    Host: sulfone-zinc-main-database
     Password: supersecret
     User: admin
     Port: 5432
-    Timeout: 300
-Cache:
-  Main:
-    Password: supersecret
-    Endpoints:
-      - carboxylicacid-carbon-main-cache:6379
-    SSL: false
-    SyncTimeout: 5000
-    ConnectRetry: 5
-    ConnectTimeout: 5000
-    AbortConnect: true
-    AllowAdmin: false
-  Alt:
-    Password: supersecret
-    Endpoints:
-      - carboxylicacid-carbon-alt-cache:6379
-    SSL: false
-    SyncTimeout: 5000
-    ConnectRetry: 5
-    ConnectTimeout: 5000
-    AbortConnect: true
-    AllowAdmin: false
-BlockStorage:
-  Main:
-    Host: carboxylicacid-carbon-main-storage
-    Port: 9000
-    AccessKey: admin
-    SecretKey: supersecret
-    Scheme: http
-    UseSSL: false
-    EnsureBucketCreation: true
-    Bucket: carboxylicacid-carbon-main
-    Policy: Public # or Private
+    Timeout: 60
+Cache: {}
+BlockStorage: {}
 # external
 HttpClient: {}
 
@@ -167,13 +137,14 @@ Auth:
     Policies:
       OnlyAdmin:
         Target:
-          - Back Office
+          - Admin
         Type: "All"
         Field: "roles"
-    Audience: P2VN0BOW1x838iknfn7JGwsTbqv4
-    Domain: api.descope.com/P2VN0BOW1x838iknfn7JGwsTbqv4
+    Issuer: P2Wskb04HSJQRfckShfhtWXwUiUd
+    Audience: P2Wskb04HSJQRfckShfhtWXwUiUd
+    Domain: api.descope.com/P2Wskb04HSJQRfckShfhtWXwUiUd
     TokenValidation:
-      ValidateAudience: true
+      ValidateAudience: false
       ValidateIssuer: true
       ClockSkew: 0
       ValidateLifetime: true

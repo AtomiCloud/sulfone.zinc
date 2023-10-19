@@ -1,4 +1,5 @@
 using System.Reflection;
+using App.Modules;
 using App.Modules.Common;
 using App.StartUp.BlockStorage;
 using App.StartUp.Database;
@@ -39,7 +40,8 @@ public class Server
     IOptionsMonitor<LogsOption> logs,
     IOptionsMonitor<TraceOption> trace, IOptionsMonitor<ErrorPortalOption> errorPortal,
     IOptionsMonitor<Dictionary<string, BlockStorageOption>> store,
-    IOptionsMonitor<Dictionary<string, HttpClientOption>> http, IOptionsMonitor<AuthOption> auth, IOptionsMonitor<Dictionary<string, CacheOption>> cache)
+    IOptionsMonitor<Dictionary<string, HttpClientOption>> http, IOptionsMonitor<AuthOption> auth,
+    IOptionsMonitor<Dictionary<string, CacheOption>> cache)
   {
     this._cors = cors;
     this._app = app;
@@ -150,12 +152,13 @@ public class Server
     if (this._auth.CurrentValue.Enabled)
       services.AddAuthService(this._auth.CurrentValue);
 
-
+    services.AddDomainServices();
     /*----------------------------------------*/
     // Pipeline
     var app = builder.Build();
 
-    if (this._app.CurrentValue.GenerateConfig) File.WriteAllText("Config/schema.json", Utils.OptionSchema.ActualSchema.ToJson());
+    if (this._app.CurrentValue.GenerateConfig)
+      File.WriteAllText("Config/schema.json", Utils.OptionSchema.ActualSchema.ToJson());
 
 
     switch (this._app.CurrentValue.Mode)

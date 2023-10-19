@@ -29,5 +29,8 @@ public class MainDbContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    var user = modelBuilder.Entity<UserData>();
+    user.HasIndex(x => x.Username).IsUnique();
+    user.HasIndex(x => x.Sub).IsUnique();
   }
 }

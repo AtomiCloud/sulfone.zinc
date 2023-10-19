@@ -2,7 +2,7 @@ version: "3"
 
 vars:
   CHART_PATH: infra/root_chart
-  RELEASE_NAME: carboxylicacid-carbon
+  RELEASE_NAME: sulfone-zinc
 
 includes:
   helm: Taskfile.helm.yml
@@ -10,6 +10,12 @@ includes:
   stop: tasks/Taskfile.stop.yml
 
 tasks:
+  migration:create:
+    desc: Creates a migration
+    env:
+      LANDSCAPE: lapras
+    cmds:
+      - dotnet ef migrations --project ./App add {{.CLI_ARGS}}
   setup:
     desc: Setups dotnet
     cmds:

@@ -1,20 +1,14 @@
-using System.Net;
+using System.Net.Mime;
 using App.Error.V1;
 using App.Modules.Common;
-using App.Modules.Users.Data;
-using App.StartUp.Database;
 using App.StartUp.Registry;
 using App.Utility;
 using Asp.Versioning;
 using CSharp_Result;
-using Kirinnee.Helper;
+using Domain;
+using Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis.Extensions.Core.Abstractions;
-using StackExchange.Redis.Extensions.Core.Implementations;
-using Index = Meilisearch.Index;
 
 namespace App.Modules.Users.API.V1;
 
@@ -23,115 +17,128 @@ namespace App.Modules.Users.API.V1;
 /// </summary>
 [ApiVersion(1.0)]
 [ApiController]
+[Consumes(MediaTypeNames.Application.Json)]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class UserController : AtomiControllerBase
 
 {
-  private readonly ILogger<UserController> _logger;
-  private readonly MainDbContext _dbContext;
-  private readonly CreateUserReqValidator _userReqValidator;
-  private readonly IFileRepository _fileRepository;
-  private readonly IRedisClientFactory _factory;
+  private readonly IUserService _service;
+  private readonly CreateUserReqValidator _createUserReqValidator;
+  private readonly UpdateUserReqValidator _updateUserReqValidator;
+  private readonly UserSearchQueryValidator _userSearchQueryValidator;
 
 
-  public UserController(ILogger<UserController> logger, MainDbContext dbContext,
-    CreateUserReqValidator userReqValidator, IFileRepository fileRepository, IRedisClientFactory redis)
+  public UserController(IUserService service,
+    CreateUserReqValidator createUserReqValidator, UpdateUserReqValidator updateUserReqValidator,
+    UserSearchQueryValidator userSearchQueryValidator)
   {
-    this._logger = logger;
-    this._dbContext = dbContext;
-    this._userReqValidator = userReqValidator;
-    this._fileRepository = fileRepository;
-    this._factory = redis;
+    this._service = service;
+    this._createUserReqValidator = createUserReqValidator;
+    this._updateUserReqValidator = updateUserReqValidator;
+    this._userSearchQueryValidator = userSearchQueryValidator;
   }
 
-  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpGet("cache-main/{id}")]
-  public async Task<object?> Cache(string id)
+  // Policy = AuthPolicies.OnlyAdmin
+  [Authorize, HttpGet]
+  public async Task<ActionResult<IEnumerable<UserResp>>> Search([FromQuery] SearchUserQuery query)
   {
-    return await this._factory.GetRedisClient(Caches.Main).Db0.GetAsync<object>(id);
+    var x = await this._userSearchQueryValidator
+      .ValidateAsyncResult(query, "Invalid SearchUserQuery")
+      .ThenAwait(q => this._service.Search(q.ToDomain()))
+      .Then(x => x.Select(u => u.ToResp()).ToResult());
+    return this.ReturnResult(x);
   }
 
-  [HttpPost("cache-main/{id}/{value}")]
-  public async Task<bool?> Cache(string id, string value)
+  [Authorize, HttpGet("{id:guid}")]
+  public async Task<ActionResult<UserResp>> GetById(Guid id)
   {
-    return await this._factory.GetRedisClient(Caches.Main).Db0.AddAsync(id, new { Name = value });
+    var user = await this._service.GetById(id)
+      .Then(x => (x?.ToResp()).ToResult())
+      .Then(x =>
+      {
+        if (x?.Sub == this.Sub()) return x.ToResult();
+        return new Unauthorized("You are not authorized to access this resource")
+          .ToException();
+      });
+    return this.ReturnNullableResult(user, new EntityNotFound(
+      "User Not Found", typeof(UserPrincipal), id.ToString()));
   }
 
-  [HttpGet("cache-alt/{id}")]
-  public async Task<object?> CacheAlt(string id)
+  [Authorize, HttpGet("sub/{sub}")]
+  public async Task<ActionResult<UserResp>> GetBySub(string sub)
   {
-    return await this._factory.GetRedisClient(Caches.Alt).Db0.GetAsync<object>(id);
-  }
-
-  [HttpPost("cache-alt/{id}/{value}")]
-  public async Task<bool> CacheAlt(string id, string value)
-  {
-    return await this._factory.GetRedisClient(Caches.Alt).Db0.AddAsync(id, new { Name = value });
-  }
-
-
-  [HttpPost]
-  public async Task<ActionResult<UserResp>> Post([FromBody] CreateUserReq req)
-  {
-    this._logger.LogInformation("Creating User");
-    var a = await this._userReqValidator.ValidateAsync(req);
-    if (!a.IsValid)
+    if (this.Sub() != sub)
     {
-      return this.Error<UserResp>(HttpStatusCode.NotFound,
-        new ValidationError("Create User Request is invalid", a.ToDictionary())
-      );
+      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnResult(x);
     }
 
-    var user = new UserData
-    {
-      Id = Guid.NewGuid(),
-      Name = req.Name,
-      Email = req.Email,
-      Age = 5
-    };
-
-    var u = await this._dbContext.Users.AddAsync(user);
-    await this._dbContext.SaveChangesAsync();
-    var updated = u.Entity;
-
-    return this.Ok(new UserResp(updated.Id, updated.Name, updated.Email));
+    var user = await this._service.GetBySub(sub)
+      .Then(x => (x?.ToResp()).ToResult());
+    return this.ReturnNullableResult(user, new EntityNotFound(
+      "User Not Found", typeof(UserPrincipal), sub));
   }
 
-  [HttpGet("{id:guid}")]
-  public UserResp Get(Guid id)
+  [Authorize, HttpGet("username/{username}")]
+  public async Task<ActionResult<UserResp>> GetByUsername(string username)
   {
-    this._logger.LogInformation("Getting User");
-    return this._dbContext.Users
-      .Where(x => x.Id == id)
-      .Select(x => new UserResp(x.Id, x.Name, x.Email))
-      .First();
+    var user = await this._service.GetByUsername(username)
+      .Then(x => (x?.ToResp()).ToResult())
+      .Then(x =>
+      {
+        if (x?.Sub == this.Sub()) return x.ToResult();
+        return new Unauthorized("You are not authorized to access this resource")
+          .ToException();
+      });
+    return this.ReturnNullableResult(user, new EntityNotFound(
+      "User Not Found", typeof(UserPrincipal), username));
   }
 
-  [HttpPost("upload")]
-  public async Task<ActionResult<string[]>> Upload(List<IFormFile> files)
+  [Authorize, HttpGet("exist/{username}")]
+  public async Task<ActionResult<bool>> Exist(string username)
   {
-    var a = files.Select(async x =>
-    {
-      if (x.Length <= 0) return Result.ToResult<string?>(null);
-      using var memStream = new MemoryStream();
-      await x.CopyToAsync(memStream);
-      this._logger.LogInformation("Stream Size: {StreamSize}", memStream.Length);
-      return await this
-        ._fileRepository
-        .Save(BlockStorages.Main, "sample", Guid.NewGuid().ToString(), memStream, true)
-        .ThenAwait(key =>
-          key == null
-            ? Task.FromResult(Result.ToResult<string?>(null))
-            : this._fileRepository.Link(BlockStorages.Main, key));
-    });
+    var exist = await this._service.Exists(username);
+    return this.ReturnResult(exist);
+  }
 
-    var blobResult = await Task.WhenAll(a);
-    var links = blobResult.ToResultOfSeq();
-
-    if (links.IsSuccess())
+  [Authorize, HttpPost]
+  public async Task<ActionResult<UserResp>> Create([FromBody] CreateUserReq req)
+  {
+    var sub = this.Sub();
+    if (sub == null)
     {
-      return this.Ok(links.SuccessOrDefault());
+      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnResult(x);
     }
+    var user = await this._createUserReqValidator
+      .ValidateAsyncResult(req, "Invalid CreateUserReq")
+      .ThenAwait(x => this._service.Create(sub, x.ToRecord()))
+      .Then(x => x.ToResp().ToResult());
+    return this.ReturnResult(user);
+  }
 
-    return this.BadRequest(links.FailureOrDefault());
+  [Authorize, HttpPut("{id:guid}")]
+  public async Task<ActionResult<UserResp>> Update(Guid id, [FromBody] UpdateUserReq req)
+  {
+    var sub = this.Sub();
+    if (sub == null)
+    {
+      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnResult(x);
+    }
+    var user = await this._updateUserReqValidator
+      .ValidateAsyncResult(req, "Invalid UpdateUserReq")
+      .ThenAwait(x => this._service.Update(id, sub, x.ToRecord()))
+      .Then(x => (x?.ToResp()).ToResult());
+    return this.ReturnNullableResult(user, new EntityNotFound(
+      "User Not Found", typeof(UserPrincipal), id.ToString()));
+  }
+
+  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{id:guid}")]
+  public async Task<ActionResult> Delete(Guid id)
+  {
+    var user = await this._service.Delete(id);
+    return this.ReturnUnitNullableResult(user, new EntityNotFound(
+      "User Not Found", typeof(UserPrincipal), id.ToString()));
   }
 }

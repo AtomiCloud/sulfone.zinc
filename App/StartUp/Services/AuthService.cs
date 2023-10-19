@@ -39,6 +39,7 @@ public static class AuthService
       {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+          ValidIssuer = s.Issuer,
           NameClaimType = ClaimTypes.NameIdentifier,
           ValidateIssuer = to.ValidateIssuer,
           ValidateAudience = to.ValidateAudience,
@@ -64,10 +65,10 @@ public static class AuthService
           switch (v)
           {
             case { Type: "Any" }:
-              pb.Requirements.AddAnyScope(domain, v.Field, v.Target);
+              pb.Requirements.AddAnyScope(s.Issuer, v.Field, v.Target);
               break;
             case { Type: "All" }:
-              pb.Requirements.AddAllScope(domain, v.Field, v.Target);
+              pb.Requirements.AddAllScope(s.Issuer, v.Field, v.Target);
               break;
             default:
               throw new ApplicationException($"Auth Policy Type is not supported: {v.Type}");

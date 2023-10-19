@@ -28,11 +28,14 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspNetEnv }}
             - name: LANDSCAPE
-              value: {{ .Values.appSettings.App.Landscape }}
+              value: {{ .Values.serviceTree.landscape }}
           volumeMounts:
-            - mountPath: {{ .Values.configMountPath }}
+            - mountPath: "{{ .Values.configMountPath }}/settings.yaml"
               name: config-volume
               subPath: settings.yaml
+            - mountPath: "{{ .Values.configMountPath }}/settings.{{ .Values.serviceTree.landscape }}.yaml"
+              name: config-volume
+              subPath: "settings.{{ .Values.serviceTree.landscape }}.yaml"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -42,6 +45,8 @@ spec:
             items:
               - key: settings.yaml
                 path: settings.yaml
+              - key: "settings.{{ .Values.serviceTree.landscape }}.yaml"
+                path: "settings.{{ .Values.serviceTree.landscape }}.yaml"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

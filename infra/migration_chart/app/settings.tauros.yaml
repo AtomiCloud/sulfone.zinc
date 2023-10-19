@@ -1,0 +1,37 @@
+$schema: ./schema.json
+# Native
+App:
+  Landscape: tauros
+  EnableSwagger: true
+  GenerateConfig: false
+Swagger:
+  Title: Tauros Sulfone Zinc API
+# OTEL
+Logs:
+  Exporter:
+    Console:
+      Enabled: false
+    Otlp:
+      Enabled: false
+Trace:
+  Exporter:
+    Otlp:
+      Enabled: false
+
+Metrics:
+  Exporter:
+    Otlp:
+      Enabled: false
+
+# Infra-based
+Database:
+  Main:
+    Host: sulfone-zinc-main-database
+    User: admin
+    Password: supersecret
+    AutoMigrate: true
+
+Cache: {}
+BlockStorage: {}
+# external
+HttpClient: {}

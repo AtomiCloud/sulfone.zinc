@@ -7,9 +7,7 @@ namespace App.Utility;
 
 public static class ValidationUtility
 {
-  public static async Task<Result<T>> ValidateAsync<T>(this T obj,
-    AbstractValidator<T> validator, string errorMessage
-  )
+  public static async Task<Result<T>> ValidateAsyncResult<T>(this AbstractValidator<T> validator, T obj, string errorMessage)
   {
     var result = await validator.ValidateAsync(obj);
     return result.IsValid
@@ -17,9 +15,8 @@ public static class ValidationUtility
       : new ValidationError(errorMessage, result.ToDictionary()).ToException();
   }
 
-  public static Result<T> Validate<T>(this T obj,
-    AbstractValidator<T> validator, string errorMessage
-  )
+
+  public static Result<T> ValidateResult<T>(this AbstractValidator<T> validator, T obj, string errorMessage)
   {
     var result = validator.Validate(obj);
     return result.IsValid
@@ -61,6 +58,16 @@ public static class ValidationUtility
       .WithMessage("DateOnly must be in the format of dd-mm-yyyy");
   }
 
+  public static IRuleBuilderOptions<T, string> UsernameValid<T>(
+    this IRuleBuilder<T, string> ruleBuilder)
+  {
+    return ruleBuilder
+      .Length(1, 256)
+      .WithMessage("Username has to be between 1 to 256 characters")
+      .Matches(@"[\w\d](\-?[\w\d]+)*")
+      .WithMessage("Username can only contain alphanumeric characters and dashes, and cannot end or start with dashes");
+  }
+
   public static IRuleBuilderOptions<T, string> NameValid<T>(
     this IRuleBuilder<T, string> ruleBuilder)
   {
@@ -68,6 +75,7 @@ public static class ValidationUtility
       .Length(1, 256)
       .WithMessage("Name has to be between 1 to 256 characters");
   }
+
 
   public static IRuleBuilderOptions<T, string> DescriptionValid<T>(
     this IRuleBuilder<T, string> ruleBuilder)

@@ -5,52 +5,33 @@ App:
   EnableSwagger: true
   GenerateConfig: true
 Swagger:
-  Title: Lapras CarboxylicAcid Carbon API
+  Title: Lapras Sulfone Zinc API
 # OTEL
 Logs:
   Exporter:
     Console:
       Enabled: false
     Otlp:
-      Enabled: true
+      Enabled: false
 Trace:
   Exporter:
     Otlp:
-      Enabled: true
+      Enabled: false
 
 Metrics:
   Exporter:
     Otlp:
-      Enabled: true
+      Enabled: false
 
 # Infra-based
 Database:
   Main:
-    Host: carboxylicacid-carbon-main-database
+    Host: sulfone-zinc-main-database
     User: admin
     Password: supersecret
     AutoMigrate: true
-Cache:
-  Main:
-    Password: supersecret
-    Endpoints:
-      - carboxylicacid-carbon-main-cache:6379
-    SSL: false
-  Alt:
-    Password: supersecret
-    Endpoints:
-      - carboxylicacid-carbon-alt-cache:6379
-    SSL: false
-BlockStorage:
-  Main:
-    Host: carboxylicacid-carbon-main-storage
-    Bucket: carboxylicacid-carbon-main
-    Port: 9000
-    AccessKey: admin
-    SecretKey: supersecret
-    Scheme: http
-    UseSSL: false
-    EnsureBucketCreation: true
-    Policy: Public # or Private
+
+Cache: {}
+BlockStorage: {}
 # external
 HttpClient: {}

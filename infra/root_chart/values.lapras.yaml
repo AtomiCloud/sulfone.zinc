@@ -1,4 +1,5 @@
-landscape: &landscape lapras
+serviceTree:
+  landscape: &landscape lapras
 
 api:
   enabled: true
@@ -9,7 +10,7 @@ api:
 
   replicaCount: 1
 
-  configMountPath: /app/App/Config/settings.yaml
+  configMountPath: /app/App/Config
 
   service:
     type: ClusterIP
@@ -20,7 +21,7 @@ api:
     enabled: true
     ingressClass: traefik
     hosts:
-      - host: api.carbon.carboxylicacid.lapras.lvh.me
+      - host: api.zinc.sulfone.lapras.lvh.me
         paths:
           - path: /
             pathType: ImplementationSpecific
@@ -29,14 +30,5 @@ api:
 migration:
   enabled: false
 
-maincache:
-  enable: true
-
-altcache:
-  enable: true
-
 maindb:
-  enable: true
-
-mainstorage:
   enable: true

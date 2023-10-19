@@ -9,6 +9,7 @@ public static class MimeDetectionService
   {
     var inspector = new ContentInspectorBuilder { Definitions = MimeDetective.Definitions.Default.All() }.Build();
 
+
     service.AddSingleton<ContentInspector>(s => inspector)
       .AutoTrace<ContentInspector>();
     return service;
