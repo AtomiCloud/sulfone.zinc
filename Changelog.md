@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.6...v1.1.7) (2023-10-20)
+
+
+### Bug Fixes
+
+* migration configuration ([a844b5c](https://github.com/AtomiCloud/sulfone.zinc/commit/a844b5c5592e4db858e9081a66ece1e339cad4d7))
+
 ## [1.1.6](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.5...v1.1.6) (2023-10-20)
 
 
