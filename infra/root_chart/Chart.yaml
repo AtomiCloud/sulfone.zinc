@@ -17,6 +17,11 @@ dependencies:
     repository: file://../migration_chart
     condition: migration.enabled
     alias: migration
+  - name: sulfoxide-bromine
+    version: 1.1.1
+    condition: bromine.enable
+    alias: bromine
+    repository: oci://ghcr.io/atomicloud/sulfoxide.bromine
   - name: postgresql
     version: 12.5.5
     repository: oci://registry-1.docker.io/bitnamicharts

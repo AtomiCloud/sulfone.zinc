@@ -9,6 +9,9 @@ metadata:
 spec:
   backoffLimit: {{ .Values.backoffLimit }}
   template:
+    metadata:
+      annotations: {{- include "dotnet-migration.annotations" . | nindent 6 }}
+      labels: {{- include "dotnet-migration.labels" . | nindent 6 }}
     spec:
       restartPolicy: Never
       {{- with .Values.imagePullSecrets }}
@@ -24,6 +27,11 @@ spec:
                    {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspNetEnv }}

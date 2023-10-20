@@ -10,6 +10,7 @@ Root Chart to a single Service
 |------------|------|---------|
 | file://../api_chart | api(dotnet-chart) | 0.1.0 |
 | file://../migration_chart | migration(dotnet-migration) | 0.1.0 |
+| oci://ghcr.io/atomicloud/sulfoxide.bromine | bromine(sulfoxide-bromine) | 1.1.1 |
 | oci://registry-1.docker.io/bitnamicharts | maindb(postgresql) | 12.5.5 |
 
 ## Values
@@ -63,6 +64,10 @@ Root Chart to a single Service
 | api.serviceTree.module | string | `"api"` |  |
 | api.tolerations | list | `[]` |  |
 | api.topologySpreadConstraints | object | `{}` |  |
+| bromine.enable | bool | `false` |  |
+| bromine.rootSecret | object | `{"ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
+| bromine.rootSecret.ref | string | `"SULFONE_ZINC"` | DOPPLER Token Reference |
+| bromine.storeName | string | `"sulfone-zinc"` | Store name to create |
 | maindb.auth.database | string | `"sulfone-zinc"` |  |
 | maindb.auth.password | string | `"supersecret"` |  |
 | maindb.auth.username | string | `"admin"` |  |

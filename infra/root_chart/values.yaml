@@ -4,6 +4,15 @@ serviceTree: &serviceTree
   service: zinc
   layer: "2"
 
+bromine:
+  enable: false
+  # -- Store name to create
+  storeName: sulfone-zinc
+  # -- Secret of Secrets reference
+  rootSecret:
+    # -- DOPPLER Token Reference
+    ref: "SULFONE_ZINC"
+
 api:
   enabled: true
 

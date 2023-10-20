@@ -1,11 +1,16 @@
 serviceTree:
   landscape: &landscape pichu
 
+bromine:
+  enable: true
+
+  target: &target "sulfone-zinc"
+
 api:
   enabled: true
+  envFromSecret: *target
   sericeTree:
     landscape: *landscape
-
   image:
     repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
   imagePullSecrets: []
@@ -36,6 +41,7 @@ api:
 
 migration:
   enabled: true
+  envFromSecret: *target
   image:
     repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
   serviceTree:
