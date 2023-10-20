@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.5...v1.1.6) (2023-10-20)
+
+
+### Bug Fixes
+
+* missing sync wave for external ([2891c4f](https://github.com/AtomiCloud/sulfone.zinc/commit/2891c4fd69b8f6f5787f4224952226ea6378e956))
+
 ## [1.1.5](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.4...v1.1.5) (2023-10-20)
 
 
