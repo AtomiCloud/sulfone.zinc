@@ -6,6 +6,8 @@ api:
   sericeTree:
     landscape: *landscape
 
+  image:
+    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
   imagePullSecrets: []
 
   replicaCount: 1
@@ -34,6 +36,8 @@ api:
 
 migration:
   enabled: true
+  image:
+    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
   serviceTree:
     landscape: *landscape
 
