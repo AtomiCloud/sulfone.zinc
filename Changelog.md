@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.0.0...v1.1.0) (2023-10-20)
+
+
+### New Features
+
+* release pichu ([748aa9c](https://github.com/AtomiCloud/sulfone.zinc/commit/748aa9c0509ae0f0f75620fdb16ab6d92e22e652))
+
+
+### Bug Fixes
+
+* missing ignore ([37e70ea](https://github.com/AtomiCloud/sulfone.zinc/commit/37e70eade0071ed26cd8523218e1b22ce0aae510))
+
 ## 1.0.0 (2023-10-19)
 
 
