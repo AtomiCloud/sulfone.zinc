@@ -50,7 +50,7 @@
         <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="9.1.0" />
         <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
         <PackageReference Include="StackExchange.Redis.Extensions.System.Text.Json" Version="9.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.0.0-preview.4.23259.3-02" />
     </ItemGroup>
 
