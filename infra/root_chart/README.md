@@ -18,6 +18,7 @@ Root Chart to a single Service
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | api.affinity | object | `{}` |  |
+| api.annotations."argocd.argoproj.io/sync-wave" | string | `"3"` |  |
 | api.appSettings.App.Mode | string | `"Server"` |  |
 | api.autoscaling | object | `{}` |  |
 | api.configMountPath | string | `"/app/Config"` |  |
@@ -64,6 +65,7 @@ Root Chart to a single Service
 | api.serviceTree.module | string | `"api"` |  |
 | api.tolerations | list | `[]` |  |
 | api.topologySpreadConstraints | object | `{}` |  |
+| bromine.annotations."argocd.argoproj.io/sync-wave" | string | `"1"` |  |
 | bromine.enable | bool | `false` |  |
 | bromine.rootSecret | object | `{"ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
 | bromine.rootSecret.ref | string | `"SULFONE_ZINC"` | DOPPLER Token Reference |
@@ -74,6 +76,7 @@ Root Chart to a single Service
 | maindb.nameOverride | string | `"main-database"` |  |
 | maindb.primary.persistence.enabled | bool | `false` |  |
 | migration.affinity | object | `{}` |  |
+| migration.annotations."argocd.argoproj.io/sync-wave" | string | `"2"` |  |
 | migration.appSettings.App.Mode | string | `"Migration"` |  |
 | migration.aspNetEnv | string | `"Development"` |  |
 | migration.backoffLimit | int | `4` |  |

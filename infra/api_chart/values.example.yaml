@@ -12,6 +12,8 @@ appSettings:
   App:
     Mode: Server
 
+annotations: {}
+
 envFromSecret: sulfone-zinc
 
 configMountPath: /app/App/Config
