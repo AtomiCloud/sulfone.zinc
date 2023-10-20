@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.2...v1.1.3) (2023-10-20)
+
+
+### Bug Fixes
+
+* use argohook instead of helm hooks ([fb81832](https://github.com/AtomiCloud/sulfone.zinc/commit/fb81832ec472bb9f51b649348d76546b27c03b02))
+
 ## [1.1.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.1...v1.1.2) (2023-10-20)
 
 
