@@ -64,8 +64,6 @@ Root Chart to a single Service
 | api.serviceTree.module | string | `"api"` |  |
 | api.tolerations | list | `[]` |  |
 | api.topologySpreadConstraints | object | `{}` |  |
-| bromine.annotations."argocd.argoproj.io/hook" | string | `"PreSync"` |  |
-| bromine.annotations."argocd.argoproj.io/sync-wave" | string | `"0"` |  |
 | bromine.enable | bool | `false` |  |
 | bromine.rootSecret | object | `{"ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
 | bromine.rootSecret.ref | string | `"SULFONE_ZINC"` | DOPPLER Token Reference |
@@ -76,8 +74,6 @@ Root Chart to a single Service
 | maindb.nameOverride | string | `"main-database"` |  |
 | maindb.primary.persistence.enabled | bool | `false` |  |
 | migration.affinity | object | `{}` |  |
-| migration.annotations."argocd.argoproj.io/hook" | string | `"PreSync"` |  |
-| migration.annotations."argocd.argoproj.io/sync-wave" | string | `"1"` |  |
 | migration.appSettings.App.Mode | string | `"Migration"` |  |
 | migration.aspNetEnv | string | `"Development"` |  |
 | migration.backoffLimit | int | `4` |  |

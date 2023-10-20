@@ -5,9 +5,6 @@ serviceTree: &serviceTree
   layer: "2"
 
 bromine:
-  annotations:
-    argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: "0"
   enable: false
   # -- Store name to create
   storeName: sulfone-zinc
@@ -103,9 +100,6 @@ api:
 
 migration:
   enabled: false
-  annotations:
-    argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: "1"
   nameOverride: "migration"
   fullnameOverride: ""
 
