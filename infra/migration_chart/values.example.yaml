@@ -12,6 +12,8 @@ appSettings:
   App:
     Mode: Migration
 
+annotations: {}
+
 envFromSecret: sulfone-zinc
 
 configMountPath: /app/App/Config/settings.yaml

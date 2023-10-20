@@ -4,8 +4,6 @@ metadata:
   name: {{ include "dotnet-migration.fullname-with-suffix" (dict "arg" "config" "root" .) }}
   labels: {{- include "dotnet-migration.labels" . | nindent 4 }}
   annotations: {{- include "dotnet-migration.annotations" . | nindent 4 }}
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "-2"
 data:
   settings.yaml: |
     {{- $pathBase := printf "%ssettings.yaml" "app/" -}}

@@ -9,6 +9,7 @@ A Chart to migrate .NET Microservice
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| annotations | object | `{}` |  |
 | appSettings.App.Mode | string | `"Migration"` |  |
 | aspNetEnv | string | `"Development"` |  |
 | backoffLimit | int | `4` |  |

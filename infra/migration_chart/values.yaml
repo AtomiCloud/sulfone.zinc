@@ -10,6 +10,8 @@ appSettings:
   App:
     Mode: Migration
 
+annotations: {}
+
 backoffLimit: 4
 configMountPath: /app/App/Config/settings.yaml
 

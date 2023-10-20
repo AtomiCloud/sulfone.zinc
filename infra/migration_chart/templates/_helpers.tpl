@@ -61,6 +61,9 @@ Common annotations
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"
 {{- end }}
+{{- range $k, $v := .Values.annotations }}
+"{{ $k }}": "{{ $v }}"
+{{- end }}
 {{- end }}
 
 {{/*
