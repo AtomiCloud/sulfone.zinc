@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.4...v1.1.5) (2023-10-20)
+
+
+### Bug Fixes
+
+* use sync wave ([d585768](https://github.com/AtomiCloud/sulfone.zinc/commit/d5857689c8f617fd9711271c6fa41f1f9955687c))
+
 ## [1.1.4](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.3...v1.1.4) (2023-10-20)
 
 
