@@ -10,6 +10,7 @@ pre-commit-lib.run {
       excludes = [
         "infra/.*chart.*/templates/.*(yaml|yml)"
         "infra/.*chart.*/.*(MD|md)"
+        ".*(Changelog|README).+(MD|md)"
       ];
     };
 
