@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.0...v1.1.1) (2023-10-20)
+
+
+### Bug Fixes
+
+* incorrect image reference ([c476d54](https://github.com/AtomiCloud/sulfone.zinc/commit/c476d5489646cb8d15de7ff074f2e6edd3d25aeb))
+
 ## [1.1.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.0.0...v1.1.0) (2023-10-20)
 
 
