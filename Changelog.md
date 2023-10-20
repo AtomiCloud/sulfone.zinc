@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.1...v1.1.2) (2023-10-20)
+
+
+### Bug Fixes
+
+* incorrect secret config ([980d83f](https://github.com/AtomiCloud/sulfone.zinc/commit/980d83f8f62f2fe4d5ea5e49ab19ddeefd1a718e))
+* missing secrets ([858a397](https://github.com/AtomiCloud/sulfone.zinc/commit/858a397973e5d047b3d3b80a229813288f19a2e2))
+
 ## [1.1.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.0...v1.1.1) (2023-10-20)
 
 
