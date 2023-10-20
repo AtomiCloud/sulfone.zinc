@@ -5,8 +5,11 @@ dependencies:
 - name: dotnet-migration
   repository: file://../migration_chart
   version: 0.1.0
+- name: sulfoxide-bromine
+  repository: oci://ghcr.io/atomicloud/sulfoxide.bromine
+  version: 1.1.1
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.5.5
-digest: sha256:91da9db42e8db2f9b325ac6dab4ec34d9dc8c303b7080cdd09badfdc9b084872
-generated: "2023-10-19T11:38:12.000331+08:00"
+digest: sha256:17f4e26524001361d516d5014ff39a221f259de2f5ffd81e13a79b0bb2350c1e
+generated: "2023-10-20T13:00:08.219088+08:00"
