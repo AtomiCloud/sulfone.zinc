@@ -122,37 +122,9 @@ ErrorPortal:
   Scheme: http
   Host: localhost:3000
   EnableExceptionResponse: false
-Database:
-  Main:
-    Host: sulfone-dotnet-main-database
-    Port: 5432
-    User: user
-    Password: supersecret
-    Database: api
-    AutoMigrate: true
-    Timeout: 30
-BlockStorage:
-  Main:
-    Host: sulfone-dotnet-main-storage
-    Port: 9000
-    Scheme: http
-    AccessKey: rootuser
-    SecretKey: supersecret
-    UseSSL: false
-    EnsureBucketCreation: true
-    Bucket: sulfone-dotnet-main
-    Policy: Public # or Private
-Cache:
-  Enabled: true
-  Settings:
-    AbortConnect: true
-    AllowAdmin: false
-    ConnectRetry: 3
-    Password: supersecret
-    SSL: false
-    SyncTimeout: 5000
-    Endpoints:
-      - sulfone-dotnet-main-cache:6379
+Database: {}
+BlockStorage: {}
+Cache: {}
 HttpClient:
   Main:
     BaseAddress: http://sulfone-analytics:9050

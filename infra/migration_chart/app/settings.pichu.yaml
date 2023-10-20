@@ -24,28 +24,8 @@ Metrics:
       Enabled: true
 
 # Infra-based
-Database:
-  Main:
-    Host: sulfone-zinc-main-database
-    User: admin
-    Password: supersecret
-    AutoMigrate: true
-Cache:
-  Main:
-    Password: supersecret
-    Endpoints:
-      - sulfone-zinc-main-cache:6379
-    SSL: false
-BlockStorage:
-  Main:
-    Host: sulfone-zinc-main-storage
-    Bucket: sulfone-zinc-main
-    Port: 9000
-    AccessKey: admin
-    SecretKey: supersecret
-    Scheme: http
-    UseSSL: false
-    EnsureBucketCreation: true
-    Policy: Public # or Private
+Database: {}
+Cache: {}
+BlockStorage: {}
 # external
 HttpClient: {}
