@@ -18,7 +18,7 @@ bromine:
 api:
   enabled: true
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "4"
   nameOverride: "api"
   fullnameOverride: ""
 
@@ -103,7 +103,7 @@ api:
 
 migration:
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
   enabled: false
   nameOverride: "migration"
   fullnameOverride: ""
