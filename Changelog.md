@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.7...v1.1.8) (2023-10-21)
+
+
+### Bug Fixes
+
+* annotations and labels ([572498e](https://github.com/AtomiCloud/sulfone.zinc/commit/572498e5547d598606058c7fa2d2d28b7064984a))
+
 ## [1.1.7](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.6...v1.1.7) (2023-10-20)
 
 
