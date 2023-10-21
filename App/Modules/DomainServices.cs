@@ -17,6 +17,15 @@ public static class DomainServices
     s.AddScoped<IUserRepository, UserRepository>()
       .AutoTrace<IUserRepository>();
 
+    s.AddScoped<ITokenRepository, TokenRepository>()
+      .AutoTrace<ITokenRepository>();
+
+    s.AddScoped<IApiKeyGenerator, ApiKeyGenerator>()
+      .AutoTrace<IApiKeyGenerator>();
+
+    s.AddScoped<ITokenService, TokenService>()
+      .AutoTrace<ITokenService>();
+
 
 
 

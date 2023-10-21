@@ -3,6 +3,7 @@ using App.Utility;
 using CSharp_Result;
 using Domain;
 using Domain.Error;
+using Domain.Model;
 using Domain.Repository;
 using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
@@ -30,8 +31,6 @@ public class UserRepository : IUserRepository
         query = query.Where(x => EF.Functions.ILike(x.Username, $"%{search.Username}%"));
       if (!string.IsNullOrWhiteSpace(search.Id))
         query = query.Where(x => EF.Functions.ILike(x.Id.ToString(), $"%{search.Id}%"));
-      if (!string.IsNullOrWhiteSpace(search.Sub))
-        query = query.Where(x => EF.Functions.ILike(x.Sub, $"%{search.Sub}%"));
       var result = await query.Skip(search.Skip).Take(search.Limit)
         .ToArrayAsync();
       return result
@@ -46,15 +45,16 @@ public class UserRepository : IUserRepository
     }
   }
 
-  public async Task<Result<UserPrincipal?>> GetById(Guid id)
+  public async Task<Result<User?>> GetById(string id)
   {
     try
     {
       this._logger.LogInformation("Retrieving User with Id: {Id}", id);
       var user = await this._db.Users
         .Where(x => x.Id == id)
+        .Include(x => x.Tokens)
         .FirstOrDefaultAsync();
-      return user?.ToPrincipal();
+      return user?.ToDomain();
     }
     catch (Exception e)
     {
@@ -64,33 +64,16 @@ public class UserRepository : IUserRepository
     }
   }
 
-  public async Task<Result<UserPrincipal?>> GetBySub(string sub)
-  {
-    try
-    {
-      this._logger.LogInformation("Retrieving User via JWT sub: {Sub}", sub);
-      var user = await this._db.Users
-        .Where(x => x.Sub == sub)
-        .FirstOrDefaultAsync();
-      return user?.ToPrincipal();
-    }
-    catch (Exception e)
-    {
-      this._logger
-        .LogError(e, "Failed retrieving User via JWT sub: {Sub}", sub);
-      return e;
-    }
-  }
-
-  public async Task<Result<UserPrincipal?>> GetByUsername(string username)
+  public async Task<Result<User?>> GetByUsername(string username)
   {
     try
     {
       this._logger.LogInformation("Retrieving User by Username: {Username}", username);
       var user = await this._db.Users
         .Where(x => x.Username == username)
+        .Include(x => x.Tokens)
         .FirstOrDefaultAsync();
-      return user?.ToPrincipal();
+      return user?.ToDomain();
     }
     catch (Exception e)
     {
@@ -113,38 +96,38 @@ public class UserRepository : IUserRepository
     }
   }
 
-  public async Task<Result<UserPrincipal>> Create(string sub, UserRecord record)
+  public async Task<Result<UserPrincipal>> Create(string id, UserRecord record)
   {
     try
     {
-      var r = this._db.Users.Add(record.ToData() with { Sub = sub });
+      var r = this._db.Users.Add(record.ToData() with { Id = id });
       await this._db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (UniqueConstraintException e)
     {
       this._logger.LogError(e,
-        "Failed to create User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", sub,
+        "Failed to create User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", id,
         record.ToJson());
       return new AlreadyExistException("Failed to create User due to conflicting with existing record", e, typeof(UserPrincipal));
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to create User for JWT sub '{Sub}': {@Record}", sub, record.ToJson());
+      this._logger.LogError(e, "Failed to create User for JWT sub '{Sub}': {@Record}", id, record.ToJson());
       return e;
     }
   }
 
-  public async Task<Result<UserPrincipal?>> Update(Guid id, string sub, UserRecord v2)
+  public async Task<Result<UserPrincipal?>> Update(string id, UserRecord v2)
   {
     try
     {
       var v1 = await this._db.Users
-        .Where(x => x.Id == id && x.Sub == sub)
+        .Where(x => x.Id == id)
         .FirstOrDefaultAsync();
       if (v1 == null) return (UserPrincipal?)null;
 
-      var v3 = v2.ToData() with { Id = id, Sub = sub };
+      var v3 = v2.ToData() with { Id = id };
       var updated = this._db.Users.Update(v3);
       await this._db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
@@ -152,18 +135,18 @@ public class UserRepository : IUserRepository
     catch (UniqueConstraintException e)
     {
       this._logger.LogError(e,
-        "Failed to update User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", sub,
+        "Failed to update User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", id,
         v2.ToJson());
       return new AlreadyExistException("Failed to update User due to conflicting with existing record", e, typeof(UserPrincipal));
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to update User for JWT sub '{Sub}': {@Record}", sub, v2.ToJson());
+      this._logger.LogError(e, "Failed to update User for JWT sub '{Sub}': {@Record}", id, v2.ToJson());
       return e;
     }
   }
 
-  public async Task<Result<Unit?>> Delete(Guid id)
+  public async Task<Result<Unit?>> Delete(string id)
   {
     try
     {

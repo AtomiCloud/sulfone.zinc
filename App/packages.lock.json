@@ -1197,6 +1197,11 @@
           "OpenTelemetry.Api": "1.5.0-alpha.2"
         }
       },
+      "PasswordGenerator": {
+        "type": "Transitive",
+        "resolved": "2.1.0",
+        "contentHash": "G70cCeAOYCk/uTuFw5PBGpYY9kmBZyzld7tphachvyU514PowMRDYyKwTefxIHNGWrhXY2d1DV5B1tDEnTtY3A=="
+      },
       "Pipelines.Sockets.Unofficial": {
         "type": "Transitive",
         "resolved": "2.2.8",
@@ -1736,7 +1741,8 @@
         "type": "Project",
         "dependencies": {
           "CSharp-Result": "[0.2.0, )",
-          "EntityFrameworkCore.Exceptions.Common": "[6.0.3, )"
+          "EntityFrameworkCore.Exceptions.Common": "[6.0.3, )",
+          "PasswordGenerator": "[2.1.0, )"
         }
       }
     }

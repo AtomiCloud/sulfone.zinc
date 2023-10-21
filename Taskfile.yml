@@ -21,6 +21,7 @@ tasks:
     cmds:
       - dotnet restore --use-lock-file
       - dotnet tool restore
+      - ./scripts/local/secrets.sh
   build:
     desc: Builds application
     cmds:

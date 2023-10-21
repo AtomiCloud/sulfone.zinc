@@ -9,8 +9,9 @@ namespace App.StartUp.Database;
 
 public class MainDbContext : DbContext
 {
-  public const string Key = "Main";
+  public const string Key = "MAIN";
   public DbSet<UserData> Users { get; set; } = null!;
+  public DbSet<TokenData> Tokens { get; set; } = null!;
 
   private readonly IOptionsMonitor<Dictionary<string, DatabaseOption>> _options;
 
@@ -31,6 +32,12 @@ public class MainDbContext : DbContext
   {
     var user = modelBuilder.Entity<UserData>();
     user.HasIndex(x => x.Username).IsUnique();
-    user.HasIndex(x => x.Sub).IsUnique();
+
+    user.HasMany<TokenData>(x => x.Tokens)
+      .WithOne(x => x.User)
+      .HasForeignKey(x => x.UserId);
+
+    var token = modelBuilder.Entity<TokenData>();
+    token.HasIndex(x => x.ApiToken).IsUnique();
   }
 }

@@ -76,7 +76,9 @@ public static class OptionsExtensions
     // Register Database Configurations
     services.RegisterOption<Dictionary<string, DatabaseOption>>(DatabaseOption.Key)
       .Validate(c =>
-        c.All(x => Databases.AcceptedDatabase().Any(d => d == x.Key)
+        c.All(x => Databases
+          .AcceptedDatabase()
+          .Any(d => d == x.Key)
         ), "DatabaseOption.Key (Config File) must be in Databases.List (Class)");
 
     // Register Database Configurations

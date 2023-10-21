@@ -1,4 +1,5 @@
 using CSharp_Result;
+using Domain.Model;
 using Domain.Repository;
 
 namespace Domain.Service;
@@ -17,17 +18,12 @@ public class UserService : IUserService
     return this._repo.Search(search);
   }
 
-  public Task<Result<UserPrincipal?>> GetById(Guid id)
+  public Task<Result<User?>> GetById(string id)
   {
     return this._repo.GetById(id);
   }
 
-  public Task<Result<UserPrincipal?>> GetBySub(string sub)
-  {
-    return this._repo.GetBySub(sub);
-  }
-
-  public Task<Result<UserPrincipal?>> GetByUsername(string username)
+  public Task<Result<User?>> GetByUsername(string username)
   {
     return this._repo.GetByUsername(username);
   }
@@ -37,17 +33,17 @@ public class UserService : IUserService
     return this._repo.Exists(username);
   }
 
-  public Task<Result<UserPrincipal>> Create(string sub, UserRecord record)
+  public Task<Result<UserPrincipal>> Create(string id, UserRecord record)
   {
-    return this._repo.Create(sub, record);
+    return this._repo.Create(id, record);
   }
 
-  public Task<Result<UserPrincipal?>> Update(Guid id, string sub, UserRecord record)
+  public Task<Result<UserPrincipal?>> Update(string id, UserRecord record)
   {
-    return this._repo.Update(id, sub, record);
+    return this._repo.Update(id, record);
   }
 
-  public Task<Result<Unit?>> Delete(Guid id)
+  public Task<Result<Unit?>> Delete(string id)
   {
     return this._repo.Delete(id);
   }

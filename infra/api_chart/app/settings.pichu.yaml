@@ -24,8 +24,7 @@ Metrics:
       Enabled: true
 
 # Infra-based
-Database:
-  Main: {}
+Database: {}
 Cache: {}
 BlockStorage: {}
 # external

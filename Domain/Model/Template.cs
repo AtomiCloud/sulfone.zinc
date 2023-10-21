@@ -1,3 +1,5 @@
+using Domain.Model;
+
 namespace Domain;
 
 public record Template

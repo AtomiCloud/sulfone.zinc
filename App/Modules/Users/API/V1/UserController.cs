@@ -5,7 +5,7 @@ using App.StartUp.Registry;
 using App.Utility;
 using Asp.Versioning;
 using CSharp_Result;
-using Domain;
+using Domain.Model;
 using Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +23,8 @@ public class UserController : AtomiControllerBase
 
 {
   private readonly IUserService _service;
+  private readonly ITokenService _token;
+
   private readonly CreateUserReqValidator _createUserReqValidator;
   private readonly UpdateUserReqValidator _updateUserReqValidator;
   private readonly UserSearchQueryValidator _userSearchQueryValidator;
@@ -30,17 +32,18 @@ public class UserController : AtomiControllerBase
 
   public UserController(IUserService service,
     CreateUserReqValidator createUserReqValidator, UpdateUserReqValidator updateUserReqValidator,
-    UserSearchQueryValidator userSearchQueryValidator)
+    UserSearchQueryValidator userSearchQueryValidator, ITokenService token)
   {
     this._service = service;
     this._createUserReqValidator = createUserReqValidator;
     this._updateUserReqValidator = updateUserReqValidator;
     this._userSearchQueryValidator = userSearchQueryValidator;
+    this._token = token;
   }
 
   // Policy = AuthPolicies.OnlyAdmin
   [Authorize, HttpGet]
-  public async Task<ActionResult<IEnumerable<UserResp>>> Search([FromQuery] SearchUserQuery query)
+  public async Task<ActionResult<IEnumerable<UserPrincipalResp>>> Search([FromQuery] SearchUserQuery query)
   {
     var x = await this._userSearchQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchUserQuery")
@@ -49,35 +52,21 @@ public class UserController : AtomiControllerBase
     return this.ReturnResult(x);
   }
 
-  [Authorize, HttpGet("{id:guid}")]
-  public async Task<ActionResult<UserResp>> GetById(Guid id)
+  [Authorize, HttpGet("{id}")]
+  public async Task<ActionResult<UserResp>> GetById(string id)
   {
     var user = await this._service.GetById(id)
       .Then(x => (x?.ToResp()).ToResult())
       .Then(x =>
       {
-        if (x?.Sub == this.Sub()) return x.ToResult();
+        if (x?.Principal?.Id == this.Sub()) return x.ToResult();
         return new Unauthorized("You are not authorized to access this resource")
           .ToException();
       });
     return this.ReturnNullableResult(user, new EntityNotFound(
-      "User Not Found", typeof(UserPrincipal), id.ToString()));
+      "User Not Found", typeof(User), id.ToString()));
   }
 
-  [Authorize, HttpGet("sub/{sub}")]
-  public async Task<ActionResult<UserResp>> GetBySub(string sub)
-  {
-    if (this.Sub() != sub)
-    {
-      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
-      return this.ReturnResult(x);
-    }
-
-    var user = await this._service.GetBySub(sub)
-      .Then(x => (x?.ToResp()).ToResult());
-    return this.ReturnNullableResult(user, new EntityNotFound(
-      "User Not Found", typeof(UserPrincipal), sub));
-  }
 
   [Authorize, HttpGet("username/{username}")]
   public async Task<ActionResult<UserResp>> GetByUsername(string username)
@@ -86,12 +75,12 @@ public class UserController : AtomiControllerBase
       .Then(x => (x?.ToResp()).ToResult())
       .Then(x =>
       {
-        if (x?.Sub == this.Sub()) return x.ToResult();
+        if (x?.Principal?.Id == this.Sub()) return x.ToResult();
         return new Unauthorized("You are not authorized to access this resource")
           .ToException();
       });
     return this.ReturnNullableResult(user, new EntityNotFound(
-      "User Not Found", typeof(UserPrincipal), username));
+      "User Not Found", typeof(User), username));
   }
 
   [Authorize, HttpGet("exist/{username}")]
@@ -102,43 +91,124 @@ public class UserController : AtomiControllerBase
   }
 
   [Authorize, HttpPost]
-  public async Task<ActionResult<UserResp>> Create([FromBody] CreateUserReq req)
+  public async Task<ActionResult<UserPrincipalResp>> Create([FromBody] CreateUserReq req)
   {
-    var sub = this.Sub();
-    if (sub == null)
+    var id = this.Sub();
+    if (id == null)
     {
-      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      Result<UserPrincipalResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
       return this.ReturnResult(x);
     }
+
     var user = await this._createUserReqValidator
       .ValidateAsyncResult(req, "Invalid CreateUserReq")
-      .ThenAwait(x => this._service.Create(sub, x.ToRecord()))
+      .ThenAwait(x => this._service.Create(id, x.ToRecord()))
       .Then(x => x.ToResp().ToResult());
     return this.ReturnResult(user);
   }
 
-  [Authorize, HttpPut("{id:guid}")]
-  public async Task<ActionResult<UserResp>> Update(Guid id, [FromBody] UpdateUserReq req)
+  [Authorize, HttpPut("{id}")]
+  public async Task<ActionResult<UserPrincipalResp>> Update(string id, [FromBody] UpdateUserReq req)
   {
     var sub = this.Sub();
-    if (sub == null)
+    if (sub == null || sub != id)
     {
-      Result<UserResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      Result<UserPrincipalResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
       return this.ReturnResult(x);
     }
+
     var user = await this._updateUserReqValidator
       .ValidateAsyncResult(req, "Invalid UpdateUserReq")
-      .ThenAwait(x => this._service.Update(id, sub, x.ToRecord()))
+      .ThenAwait(x => this._service.Update(id, x.ToRecord()))
       .Then(x => (x?.ToResp()).ToResult());
     return this.ReturnNullableResult(user, new EntityNotFound(
       "User Not Found", typeof(UserPrincipal), id.ToString()));
   }
 
   [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{id:guid}")]
-  public async Task<ActionResult> Delete(Guid id)
+  public async Task<ActionResult> Delete(string id)
   {
     var user = await this._service.Delete(id);
     return this.ReturnUnitNullableResult(user, new EntityNotFound(
       "User Not Found", typeof(UserPrincipal), id.ToString()));
+  }
+
+  [Authorize, HttpGet("{userId}/tokens")]
+  public async Task<ActionResult<IEnumerable<TokenPrincipalResp>>> GetTokens(string userId)
+  {
+    var sub = this.Sub();
+    if (sub == null || sub != userId)
+    {
+      Result<IEnumerable<TokenPrincipalResp>> x = new Unauthorized("You are not authorized to access this resource")
+        .ToException();
+      return this.ReturnResult(x);
+    }
+
+    var tokens = await this._token.Search(sub)
+      .Then(x => x.Select(t => t.ToResp()), Errors.MapAll);
+    return this.ReturnResult(tokens);
+  }
+
+  [Authorize, HttpPost("{userId}/tokens")]
+  public async Task<ActionResult<TokenOTPrincipalResp>> CreateToken(string userId, [FromBody] CreateTokenReq req)
+  {
+    var sub = this.Sub();
+    if (sub == null || sub != userId)
+    {
+      Result<TokenOTPrincipalResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnResult(x);
+    }
+
+    var token = await this._token.Create(sub, req.ToRecord())
+      .Then(x => x.ToOTResp(), Errors.MapAll);
+    return this.ReturnResult(token);
+  }
+
+  [Authorize, HttpPut("{userId}/tokens/{tokenId:guid}")]
+  public async Task<ActionResult<TokenPrincipalResp>> UpdateToken(string userId, Guid tokenId,
+    [FromBody] CreateTokenReq req)
+  {
+    var sub = this.Sub();
+    if (sub == null || sub != userId)
+    {
+      Result<TokenPrincipalResp> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnResult(x);
+    }
+
+    var token = await this._token.Update(sub, tokenId, req.ToRecord())
+      .Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(token,
+      new EntityNotFound("Cannot update entity that does not exist", typeof(TokenPrincipal), tokenId.ToString())
+    );
+  }
+
+  [Authorize, HttpPost("{userId}/tokens/{tokenId:guid}/revoke")]
+  public async Task<ActionResult> RevokeToken(string userId, Guid tokenId)
+  {
+    var sub = this.Sub();
+    if (sub == null || sub != userId)
+    {
+      Result<Unit> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnUnitResult(x);
+    }
+
+    var token = await this._token.Revoke(sub, tokenId);
+    return this.ReturnUnitNullableResult(token,
+      new EntityNotFound("Cannot revoke entity that does not exist", typeof(TokenPrincipal), tokenId.ToString()));
+  }
+
+  [Authorize, HttpDelete("{userId}/tokens/{tokenId:guid}")]
+  public async Task<ActionResult> DeleteToken(string userId, Guid tokenId)
+  {
+    var sub = this.Sub();
+    if (sub == null || sub != userId)
+    {
+      Result<Unit> x = new Unauthorized("You are not authorized to access this resource").ToException();
+      return this.ReturnUnitResult(x);
+    }
+
+    var token = await this._token.Delete(sub, tokenId);
+    return this.ReturnUnitNullableResult(token,
+      new EntityNotFound("Cannot delete entity that does not exist", typeof(TokenPrincipal), tokenId.ToString()));
   }
 }

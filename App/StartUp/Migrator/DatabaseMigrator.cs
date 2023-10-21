@@ -23,7 +23,9 @@ public class DatabaseMigrator
 
   public async Task<Result<IEnumerable<Unit>>> Migrate()
   {
-    var results = await this._db.CurrentValue.Select(x => this.MigrateDatabase(x.Key, x.Value))
+    var results = await this
+      ._db.CurrentValue
+      .Select(x => this.MigrateDatabase(x.Key, x.Value))
       .AwaitAll();
     return results.ToResultOfSeq();
   }

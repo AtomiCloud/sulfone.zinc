@@ -118,7 +118,7 @@ Metrics:
 
 # Infra-based
 Database:
-  Main:
+  MAIN:
     Database: sulfone-zinc
     AutoMigrate: false
     Host: sulfone-zinc-main-database

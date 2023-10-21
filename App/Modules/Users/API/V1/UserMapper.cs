@@ -1,28 +1,24 @@
 using Domain;
+using Domain.Model;
 
 namespace App.Modules.Users.API.V1;
 
-public static class Mapper
+public static class UserMapper
 {
-  public static UserResp ToResp(this UserPrincipal userPrincipal)
-  {
-    return new(userPrincipal.Id, userPrincipal.Sub, userPrincipal.Record.Username);
-  }
+  public static UserPrincipalResp ToResp(this UserPrincipal userPrincipal)
+    => new(userPrincipal.Id, userPrincipal.Record.Username);
+
+  public static UserResp ToResp(this User user)
+    => new(user.Principal.ToResp(), user.Tokens.Select(x => x.ToResp()));
 
   public static UserRecord ToRecord(this CreateUserReq req)
   {
-    return new UserRecord
-    {
-      Username = req.Username,
-    };
+    return new UserRecord { Username = req.Username, };
   }
 
   public static UserRecord ToRecord(this UpdateUserReq req)
   {
-    return new UserRecord
-    {
-      Username = req.Username,
-    };
+    return new UserRecord { Username = req.Username, };
   }
 
   public static UserSearch ToDomain(this SearchUserQuery query)
@@ -30,11 +26,9 @@ public static class Mapper
     return new UserSearch
     {
       Id = query.Id,
-      Sub = query.Sub,
       Username = query.Username,
       Limit = query.Limit ?? 20,
       Skip = query.Skip ?? 0,
     };
   }
-
 }

@@ -25,11 +25,11 @@ Metrics:
 
 # Infra-based
 Database:
-  Main:
+  MAIN:
     Host: sulfone-zinc-main-database
     User: admin
     Password: supersecret
-    AutoMigrate: true
+    AutoMigrate: false
 
 Cache: {}
 BlockStorage: {}

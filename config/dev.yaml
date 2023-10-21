@@ -1,5 +1,5 @@
 # service tree labels
-landscape: tauros
+landscape: lapras
 platform: sulfone
 service: zinc
 
@@ -7,7 +7,7 @@ service: zinc
 port: 11000
 
 # "local" or "cluster"
-type: cluster
+type: local
 
 # fast mode
 # 1. does not start the cluster, automatically assumes that your cluster already created
@@ -18,4 +18,4 @@ fast: false
 startCluster: true
 
 # only 2 available modes, dev (live reload), prod (production images)
-mode: prod
+mode: dev

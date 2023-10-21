@@ -13,6 +13,7 @@ with packages;
   dev = [
     pls
     git
+    doppler
   ];
 
   infra = [

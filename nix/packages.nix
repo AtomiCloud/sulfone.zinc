@@ -1,4 +1,4 @@
-{ pkgs, pkgs-2305, atomi, atomi_classic, pkgs-oct-19-23 }:
+{ pkgs, pkgs-2305, atomi, atomi_classic, pkgs-oct-21-23 }:
 let
 
   all = {
@@ -22,16 +22,19 @@ let
       with pkgs-2305;
       {
         inherit
+          tilt
+          dotnet-sdk_8
           hadolint;
       }
     );
-    oct-19-23 = (
-      with pkgs-oct-19-23;
+    oct-21-23 = (
+      with pkgs-oct-21-23;
       {
         nodejs = nodejs_20;
         helm = kubernetes-helm;
         npm = nodePackages.npm;
         inherit
+          doppler
           coreutils
           yq-go
           gnused
@@ -42,12 +45,10 @@ let
 
           git
 
-          dotnet-sdk_8
 
           # infra
           docker
           k3d
-          tilt
 
           kubectl
 
@@ -65,4 +66,4 @@ with all;
 nix-2305 //
 atomipkgs //
 atomipkgs_classic //
-oct-19-23
+oct-21-23
