@@ -28,11 +28,11 @@ Root Chart to a single Service
 | api.image.repository | string | `"sulfone-zinc-api"` |  |
 | api.image.tag | string | `""` |  |
 | api.imagePullSecrets | list | `[]` |  |
+| api.ingress.className | string | `"nginx"` |  |
 | api.ingress.enabled | bool | `true` |  |
 | api.ingress.hosts[0].host | string | `"api.zinc.sulfone.lapras.lvh.me"` |  |
 | api.ingress.hosts[0].paths[0].path | string | `"/"` |  |
 | api.ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
-| api.ingress.ingressClass | string | `"traefik"` |  |
 | api.ingress.tls[0].hosts[0] | string | `"api.zinc.sulfone.lapras.lvh.me"` |  |
 | api.ingress.tls[0].issuerRef | string | `"sample"` |  |
 | api.ingress.tls[0].secretName | string | `"sample"` |  |
@@ -47,7 +47,7 @@ Root Chart to a single Service
 | api.readinessProbe.httpGet.path | string | `"/"` |  |
 | api.readinessProbe.httpGet.port | string | `"http"` |  |
 | api.replicaCount | int | `1` |  |
-| api.resources.limits.cpu | int | `1` |  |
+| api.resources.limits.cpu | string | `"1"` |  |
 | api.resources.limits.memory | string | `"1Gi"` |  |
 | api.resources.requests.cpu | string | `"100m"` |  |
 | api.resources.requests.memory | string | `"128Mi"` |  |

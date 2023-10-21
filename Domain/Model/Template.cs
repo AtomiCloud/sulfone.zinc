@@ -14,9 +14,6 @@ public record TemplatePrincipal
 {
   public required Guid Id { get; init; }
 
-  // User Controlled, only on create
-  public required TemplateProperty Prop { get; init; }
-
   // Telemetry, non-user controlled
   public required TemplateInfo Info { get; init; }
 
@@ -32,19 +29,22 @@ public record TemplateInfo
 
 public record TemplateMetadata
 {
+  public required string Name { get; init; }
   public required string Project { get; init; }
   public required string Source { get; init; }
   public required string Email { get; init; }
-  public required string Tags { get; init; }
+  public required string[] Tags { get; init; }
   public required string Description { get; init; }
   public required string Readme { get; init; }
 }
 
-public record TemplateProperty
+public record TemplateVersionPrincipal
 {
-  public required string Name { get; init; }
+  public required Guid Id { get; init; }
 
   public required uint Version { get; init; }
+
+  public required DateTime CreatedAt { get; init; }
 
   public required string BlobDockerReference { get; init; }
 

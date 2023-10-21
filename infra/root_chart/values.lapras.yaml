@@ -19,7 +19,7 @@ api:
 
   ingress:
     enabled: true
-    ingressClass: traefik
+    className: traefik
     hosts:
       - host: api.zinc.sulfone.lapras.lvh.me
         paths:
