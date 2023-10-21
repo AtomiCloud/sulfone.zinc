@@ -9,7 +9,7 @@ bromine:
 api:
   enabled: true
   envFromSecret: *target
-  sericeTree:
+  serviceTree:
     landscape: *landscape
   image:
     repository: ghcr.io/atomicloud/sulfone.zinc/api-amd

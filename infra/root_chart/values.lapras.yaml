@@ -3,7 +3,7 @@ serviceTree:
 
 api:
   enabled: true
-  sericeTree:
+  serviceTree:
     landscape: *landscape
 
   imagePullSecrets: []
