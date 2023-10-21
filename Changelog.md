@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.9...v1.1.10) (2023-10-21)
+
+
+### Bug Fixes
+
+* incorrect configmap ([a49f375](https://github.com/AtomiCloud/sulfone.zinc/commit/a49f37556f4980a6f9f49f49d7a6aa184b763555))
+
 ## [1.1.9](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.8...v1.1.9) (2023-10-21)
 
 
