@@ -1,3 +1,10 @@
+## [1.2.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.10...v1.2.0) (2023-10-21)
+
+
+### New Features
+
+* users and tokens ([9d00a1b](https://github.com/AtomiCloud/sulfone.zinc/commit/9d00a1bd55d0c5f9aa7a868be5efdec7b4d24c71))
+
 ## [1.1.10](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.9...v1.1.10) (2023-10-21)
 
 
