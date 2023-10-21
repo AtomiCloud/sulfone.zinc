@@ -42,12 +42,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "root-chart.labels" -}}
-helm.sh/chart: {{ include "root-chart.chart" . }}
 {{ include "root-chart.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-atomi.cloud/chart: {{ include "root-chart.chart" . }}
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"
 {{- end }}
@@ -58,6 +53,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Common annotations
 */}}
 {{- define "root-chart.annotations" -}}
+helm.sh/chart: {{ include "root-chart.chart" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+atomi.cloud/chart: {{ include "root-chart.chart" . }}
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"
 {{- end }}

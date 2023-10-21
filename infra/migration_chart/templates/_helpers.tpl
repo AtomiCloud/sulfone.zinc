@@ -42,12 +42,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "dotnet-migration.labels" -}}
-helm.sh/chart: {{ include "dotnet-migration.chart" . }}
 {{ include "dotnet-migration.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-atomi.cloud/chart: {{ include "dotnet-migration.chart" . }}
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"
 {{- end }}
@@ -58,6 +53,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Common annotations
 */}}
 {{- define "dotnet-migration.annotations" -}}
+helm.sh/chart: {{ include "dotnet-migration.chart" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+atomi.cloud/chart: {{ include "dotnet-migration.chart" . }}
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"
 {{- end }}
