@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.0...v1.2.1) (2023-10-21)
+
+
+### Bug Fixes
+
+* incorrect configmap chart deployed ([3b6433b](https://github.com/AtomiCloud/sulfone.zinc/commit/3b6433b0a35bedb2b774734961e6a987708a6fc0))
+
 ## [1.2.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.10...v1.2.0) (2023-10-21)
 
 
