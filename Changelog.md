@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.8...v1.1.9) (2023-10-21)
+
+
+### Bug Fixes
+
+* remove changing-values from labels and move to annotations ([34b7442](https://github.com/AtomiCloud/sulfone.zinc/commit/34b744263ca2f03cad1d595904aadb99a71ce247))
+
 ## [1.1.8](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.1.7...v1.1.8) (2023-10-21)
 
 
