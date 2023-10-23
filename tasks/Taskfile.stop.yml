@@ -6,11 +6,11 @@ tasks:
     cmds:
       - task: stop:dev
       - task: stop:test
-  stop:dev:
+  dev:
     desc: Stop the development workflow
     cmds:
       - tilt down
-  stop:test:
+  test:
     desc: Stop the test workflow
     cmds:
       - tilt down -- --config config/test.yaml --action test

@@ -130,6 +130,16 @@
         "resolved": "1.2.0",
         "contentHash": "5TidVQwiwZ5Ab6u443OUIPhEq+Qa/8Y4fbwDVxdMulkCAs1Bp8/HFL1ohn8MwUMt8Kw5k/FCPekL/r++CdM/CA=="
       },
+      "LinqKit.Microsoft.EntityFrameworkCore": {
+        "type": "Direct",
+        "requested": "[7.1.4, )",
+        "resolved": "7.1.4",
+        "contentHash": "Bsq1/HXOC29GjviRq971qYz3/+9GWKEKO4QdoaEjMt5HHHx8b4yHL8RGzohdiqjTjOOVM5oZF9eaOpLcFu8uUA==",
+        "dependencies": {
+          "LinqKit.Core": "1.2.4",
+          "Microsoft.EntityFrameworkCore": "7.0.0"
+        }
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Direct",
         "requested": "[8.0.0-rc.2.23480.2, )",
@@ -874,6 +884,11 @@
         "dependencies": {
           "Humanizer.Core": "[2.14.1]"
         }
+      },
+      "LinqKit.Core": {
+        "type": "Transitive",
+        "resolved": "1.2.4",
+        "contentHash": "cR88ymKSFZu1XZnmUzGl8eyeLRqnpiTMZBf+DBSr4kWRmfr40mwNdyLooCe3Or/WbkkmCo5erypLdmZTsNXi+w=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",

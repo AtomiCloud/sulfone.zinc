@@ -64,9 +64,26 @@ public static class ValidationUtility
     return ruleBuilder
       .Length(1, 256)
       .WithMessage("Username has to be between 1 to 256 characters")
-      .Matches(@"[\w\d](\-?[\w\d]+)*")
-      .WithMessage("Username can only contain alphanumeric characters and dashes, and cannot end or start with dashes");
+      .Matches(@"[\w](\-?[\w\d]+)*")
+      .WithMessage("Username can only contain alphanumeric characters and dashes, and cannot end or start with dashes or numbers");
   }
+
+  public static IRuleBuilderOptions<T, string> ShaValid<T>(
+    this IRuleBuilder<T, string> ruleBuilder)
+  {
+    return ruleBuilder
+      .Matches("^[0-9a-fA-F]{64}$")
+      .WithMessage("SHA can only have hexadecimal characters and exactly 64");
+  }
+
+  public static IRuleBuilderOptions<T, string> DockerReferenceValid<T>(
+    this IRuleBuilder<T, string> ruleBuilder)
+  {
+    return ruleBuilder
+      .Matches(@"^((\w(-?\w+)*)(\.\w(-?\w+)*)*(:\d+)?/)?\w(-?\w+)*(/\w(-?\w+)*)*$")
+      .WithMessage("Invalid Docker reference");
+  }
+
 
   public static IRuleBuilderOptions<T, string> NameValid<T>(
     this IRuleBuilder<T, string> ruleBuilder)

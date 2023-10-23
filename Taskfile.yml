@@ -30,6 +30,10 @@ tasks:
     desc: Tears down the local development cluster
     cmds:
       - ./scripts/local/delete-k3d-cluster.sh
+  exec:
+    desc: Starts any application in the cluster
+    cmds:
+      - ./scripts/local/exec.sh ./config/dev.yaml {{.CLI_ARGS}}
   dev:
     desc: Starts developing application
     cmds:

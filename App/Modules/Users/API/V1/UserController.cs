@@ -41,8 +41,7 @@ public class UserController : AtomiControllerBase
     this._token = token;
   }
 
-  // Policy = AuthPolicies.OnlyAdmin
-  [Authorize, HttpGet]
+  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpGet]
   public async Task<ActionResult<IEnumerable<UserPrincipalResp>>> Search([FromQuery] SearchUserQuery query)
   {
     var x = await this._userSearchQueryValidator

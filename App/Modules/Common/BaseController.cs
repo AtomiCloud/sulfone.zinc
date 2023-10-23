@@ -35,11 +35,14 @@ public class AtomiControllerBase : ControllerBase
         ValidationError validationError => this.Error(HttpStatusCode.BadRequest, validationError),
         Unauthorized unauthorizedError => this.Error(HttpStatusCode.Unauthorized, unauthorizedError),
         EntityConflict entityConflict => this.Error(HttpStatusCode.Conflict, entityConflict),
-        _ => throw d
+        MultipleEntityNotFound multipleEntityNotFound => this.Error(HttpStatusCode.NotFound, multipleEntityNotFound),
+        LikeConflictError likeConflictError => this.Error(HttpStatusCode.Conflict, likeConflictError),
+        LikeRaceConditionError likeRaceConditionError => this.Error(HttpStatusCode.Conflict, likeRaceConditionError),
+        _ => this.Error(HttpStatusCode.BadRequest, d.Problem),
       },
       AlreadyExistException aee => this.Error(HttpStatusCode.Conflict,
         new EntityConflict(aee.Message, aee.t)),
-      _ => throw e
+      _ => throw new AggregateException("Unhandled Exception", e),
     };
   }
 

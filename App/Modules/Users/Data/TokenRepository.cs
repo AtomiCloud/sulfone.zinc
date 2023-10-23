@@ -1,11 +1,8 @@
-using App.Error.V1;
 using App.StartUp.Database;
 using App.Utility;
 using CSharp_Result;
-using Domain.Error;
 using Domain.Model;
 using Domain.Repository;
-using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Modules.Users.Data;

@@ -1,3 +1,6 @@
+using App.Modules.Cyan.Data;
+using App.Modules.Cyan.Data.Models;
+
 namespace App.Modules.Users.Data;
 
 public record UserData
@@ -6,5 +9,18 @@ public record UserData
 
   public string Username { get; set; } = string.Empty;
 
-  public IEnumerable<TokenData> Tokens { get; set; } = new List<TokenData>();
+  // Foreign Keys
+  public IEnumerable<TokenData> Tokens { get; set; } = null!;
+
+  public IEnumerable<TemplateData> Templates { get; set; } = null!;
+
+  public IEnumerable<PluginData> Plugins { get; set; } = null!;
+
+  public IEnumerable<ProcessorData> Processors { get; set; } = null!;
+
+  public IEnumerable<TemplateLikeData> TemplateLikes { get; set; } = null!;
+
+  public IEnumerable<PluginLikeData> PluginLikes { get; set; } = null!;
+
+  public IEnumerable<ProcessorLikeData> ProcessorLikes { get; set; } = null!;
 };

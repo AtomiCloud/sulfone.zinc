@@ -10,6 +10,7 @@ public record TokenData
 
   public bool Revoked { get; set; } = false;
 
+  // Foreign Key
   public string UserId { get; set; } = string.Empty;
   public UserData User { get; set; } = new();
 }
