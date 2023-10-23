@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.2...v1.3.0) (2023-10-23)
+
+
+### New Features
+
+* all registry resources ([3118bff](https://github.com/AtomiCloud/sulfone.zinc/commit/3118bff54712d9d350653087668487484df6b083))
+
 ## [1.2.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.1...v1.2.2) (2023-10-21)
 
 
