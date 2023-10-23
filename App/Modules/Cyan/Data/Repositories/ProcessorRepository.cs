@@ -79,13 +79,13 @@ public class ProcessorRepository : IProcessorRepository
     }
   }
 
-  public async Task<Result<Processor?>> Get(Guid id)
+  public async Task<Result<Processor?>> Get(string userId, Guid id)
   {
     try
     {
       this._logger.LogInformation("Getting processor with '{ID}'", id);
       var processor = await this._db.Processors
-        .Where(x => x.Id == id)
+        .Where(x => x.Id == id && x.UserId == userId)
         .Include(x => x.Likes)
         .Include(x => x.User)
         .Include(x => x.Versions)

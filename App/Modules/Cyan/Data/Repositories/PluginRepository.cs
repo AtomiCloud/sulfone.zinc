@@ -79,15 +79,15 @@ public class PluginRepository : IPluginRepository
     }
   }
 
-  public async Task<Result<Plugin?>> Get(Guid id)
+  public async Task<Result<Plugin?>> Get(string userId, Guid id)
   {
     try
     {
       this._logger.LogInformation("Getting plugin with '{ID}'", id);
       var plugin = await this._db.Plugins
-        .Where(x => x.Id == id)
-        .Include(x => x.Likes)
         .Include(x => x.User)
+        .Where(x => x.Id == id && x.UserId == userId)
+        .Include(x => x.Likes)
         .Include(x => x.Versions)
         .ThenInclude(x => x.Templates)
         .FirstOrDefaultAsync();

@@ -77,13 +77,13 @@ public class TemplateRepository : ITemplateRepository
     }
   }
 
-  public async Task<Result<Template?>> Get(Guid id)
+  public async Task<Result<Template?>> Get(string userId, Guid id)
   {
     try
     {
       this._logger.LogInformation("Getting template with '{ID}'", id);
       var template = await this._db.Templates
-        .Where(x => x.Id == id)
+        .Where(x => x.Id == id && x.UserId == userId)
         .Include(x => x.Likes)
         .Include(x => x.User)
         .Include(x => x.Versions)

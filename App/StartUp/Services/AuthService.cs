@@ -1,9 +1,11 @@
 using System.Security.Claims;
+using App.Modules.Users.API.Auth;
 using App.StartUp.Options.Auth;
 using App.StartUp.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 
 namespace App.StartUp.Services;
 
@@ -27,32 +29,52 @@ public static class AuthService
 
     var s = o.Settings!;
     var domain = $"https://{s.Domain}";
-    services.AddAuthentication(options =>
-    {
-      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(options =>
-    {
-      options.Authority = domain;
-      options.Audience = s.Audience;
-      if (s.TokenValidation is { } to)
+    services
+      .AddAuthentication(o =>
       {
-        options.TokenValidationParameters = new TokenValidationParameters
+        o.DefaultScheme = "MultiAuthSchemes";
+        o.DefaultChallengeScheme = "MultiAuthSchemes";
+      })
+      .AddJwtBearer(options =>
+      {
+        options.Authority = domain;
+        options.Audience = s.Audience;
+        if (s.TokenValidation is { } to)
         {
-          ValidIssuer = s.Issuer,
-          NameClaimType = ClaimTypes.NameIdentifier,
-          ValidateIssuer = to.ValidateIssuer,
-          ValidateAudience = to.ValidateAudience,
-          ClockSkew = TimeSpan.FromSeconds(to.ClockSkew),
-          ValidateIssuerSigningKey = to.ValidateIssuerSigningKey,
-          ValidateLifetime = to.ValidateLifetime,
-        };
-      }
-      else
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidIssuer = s.Issuer,
+            NameClaimType = ClaimTypes.NameIdentifier,
+            ValidateIssuer = to.ValidateIssuer,
+            ValidateAudience = to.ValidateAudience,
+            ClockSkew = TimeSpan.FromSeconds(to.ClockSkew),
+            ValidateIssuerSigningKey = to.ValidateIssuerSigningKey,
+            ValidateLifetime = to.ValidateLifetime,
+          };
+        }
+        else
+        {
+          options.TokenValidationParameters =
+            new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
+        }
+      })
+      .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme,
+        _ =>
+        {
+        })
+      .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, o =>
       {
-        options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
-      }
-    });
+        o.ForwardDefaultSelector = context =>
+        {
+          string authorization = context.Request.Headers[HeaderNames.Authorization]!;
+          if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+          {
+            return JwtBearerDefaults.AuthenticationScheme;
+          }
+
+          return ApiKeyAuthenticationOptions.DefaultScheme;
+        };
+      });
 
     var p = s.Policies is null ? new Dictionary<string, AuthPolicyOption>() : s.Policies;
 

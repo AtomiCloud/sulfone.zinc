@@ -7,7 +7,7 @@ public interface IPluginService
 {
   Task<Result<IEnumerable<PluginPrincipal>>> Search(PluginSearch search);
 
-  Task<Result<Plugin?>> Get(Guid id);
+  Task<Result<Plugin?>> Get(string userId, Guid id);
 
   Task<Result<Plugin?>> Get(string username, string name);
 

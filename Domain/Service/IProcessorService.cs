@@ -7,7 +7,7 @@ public interface IProcessorService
 {
   Task<Result<IEnumerable<ProcessorPrincipal>>> Search(ProcessorSearch search);
 
-  Task<Result<Processor?>> Get(Guid id);
+  Task<Result<Processor?>> Get(string userId, Guid id);
 
   Task<Result<Processor?>> Get(string username, string name);
 

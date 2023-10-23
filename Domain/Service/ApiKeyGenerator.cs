@@ -9,7 +9,8 @@ public class ApiKeyGenerator : IApiKeyGenerator
     var pwd = new Password()
       .IncludeLowercase()
       .IncludeNumeric()
-      .IncludeUppercase();
+      .IncludeUppercase()
+      .LengthRequired(64);
     return pwd.Next();
   }
 }

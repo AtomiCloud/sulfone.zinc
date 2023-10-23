@@ -21,9 +21,9 @@ public class ProcessorService : IProcessorService
     return this._repo.Search(search);
   }
 
-  public Task<Result<Processor?>> Get(Guid id)
+  public Task<Result<Processor?>> Get(string userId, Guid id)
   {
-    return this._repo.Get(id);
+    return this._repo.Get(userId, id);
   }
 
   public Task<Result<Processor?>> Get(string owner, string name)

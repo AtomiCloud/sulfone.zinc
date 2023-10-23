@@ -64,16 +64,16 @@ public class PluginController : AtomiControllerBase
   }
 
 
-  [HttpGet("{id:guid}")]
-  public async Task<ActionResult<PluginResp>> Get(Guid id)
+  [HttpGet("id/{userId}/{pluginId:guid}")]
+  public async Task<ActionResult<PluginResp>> Get(string userId, Guid pluginId)
   {
-    var plugin = await this._service.Get(id)
+    var plugin = await this._service.Get(userId, pluginId)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), id.ToString()));
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
   }
 
-  [HttpGet("{username}/{name}")]
+  [HttpGet("slug/{username}/{name}")]
   public async Task<ActionResult<PluginResp>> Get(string username, string name)
   {
     var plugin = await this._service.Get(username, name)
@@ -82,7 +82,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{name}"));
   }
 
-  [Authorize, HttpPost("{userId}")]
+  [Authorize, HttpPost("id/{userId}")]
   public async Task<ActionResult<PluginPrincipalResp>> Create(string userId, [FromBody] CreatePluginReq req)
   {
     var sub = this.Sub();
@@ -101,7 +101,7 @@ public class PluginController : AtomiControllerBase
   }
 
 
-  [Authorize, HttpPut("{userId}/{pluginId}")]
+  [Authorize, HttpPut("id/{userId}/{pluginId}")]
   public async Task<ActionResult<PluginPrincipalResp>> Update(string userId, Guid pluginId,
     [FromBody] UpdatePluginReq req)
   {
@@ -120,7 +120,7 @@ public class PluginController : AtomiControllerBase
     return this.ReturnNullableResult(plugin, new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
   }
 
-  [Authorize, HttpPost("{username}/{pluginName}/like/{likerId}/{like}")]
+  [Authorize, HttpPost("slug/{username}/{pluginName}/like/{likerId}/{like}")]
   public async Task<ActionResult<Unit>> Like(string username, string pluginName, string likerId, bool like)
   {
     var sub = this.Sub();
@@ -137,7 +137,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}"));
   }
 
-  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{userId}/{pluginId:guid}")]
+  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("id/{userId}/{pluginId:guid}")]
   public async Task<ActionResult<Unit>> Delete(string userId, Guid pluginId)
   {
     var plugin = await this._service.Delete(userId, pluginId)
@@ -146,7 +146,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
   }
 
-  [HttpGet("{username}/{pluginName}/versions")]
+  [HttpGet("slug/{username}/{pluginName}/versions")]
   public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string username,
     string pluginName, [FromQuery] SearchPluginVersionQuery query)
   {
@@ -158,7 +158,7 @@ public class PluginController : AtomiControllerBase
     return this.ReturnResult(plugins);
   }
 
-  [HttpGet("{userId}/{pluginId:guid}/versions")]
+  [HttpGet("id/{userId}/{pluginId:guid}/versions")]
   public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string userId, Guid pluginId,
     [FromQuery] SearchPluginVersionQuery query)
   {
@@ -170,7 +170,7 @@ public class PluginController : AtomiControllerBase
     return this.ReturnResult(plugins);
   }
 
-  [HttpGet("{username}/{pluginName}/versions/{ver}")]
+  [HttpGet("slug/{username}/{pluginName}/versions/{ver}")]
   public async Task<ActionResult<PluginVersionPrincipalResp>> GetVersion(string username, string pluginName, ulong ver,
     bool bumpDownload)
   {
@@ -180,7 +180,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginVersionPrincipal), $"{username}/{pluginName}:{ver}"));
   }
 
-  [HttpGet("{userId}/{pluginId:guid}/versions/{ver}")]
+  [HttpGet("id/{userId}/{pluginId:guid}/versions/{ver}")]
   public async Task<ActionResult<PluginVersionPrincipalResp>> GetVersion(string userId, Guid pluginId, ulong ver)
   {
     var plugin = await this._service.GetVersion(userId, pluginId, ver)
@@ -189,7 +189,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginVersionPrincipal), $"{userId}/{pluginId}:{ver}"));
   }
 
-  [Authorize, HttpPost("{username}/{pluginName}/versions")]
+  [Authorize, HttpPost("slug/{username}/{pluginName}/versions")]
   public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string username, string pluginName,
     [FromBody] CreatePluginVersionReq req)
   {
@@ -214,7 +214,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}"));
   }
 
-  [Authorize, HttpPost("{userId}/{pluginId:guid}/versions")]
+  [Authorize, HttpPost("id/{userId}/{pluginId:guid}/versions")]
   public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string userId, Guid pluginId,
     [FromBody] CreatePluginVersionReq req)
   {
@@ -235,7 +235,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
   }
 
-  [Authorize, HttpPut("{userId}/{pluginId:guid}/versions/{ver}")]
+  [Authorize, HttpPut("id/{userId}/{pluginId:guid}/versions/{ver}")]
   public async Task<ActionResult<PluginVersionPrincipalResp>> UpdateVersion(string userId, Guid pluginId, ulong ver,
     [FromBody] UpdatePluginVersionReq req)
   {

@@ -63,16 +63,16 @@ public class ProcessorController : AtomiControllerBase
     return this.ReturnResult(processors);
   }
 
-  [HttpGet("{id:guid}")]
-  public async Task<ActionResult<ProcessorResp>> Get(Guid id)
+  [HttpGet("id/{userId}/{processorId:guid}")]
+  public async Task<ActionResult<ProcessorResp>> Get(string userId, Guid processorId)
   {
-    var processor = await this._service.Get(id)
+    var processor = await this._service.Get(userId, processorId)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(processor,
-      new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), id.ToString()));
+      new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), processorId.ToString()));
   }
 
-  [HttpGet("{username}/{name}")]
+  [HttpGet("slug/{username}/{name}")]
   public async Task<ActionResult<ProcessorResp>> Get(string username, string name)
   {
     var processor = await this._service.Get(username, name)
@@ -81,7 +81,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{username}/{name}"));
   }
 
-  [Authorize, HttpPost("{userId}")]
+  [Authorize, HttpPost("id/{userId}")]
   public async Task<ActionResult<ProcessorPrincipalResp>> Create(string userId, [FromBody] CreateProcessorReq req)
   {
     var sub = this.Sub();
@@ -100,7 +100,7 @@ public class ProcessorController : AtomiControllerBase
   }
 
 
-  [Authorize, HttpPut("{userId}/{processorId}")]
+  [Authorize, HttpPut("id/{userId}/{processorId}")]
   public async Task<ActionResult<ProcessorPrincipalResp>> Update(string userId, Guid processorId,
     [FromBody] UpdateProcessorReq req)
   {
@@ -119,7 +119,7 @@ public class ProcessorController : AtomiControllerBase
     return this.ReturnNullableResult(processor, new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), processorId.ToString()));
   }
 
-  [Authorize, HttpPost("{username}/{processorName}/like/{likerId}/{like}")]
+  [Authorize, HttpPost("slug/{username}/{processorName}/like/{likerId}/{like}")]
   public async Task<ActionResult<Unit>> Like(string username, string processorName, string likerId, bool like)
   {
     var sub = this.Sub();
@@ -136,7 +136,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{username}/{processorName}"));
   }
 
-  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{userId}/{processorId:guid}")]
+  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("id/{userId}/{processorId:guid}")]
   public async Task<ActionResult<Unit>> Delete(string userId, Guid processorId)
   {
     var processor = await this._service.Delete(userId, processorId)
@@ -145,7 +145,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{userId}/{processorId}"));
   }
 
-  [HttpGet("{username}/{processorName}/versions")]
+  [HttpGet("slug/{username}/{processorName}/versions")]
   public async Task<ActionResult<IEnumerable<ProcessorVersionPrincipalResp>>> SearchVersion(string username,
     string processorName, [FromQuery] SearchProcessorVersionQuery query)
   {
@@ -157,7 +157,7 @@ public class ProcessorController : AtomiControllerBase
     return this.ReturnResult(processors);
   }
 
-  [HttpGet("{userId}/{processorId:guid}/versions")]
+  [HttpGet("id/{userId}/{processorId:guid}/versions")]
   public async Task<ActionResult<IEnumerable<ProcessorVersionPrincipalResp>>> SearchVersion(string userId, Guid processorId,
     [FromQuery] SearchProcessorVersionQuery query)
   {
@@ -169,7 +169,7 @@ public class ProcessorController : AtomiControllerBase
     return this.ReturnResult(processors);
   }
 
-  [HttpGet("{username}/{processorName}/versions/{ver}")]
+  [HttpGet("slug/{username}/{processorName}/versions/{ver}")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> GetVersion(string username, string processorName, ulong ver,
     bool bumpDownload)
   {
@@ -179,7 +179,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorVersionPrincipal), $"{username}/{processorName}:{ver}"));
   }
 
-  [HttpGet("{userId}/{processorId:guid}/versions/{ver}")]
+  [HttpGet("id/{userId}/{processorId:guid}/versions/{ver}")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> GetVersion(string userId, Guid processorId, ulong ver)
   {
     var processor = await this._service.GetVersion(userId, processorId, ver)
@@ -188,7 +188,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorVersionPrincipal), $"{userId}/{processorId}:{ver}"));
   }
 
-  [Authorize, HttpPost("{username}/{processorName}/versions")]
+  [Authorize, HttpPost("slug/{username}/{processorName}/versions")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> CreateVersion(string username, string processorName,
     [FromBody] CreateProcessorVersionReq req)
   {
@@ -213,7 +213,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{username}/{processorName}"));
   }
 
-  [Authorize, HttpPost("{userId}/{processorId:guid}/versions")]
+  [Authorize, HttpPost("id/{userId}/{processorId:guid}/versions")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> CreateVersion(string userId, Guid processorId,
     [FromBody] CreateProcessorVersionReq req)
   {
@@ -234,7 +234,7 @@ public class ProcessorController : AtomiControllerBase
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{userId}/{processorId}"));
   }
 
-  [Authorize, HttpPut("{userId}/{processorId:guid}/versions/{ver}")]
+  [Authorize, HttpPut("id/{userId}/{processorId:guid}/versions/{ver}")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> UpdateVersion(string userId, Guid processorId, ulong ver,
     [FromBody] UpdateProcessorVersionReq req)
   {

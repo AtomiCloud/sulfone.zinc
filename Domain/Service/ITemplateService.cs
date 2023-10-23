@@ -7,7 +7,7 @@ public interface ITemplateService
 {
   Task<Result<IEnumerable<TemplatePrincipal>>> Search(TemplateSearch search);
 
-  Task<Result<Template?>> Get(Guid id);
+  Task<Result<Template?>> Get(string userId, Guid id);
 
   Task<Result<Template?>> Get(string username, string name);
 

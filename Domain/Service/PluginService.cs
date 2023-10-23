@@ -21,9 +21,9 @@ public class PluginService : IPluginService
     return this._repo.Search(search);
   }
 
-  public Task<Result<Plugin?>> Get(Guid id)
+  public Task<Result<Plugin?>> Get(string userId, Guid id)
   {
-    return this._repo.Get(id);
+    return this._repo.Get(userId, id);
   }
 
   public Task<Result<Plugin?>> Get(string owner, string name)

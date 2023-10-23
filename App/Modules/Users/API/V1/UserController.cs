@@ -51,6 +51,12 @@ public class UserController : AtomiControllerBase
     return this.ReturnResult(x);
   }
 
+  [Authorize, HttpGet("Me")]
+  public string Me()
+  {
+    return this.Sub() ?? "none";
+  }
+
   [Authorize, HttpGet("{id}")]
   public async Task<ActionResult<UserResp>> GetById(string id)
   {

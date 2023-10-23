@@ -63,16 +63,16 @@ public class TemplateController : AtomiControllerBase
     return this.ReturnResult(templates);
   }
 
-  [HttpGet("{id:guid}")]
-  public async Task<ActionResult<TemplateResp>> Get(Guid id)
+  [HttpGet("id/{userId}/{templateId:guid}")]
+  public async Task<ActionResult<TemplateResp>> Get(string userId, Guid templateId)
   {
-    var template = await this._service.Get(id)
+    var template = await this._service.Get(userId, templateId)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(template,
-      new EntityNotFound("Template not found", typeof(TemplatePrincipal), id.ToString()));
+      new EntityNotFound("Template not found", typeof(TemplatePrincipal), templateId.ToString()));
   }
 
-  [HttpGet("{username}/{name}")]
+  [HttpGet("slug/{username}/{name}")]
   public async Task<ActionResult<TemplateResp>> Get(string username, string name)
   {
     var template = await this._service.Get(username, name)
@@ -81,7 +81,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{username}/{name}"));
   }
 
-  [Authorize, HttpPost("{userId}")]
+  [Authorize, HttpPost("id/{userId}")]
   public async Task<ActionResult<TemplatePrincipalResp>> Create(string userId, [FromBody] CreateTemplateReq req)
   {
     var sub = this.Sub();
@@ -100,7 +100,7 @@ public class TemplateController : AtomiControllerBase
   }
 
 
-  [Authorize, HttpPut("{userId}/{templateId:guid}")]
+  [Authorize, HttpPut("id/{userId}/{templateId:guid}")]
   public async Task<ActionResult<TemplatePrincipalResp>> Update(string userId, Guid templateId,
     [FromBody] UpdateTemplateReq req)
   {
@@ -120,7 +120,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), templateId.ToString()));
   }
 
-  [Authorize, HttpPost("{username}/{templateName}/like/{likerId}/{like:bool}")]
+  [Authorize, HttpPost("slug/{username}/{templateName}/like/{likerId}/{like:bool}")]
   public async Task<ActionResult<Unit>> Like(string username, string templateName, string likerId, bool like)
   {
     var sub = this.Sub();
@@ -137,7 +137,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{username}/{templateName}"));
   }
 
-  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{userId}/{templateId:guid}")]
+  [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("id/{userId}/{templateId:guid}")]
   public async Task<ActionResult<Unit>> Delete(string userId, Guid templateId)
   {
     var template = await this._service.Delete(userId, templateId)
@@ -146,7 +146,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{userId}/{templateId}"));
   }
 
-  [HttpGet("{username}/{templateName}/versions")]
+  [HttpGet("slug/{username}/{templateName}/versions")]
   public async Task<ActionResult<IEnumerable<TemplateVersionPrincipalResp>>> SearchVersion(string username,
     string templateName, [FromQuery] SearchTemplateVersionQuery query)
   {
@@ -158,7 +158,7 @@ public class TemplateController : AtomiControllerBase
     return this.ReturnResult(templates);
   }
 
-  [HttpGet("{userId}/{templateId:guid}/versions")]
+  [HttpGet("id/{userId}/{templateId:guid}/versions")]
   public async Task<ActionResult<IEnumerable<TemplateVersionPrincipalResp>>> SearchVersion(string userId,
     Guid templateId,
     [FromQuery] SearchTemplateVersionQuery query)
@@ -171,7 +171,7 @@ public class TemplateController : AtomiControllerBase
     return this.ReturnResult(templates);
   }
 
-  [HttpGet("{username}/{templateName}/versions/{ver}")]
+  [HttpGet("slug/{username}/{templateName}/versions/{ver}")]
   public async Task<ActionResult<TemplateVersionResp>> GetVersion(string username, string templateName,
     ulong ver,
     bool bumpDownload)
@@ -182,7 +182,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplateVersionResp), $"{username}/{templateName}:{ver}"));
   }
 
-  [HttpGet("{userId}/{templateId:guid}/versions/{ver}")]
+  [HttpGet("id/{userId}/{templateId:guid}/versions/{ver}")]
   public async Task<ActionResult<TemplateVersionResp>> GetVersion(string userId, Guid templateId, ulong ver)
   {
     var template = await this._service.GetVersion(userId, templateId, ver)
@@ -191,7 +191,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplateVersionPrincipal), $"{userId}/{templateId}:{ver}"));
   }
 
-  [Authorize, HttpPost("{username}/{templateName}/versions")]
+  [Authorize, HttpPost("slug/{username}/{templateName}/versions")]
   public async Task<ActionResult<TemplateVersionPrincipalResp>> CreateVersion(string username, string templateName,
     [FromBody] CreateTemplateVersionReq req)
   {
@@ -218,7 +218,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{username}/{templateName}"));
   }
 
-  [Authorize, HttpPost("{userId}/{templateId:guid}/versions")]
+  [Authorize, HttpPost("id/{userId}/{templateId:guid}/versions")]
   public async Task<ActionResult<TemplateVersionPrincipalResp>> CreateVersion(string userId, Guid templateId,
     [FromBody] CreateTemplateVersionReq req)
   {
@@ -243,7 +243,7 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{userId}/{templateId}"));
   }
 
-  [Authorize, HttpPut("{userId}/{templateId:guid}/versions/{ver}")]
+  [Authorize, HttpPut("id/{userId}/{templateId:guid}/versions/{ver}")]
   public async Task<ActionResult<TemplateVersionPrincipalResp>> UpdateVersion(string userId, Guid templateId, ulong ver,
     [FromBody] UpdateTemplateVersionReq req)
   {
