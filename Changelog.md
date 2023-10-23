@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.1...v1.2.2) (2023-10-21)
+
+
+### Bug Fixes
+
+* ingress ([0543c6b](https://github.com/AtomiCloud/sulfone.zinc/commit/0543c6bbf0b2a0c80c4a4bb2bae7a528bc39f7ec))
+
 ## [1.2.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.0...v1.2.1) (2023-10-21)
 
 
