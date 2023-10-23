@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.3.0...v1.4.0) (2023-10-23)
+
+
+### New Features
+
+* allow for X-API-TOKEN authentication ([56cd6bd](https://github.com/AtomiCloud/sulfone.zinc/commit/56cd6bd927a94bbe26c166f33b342ae5036baa4b))
+
 ## [1.3.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.2.2...v1.3.0) (2023-10-23)
 
 
