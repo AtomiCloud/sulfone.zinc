@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.4.0...v1.5.0) (2023-10-24)
+
+
+### New Features
+
+* try .app endpoint for issuing ([a237ffe](https://github.com/AtomiCloud/sulfone.zinc/commit/a237ffe538eebb7dc4c63108b6d99082bc50f76e))
+
 ## [1.4.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.3.0...v1.4.0) (2023-10-23)
 
 
