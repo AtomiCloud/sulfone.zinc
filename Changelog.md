@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.8.0...v1.8.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* incorrect raichu config ([6a20583](https://github.com/AtomiCloud/sulfone.zinc/commit/6a20583f012653e07e6f60d05d24f798f43866df))
+
 ## [1.8.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.7.0...v1.8.0) (2023-10-25)
 
 
