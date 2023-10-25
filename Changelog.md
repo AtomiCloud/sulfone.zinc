@@ -1,3 +1,10 @@
+## [1.10.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.9.0...v1.10.0) (2023-10-25)
+
+
+### New Features
+
+* new migration ([537c11b](https://github.com/AtomiCloud/sulfone.zinc/commit/537c11b2530eac3fd6aba84bc8b35bdb950735f7))
+
 ## [1.9.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.8.1...v1.9.0) (2023-10-25)
 
 
