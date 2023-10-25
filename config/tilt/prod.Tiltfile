@@ -13,7 +13,7 @@ def start(landscape, platform, service, port, live):
     docker_build(
         migration_image_name,
         '.',
-        dockerfile = './infra/Dockerfile',
+        dockerfile = './infra/migrate.Dockerfile',
     )
 
     # Add Link

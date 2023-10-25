@@ -69,7 +69,7 @@ migration:
   securityContext: *securityContext
   podSecurityContext: *podSecurityContext
   image:
-    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
+    repository: ghcr.io/atomicloud/sulfone.zinc/migrate-amd
   serviceTree:
     landscape: *landscape
 
