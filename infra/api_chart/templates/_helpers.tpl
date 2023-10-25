@@ -54,9 +54,6 @@ Common annotations
 */}}
 {{- define "dotnet-chart.annotations" -}}
 helm.sh/chart: {{ include "dotnet-chart.chart" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 atomi.cloud/chart: {{ include "dotnet-chart.chart" . }}
 {{- range $k, $v := .Values.serviceTree }}
 "atomi.cloud/{{ $k }}": "{{ $v }}"

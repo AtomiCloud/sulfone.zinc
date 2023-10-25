@@ -27,7 +27,10 @@ Metrics:
 Database:
   MAIN:
     AutoMigrate: false
-Cache: {}
-BlockStorage: {}
 # external
 HttpClient: {}
+Auth:
+  Settings:
+    Issuer: P2XFqh86DbH8CpKe5yL8amliK1Es
+    Audience: P2XFqh86DbH8CpKe5yL8amliK1Es
+    Domain: api.descope.com/P2XFqh86DbH8CpKe5yL8amliK1Es

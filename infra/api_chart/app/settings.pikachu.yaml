@@ -1,11 +1,11 @@
 $schema: ./schema.json
 # Native
 App:
-  Landscape: raichu
+  Landscape: pikachu
   EnableSwagger: true
   GenerateConfig: false
 Swagger:
-  Title: Raichu Sulfone Zinc API
+  Title: Pikachu Sulfone Zinc API
 # OTEL
 Logs:
   Exporter:
@@ -31,6 +31,6 @@ Database:
 HttpClient: {}
 Auth:
   Settings:
-    Issuer: P2XFv6QG93h3sj6EuphPCrJTXvVs
-    Audience: P2XFv6QG93h3sj6EuphPCrJTXvVs
-    Domain: api.descope.com/P2XFv6QG93h3sj6EuphPCrJTXvVs
+    Issuer: P2XFuosHI4qTl7bGbvZVCTBELFl9
+    Audience: P2XFuosHI4qTl7bGbvZVCTBELFl9
+    Domain: api.descope.com/P2XFuosHI4qTl7bGbvZVCTBELFl9
