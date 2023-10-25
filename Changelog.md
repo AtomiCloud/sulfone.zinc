@@ -1,3 +1,10 @@
+## [1.7.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.2...v1.7.0) (2023-10-25)
+
+
+### New Features
+
+* descope configuration ([d459ee3](https://github.com/AtomiCloud/sulfone.zinc/commit/d459ee35470a756682b487b79c977caead3b5157))
+
 ## [1.6.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.1...v1.6.2) (2023-10-25)
 
 
