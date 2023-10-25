@@ -6,6 +6,7 @@ metadata:
   annotations: {{- include "dotnet-migration.annotations" . | nindent 4 }}
 spec:
   backoffLimit: {{ .Values.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
   template:
     metadata:
       annotations: {{- include "dotnet-migration.annotations" . | nindent 8 }}

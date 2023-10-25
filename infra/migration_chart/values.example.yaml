@@ -7,7 +7,7 @@ serviceTree:
 aspNetEnv: Development
 
 backoffLimit: 4
-
+ttlSecondsAfterFinished: 60
 appSettings:
   App:
     Mode: Migration

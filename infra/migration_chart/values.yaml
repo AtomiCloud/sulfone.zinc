@@ -14,7 +14,7 @@ annotations: {}
 
 backoffLimit: 4
 configMountPath: /app/App/Config/settings.yaml
-
+ttlSecondsAfterFinished: 60
 image:
   repository: dotnet-migration
   pullPolicy: IfNotPresent
