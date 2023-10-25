@@ -1,0 +1,77 @@
+serviceTree:
+  landscape: &landscape pichu
+
+bromine:
+  enable: true
+
+  target: &target "sulfone-zinc"
+
+# -- YAML Anchor for PodSecurityContext
+podSecurityContext: &podSecurityContext
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+
+# -- YAML Anchor for SecurityContext
+securityContext: &securityContext
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  capabilities:
+    drop:
+      - ALL
+
+api:
+  enabled: true
+  envFromSecret: *target
+  serviceTree:
+    landscape: *landscape
+  image:
+    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
+  imagePullSecrets: []
+  securityContext: *securityContext
+  podSecurityContext: *podSecurityContext
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 30
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  configMountPath: /app/Config
+
+  service:
+    type: ClusterIP
+    port: 80
+    containerPort: 9050
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "entei-zinc-letsencrypt-issuer"
+    hosts:
+      - host: api.zinc.sulfone.pichu.apps.cluster.atomi.cloud
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - api.zinc.sulfone.pichu.apps.cluster.atomi.cloud
+        secretName: api-zinc-sulfone-pichu-tls
+
+migration:
+  enabled: true
+  envFromSecret: *target
+  securityContext: *securityContext
+  podSecurityContext: *podSecurityContext
+  image:
+    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
+  serviceTree:
+    landscape: *landscape
+
+maindb:
+  enable: false
