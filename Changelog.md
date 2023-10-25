@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.7.0...v1.8.0) (2023-10-25)
+
+
+### New Features
+
+* pikachu and raichu value files ([6ae35aa](https://github.com/AtomiCloud/sulfone.zinc/commit/6ae35aa7e64b9420af268fccd36801c6c3a158f9))
+
 ## [1.7.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.2...v1.7.0) (2023-10-25)
 
 
