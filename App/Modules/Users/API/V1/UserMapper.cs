@@ -9,7 +9,10 @@ public static class UserMapper
     => new(userPrincipal.Id, userPrincipal.Record.Username);
 
   public static UserResp ToResp(this User user)
-    => new(user.Principal.ToResp(), user.Tokens.Select(x => x.ToResp()));
+    => new(user.Principal.ToResp(), user
+      .Tokens
+      .Where(x => !x.Record.Revoked)
+      .Select(x => x.ToResp()));
 
   public static UserRecord ToRecord(this CreateUserReq req)
   {

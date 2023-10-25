@@ -118,7 +118,7 @@ public class TokenRepository : ITokenRepository
         .FirstOrDefaultAsync();
       if (v1 == null) return (Unit?)null;
 
-      var v2 = v1 with { Revoked = true };
+      var v2 = v1 with { Revoked = true, User = null! };
       var updated = this._db.Tokens.Update(v2);
       await this._db.SaveChangesAsync();
       return new Unit();
