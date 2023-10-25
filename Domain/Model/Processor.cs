@@ -24,6 +24,7 @@ public record ProcessorPrincipal
 {
   public required Guid Id { get; init; }
 
+  public required string UserId { get; init; }
   // User Controlled, updatable, metadata
   public required ProcessorMetadata Metadata { get; init; }
 

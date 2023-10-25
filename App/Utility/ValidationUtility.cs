@@ -64,7 +64,7 @@ public static class ValidationUtility
     return ruleBuilder
       .Length(1, 256)
       .WithMessage("Username has to be between 1 to 256 characters")
-      .Matches(@"[\w](\-?[\w\d]+)*")
+      .Matches(@"^[a-z](\-?[a-z0-9]+)*$")
       .WithMessage("Username can only contain alphanumeric characters and dashes, and cannot end or start with dashes or numbers");
   }
 

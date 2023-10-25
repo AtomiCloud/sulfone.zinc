@@ -40,6 +40,7 @@ public static class TemplateMapper
       Id = data.Id,
       Metadata = data.ToMetadata(),
       Record = data.ToRecord(),
+      UserId = data.UserId,
     };
 
   public static Template ToDomain(this TemplateData data, TemplateInfo info) =>

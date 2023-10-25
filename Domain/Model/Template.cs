@@ -24,7 +24,7 @@ public record TemplatePrincipal
 {
   public required Guid Id { get; init; }
 
-
+  public required string UserId { get; init; }
   // User Controlled, updatable, metadata
   public required TemplateMetadata Metadata { get; init; }
 

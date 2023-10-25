@@ -43,7 +43,7 @@ public static class ProcessorMapper
   public static ProcessorPrincipalResp ToResp(this ProcessorPrincipal principal) =>
     new(principal.Id, principal.Record.Name, principal.Metadata.Project,
       principal.Metadata.Source, principal.Metadata.Email, principal.Metadata.Tags,
-      principal.Metadata.Description, principal.Metadata.Readme);
+      principal.Metadata.Description, principal.Metadata.Readme, principal.UserId);
 
   public static ProcessorResp ToResp(this Processor processor) =>
     new(processor.Principal.ToResp(), processor.Info.ToResp(), processor.User.ToResp(),

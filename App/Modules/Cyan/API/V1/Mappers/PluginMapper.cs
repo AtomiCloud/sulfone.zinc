@@ -43,7 +43,7 @@ public static class PluginMapper
   public static PluginPrincipalResp ToResp(this PluginPrincipal principal) =>
     new(principal.Id, principal.Record.Name, principal.Metadata.Project,
       principal.Metadata.Source, principal.Metadata.Email, principal.Metadata.Tags,
-      principal.Metadata.Description, principal.Metadata.Readme);
+      principal.Metadata.Description, principal.Metadata.Readme, principal.UserId);
 
   public static PluginResp ToResp(this Plugin plugin) =>
     new(plugin.Principal.ToResp(), plugin.Info.ToResp(), plugin.User.ToResp(),

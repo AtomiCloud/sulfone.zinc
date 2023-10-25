@@ -35,7 +35,13 @@ public static class ProcessorMapper
     new() { Name = data.Name };
 
   public static ProcessorPrincipal ToPrincipal(this ProcessorData data) =>
-    new() { Id = data.Id, Metadata = data.ToMetadata(), Record = data.ToRecord(), };
+    new()
+    {
+      Id = data.Id,
+      Metadata = data.ToMetadata(),
+      Record = data.ToRecord(),
+      UserId = data.UserId,
+    };
 
   public static Processor ToDomain(this ProcessorData data, ProcessorInfo info) =>
     new()

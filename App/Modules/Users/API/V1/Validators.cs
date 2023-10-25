@@ -33,3 +33,25 @@ public class UserSearchQueryValidator : AbstractValidator<SearchUserQuery>
       .Skip();
   }
 }
+
+public class CreateTokenReqValidator : AbstractValidator<CreateTokenReq>
+{
+  public CreateTokenReqValidator()
+  {
+    this.RuleFor(x => x.Name)
+      .NotNull()
+      .NotEmpty()
+      .NameValid();
+  }
+}
+
+public class UpdateTokenReqValidator : AbstractValidator<UpdateTokenReq>
+{
+  public UpdateTokenReqValidator()
+  {
+    this.RuleFor(x => x.Name)
+      .NotNull()
+      .NotEmpty()
+      .NameValid();
+  }
+}

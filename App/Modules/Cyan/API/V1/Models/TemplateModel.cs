@@ -12,7 +12,7 @@ public record UpdateTemplateReq(string Project, string Source,
 
 public record TemplatePrincipalResp(
     Guid Id, string Name, string Project, string Source,
-    string Email, string[] Tags, string Description, string Readme);
+    string Email, string[] Tags, string Description, string Readme, string UserId);
 
 public record TemplateInfoResp(
   uint Downloads, uint Stars);

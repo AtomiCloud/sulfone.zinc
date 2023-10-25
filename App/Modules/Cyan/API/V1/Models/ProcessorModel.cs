@@ -12,7 +12,7 @@ public record UpdateProcessorReq(string Project, string Source,
 
 public record ProcessorPrincipalResp(
     Guid Id, string Name, string Project, string Source,
-    string Email, string[] Tags, string Description, string Readme);
+    string Email, string[] Tags, string Description, string Readme, string UserId);
 
 public record ProcessorInfoResp(
   uint Downloads, uint Dependencies, uint Stars);

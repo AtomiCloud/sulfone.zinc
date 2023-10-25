@@ -28,6 +28,8 @@ public record PluginPrincipal
 {
   public required Guid Id { get; init; }
 
+  public required string UserId { get; init; }
+
   // User Controlled, updatable, metadata
   public required PluginMetadata Metadata { get; init; }
 

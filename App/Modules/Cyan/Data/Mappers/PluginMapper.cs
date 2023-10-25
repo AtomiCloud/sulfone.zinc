@@ -35,7 +35,7 @@ public static class PluginMapper
     new() { Name = data.Name };
 
   public static PluginPrincipal ToPrincipal(this PluginData data) =>
-    new() { Id = data.Id, Metadata = data.ToMetadata(), Record = data.ToRecord(), };
+    new() { Id = data.Id, Metadata = data.ToMetadata(), Record = data.ToRecord(), UserId = data.UserId };
 
   public static Plugin ToDomain(this PluginData data, PluginInfo info) =>
     new()

@@ -43,7 +43,7 @@ public static class TemplateMapper
   public static TemplatePrincipalResp ToResp(this TemplatePrincipal principal) =>
     new(principal.Id, principal.Record.Name, principal.Metadata.Project,
       principal.Metadata.Source, principal.Metadata.Email, principal.Metadata.Tags,
-      principal.Metadata.Description, principal.Metadata.Readme);
+      principal.Metadata.Description, principal.Metadata.Readme, principal.UserId);
 
   public static TemplateResp ToResp(this Template template) =>
     new(template.Principal.ToResp(), template.Info.ToResp(), template.User.ToResp(),
