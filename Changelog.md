@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.11.0...v1.11.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* incorrect mount path for configuration ([1d92f0f](https://github.com/AtomiCloud/sulfone.zinc/commit/1d92f0f3e9f8a90e92b3ed3b027321ac6625c3e5))
+
 ## [1.11.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.10.1...v1.11.0) (2023-10-25)
 
 
