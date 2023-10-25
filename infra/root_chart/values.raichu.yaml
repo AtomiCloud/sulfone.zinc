@@ -1,5 +1,5 @@
 serviceTree:
-  landscape: &landscape pichu
+  landscape: &landscape raichu
 
 bromine:
   enable: true
@@ -54,14 +54,14 @@ api:
     annotations:
       cert-manager.io/cluster-issuer: "entei-zinc-letsencrypt-issuer"
     hosts:
-      - host: api.zinc.sulfone.pichu.apps.cluster.atomi.cloud
+      - host: api.zinc.sulfone.raichu.apps.cluster.atomi.cloud
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - hosts:
-          - api.zinc.sulfone.pichu.apps.cluster.atomi.cloud
-        secretName: api-zinc-sulfone-pichu-tls
+          - api.zinc.sulfone.raichu.apps.cluster.atomi.cloud
+        secretName: api-zinc-sulfone-raichu-tls
 
 migration:
   enabled: true
