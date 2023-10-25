@@ -24,6 +24,16 @@ securityContext: &securityContext
     drop:
       - ALL
 
+xSecurityContext: &migrateSecurityContext
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  capabilities:
+    drop:
+      - ALL
+
 api:
   enabled: true
   envFromSecret: *target
@@ -61,7 +71,7 @@ api:
 migration:
   enabled: true
   envFromSecret: *target
-  securityContext: *securityContext
+  securityContext: *migrateSecurityContext
   podSecurityContext: *podSecurityContext
   configMountPath: /app/App/Config
   ttlSecondsAfterFinished: 60
