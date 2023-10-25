@@ -36,14 +36,12 @@ Root Chart to a single Service
 | api.ingress.tls[0].hosts[0] | string | `"api.zinc.sulfone.lapras.lvh.me"` |  |
 | api.ingress.tls[0].issuerRef | string | `"sample"` |  |
 | api.ingress.tls[0].secretName | string | `"sample"` |  |
-| api.livenessProbe.httpGet.initialDelaySeconds | int | `5` |  |
 | api.livenessProbe.httpGet.path | string | `"/"` |  |
 | api.livenessProbe.httpGet.port | string | `"http"` |  |
 | api.nameOverride | string | `"api"` |  |
 | api.nodeSelector | object | `{}` |  |
 | api.podAnnotations | object | `{}` |  |
 | api.podSecurityContext | object | `{}` |  |
-| api.readinessProbe.httpGet.initialDelaySeconds | int | `5` |  |
 | api.readinessProbe.httpGet.path | string | `"/"` |  |
 | api.readinessProbe.httpGet.port | string | `"http"` |  |
 | api.replicaCount | int | `1` |  |

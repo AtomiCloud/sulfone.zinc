@@ -85,13 +85,11 @@ api:
     httpGet:
       path: /
       port: http
-      initialDelaySeconds: 5
 
   livenessProbe:
     httpGet:
       path: /
       port: http
-      initialDelaySeconds: 5
 
   nodeSelector: {}
 
