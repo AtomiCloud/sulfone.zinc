@@ -1,4 +1,6 @@
-﻿**/.dockerignore
+﻿**/settings.*.yaml
+**/settings.yaml
+**/.dockerignore
 **/.env
 **/.git
 **/.gitignore

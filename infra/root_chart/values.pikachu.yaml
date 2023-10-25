@@ -67,6 +67,7 @@ migration:
   envFromSecret: *target
   securityContext: *securityContext
   podSecurityContext: *podSecurityContext
+  configMountPath: /app/App/Config
   image:
     repository: ghcr.io/atomicloud/sulfone.zinc/migrate-amd
   serviceTree:
