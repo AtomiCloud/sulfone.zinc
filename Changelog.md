@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.1...v1.6.2) (2023-10-25)
+
+
+### Bug Fixes
+
+* migrate ingress ([7df4109](https://github.com/AtomiCloud/sulfone.zinc/commit/7df4109fcb3634c0dfdc9ac4a51615374b6364e7))
+
 ## [1.6.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.0...v1.6.1) (2023-10-25)
 
 
