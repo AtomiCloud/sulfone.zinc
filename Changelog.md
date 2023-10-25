@@ -1,3 +1,10 @@
+## [1.11.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.10.1...v1.11.0) (2023-10-25)
+
+
+### New Features
+
+* disable file system false for migration ([62c845b](https://github.com/AtomiCloud/sulfone.zinc/commit/62c845bfc7a1fda19b0acb5b2b6371b9cdbe0c6d))
+
 ## [1.10.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.10.0...v1.10.1) (2023-10-25)
 
 
