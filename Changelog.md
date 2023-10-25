@@ -1,3 +1,10 @@
+## [1.9.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.8.1...v1.9.0) (2023-10-25)
+
+
+### New Features
+
+* split migrate and app images ([ebcf6cb](https://github.com/AtomiCloud/sulfone.zinc/commit/ebcf6cb548188a6929a07db07149f54d1f4d83d8))
+
 ## [1.8.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.8.0...v1.8.1) (2023-10-25)
 
 
