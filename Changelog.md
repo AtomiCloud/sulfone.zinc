@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.10.0...v1.10.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* broken migration to efbundle ([a6c4540](https://github.com/AtomiCloud/sulfone.zinc/commit/a6c4540295c58791196a11f7a16305dacee5c179))
+
 ## [1.10.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.9.0...v1.10.0) (2023-10-25)
 
 
