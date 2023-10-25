@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.6.0...v1.6.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* remove revoked token ([bd970c9](https://github.com/AtomiCloud/sulfone.zinc/commit/bd970c938da1dc79b6c6e25d6496cef573bd33de))
+
 ## [1.6.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.5.0...v1.6.0) (2023-10-25)
 
 
