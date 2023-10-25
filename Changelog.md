@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.5.0...v1.6.0) (2023-10-25)
+
+
+### New Features
+
+* validators for tokens ([f55540a](https://github.com/AtomiCloud/sulfone.zinc/commit/f55540acb8ff529bdd08ea4ac4fd8b47267506e1))
+
 ## [1.5.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.4.0...v1.5.0) (2023-10-24)
 
 
