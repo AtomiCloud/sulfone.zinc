@@ -182,7 +182,7 @@ public class PluginController : AtomiControllerBase
       new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}:{ver}"));
   }
 
-  [HttpGet("slug/{username}/{pluginName}/version/latest")]
+  [HttpGet("slug/{username}/{pluginName}/versions/latest")]
   public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, bool bumpDownload)
   {
     var plugin = await this._service.GetVersion(username, pluginName, bumpDownload)
