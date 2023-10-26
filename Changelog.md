@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.12.0...v1.12.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* incorrect endpoint ([4a6e053](https://github.com/AtomiCloud/sulfone.zinc/commit/4a6e05300239643de218eb9a34c9eb0f41dca074))
+
 ## [1.12.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.11.1...v1.12.0) (2023-10-26)
 
 
