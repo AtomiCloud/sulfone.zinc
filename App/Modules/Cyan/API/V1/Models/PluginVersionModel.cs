@@ -7,6 +7,20 @@ public record CreatePluginVersionReq(
 
 public record UpdatePluginVersionReq(string Description);
 
+public record PushPluginReq(
+  string Name,
+  string Project,
+  string Source,
+  string Email,
+  string[] Tags,
+  string Description,
+  string Readme,
+
+  string VersionDescription,
+  string DockerReference,
+  string DockerSha
+);
+
 public record PluginVersionPrincipalResp(
   Guid Id, ulong Version, DateTime CreatedAt,
   string Description, string DockerReference, string DockerSha);

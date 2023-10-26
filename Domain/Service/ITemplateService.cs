@@ -30,6 +30,8 @@ public interface ITemplateService
 
   Task<Result<TemplateVersion?>> GetVersion(string username, string name, ulong version, bool dumpDownload);
 
+  Task<Result<TemplateVersion?>> GetVersion(string username, string name, bool dumpDownload);
+
   Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version);
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(string username, string name, TemplateVersionRecord record,
@@ -45,4 +47,9 @@ public interface ITemplateService
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(string username, string name, ulong version,
     TemplateVersionRecord record);
+
+  Task<Result<TemplateVersionPrincipal?>> Push(string username, TemplateRecord pRecord, TemplateMetadata metadata,
+    TemplateVersionRecord record,
+    TemplateVersionProperty property,
+    IEnumerable<ProcessorVersionRef> processors, IEnumerable<PluginVersionRef> plugins);
 }

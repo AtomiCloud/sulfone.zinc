@@ -32,6 +32,7 @@ public class PluginController : AtomiControllerBase
   private readonly CreatePluginVersionReqValidator _createPluginVersionReqValidator;
   private readonly UpdatePluginVersionReqValidator _updatePluginVersionReqValidator;
   private readonly SearchPluginVersionQueryValidator _searchPluginVersionQueryValidator;
+  private readonly PushPluginReqValidator _pluginReqValidator;
 
 
   public PluginController(IPluginService service,
@@ -39,7 +40,7 @@ public class PluginController : AtomiControllerBase
     SearchPluginQueryValidator searchPluginQueryValidator,
     CreatePluginVersionReqValidator createPluginVersionReqValidator,
     UpdatePluginVersionReqValidator updatePluginVersionReqValidator,
-    SearchPluginVersionQueryValidator searchPluginVersionQueryValidator, IUserService userService)
+    SearchPluginVersionQueryValidator searchPluginVersionQueryValidator, IUserService userService, PushPluginReqValidator pluginReqValidator)
   {
     this._service = service;
     this._createPluginReqValidator = createPluginReqValidator;
@@ -49,6 +50,7 @@ public class PluginController : AtomiControllerBase
     this._updatePluginVersionReqValidator = updatePluginVersionReqValidator;
     this._searchPluginVersionQueryValidator = searchPluginVersionQueryValidator;
     this._userService = userService;
+    this._pluginReqValidator = pluginReqValidator;
   }
 
   [HttpGet]
@@ -171,22 +173,31 @@ public class PluginController : AtomiControllerBase
   }
 
   [HttpGet("slug/{username}/{pluginName}/versions/{ver}")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> GetVersion(string username, string pluginName, ulong ver,
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, ulong ver,
     bool bumpDownload)
   {
     var plugin = await this._service.GetVersion(username, pluginName, ver, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginVersionPrincipal), $"{username}/{pluginName}:{ver}"));
+      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}:{ver}"));
+  }
+
+  [HttpGet("slug/{username}/{pluginName}/version/latest")]
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, bool bumpDownload)
+  {
+    var plugin = await this._service.GetVersion(username, pluginName, bumpDownload)
+      .Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}"));
   }
 
   [HttpGet("id/{userId}/{pluginId:guid}/versions/{ver}")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> GetVersion(string userId, Guid pluginId, ulong ver)
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(string userId, Guid pluginId, ulong ver)
   {
     var plugin = await this._service.GetVersion(userId, pluginId, ver)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginVersionPrincipal), $"{userId}/{pluginId}:{ver}"));
+      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{userId}/{pluginId}:{ver}"));
   }
 
   [Authorize, HttpPost("slug/{username}/{pluginName}/versions")]
@@ -254,6 +265,36 @@ public class PluginController : AtomiControllerBase
 
     return this.ReturnNullableResult(version,
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
+  }
+
+  [Authorize, HttpPost("push/{username}")]
+  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string username, [FromBody] PushPluginReq req)
+  {
+    var sub = this.Sub();
+    var version = await this._userService
+      .GetByUsername(username)
+      .ThenAwait(x => Task.FromResult(x?.Principal.Id == sub), Errors.MapAll)
+      .ThenAwait(async x =>
+      {
+        if (x)
+        {
+          return await this._pluginReqValidator
+            .ValidateAsyncResult(req, "Invalid PushPluginReq")
+            .Then(push => push.ToDomain(), Errors.MapAll)
+            .ThenAwait(domain =>
+              {
+                var (record, metadata, vRecord, vProperty) = domain;
+                return this._service.Push(username, record, metadata, vRecord, vProperty);
+              })
+            .Then(c => c?.ToResp(), Errors.MapAll);
+        }
+
+        return new Unauthorized("You are not authorized to create a plugin for this user")
+          .ToException();
+      });
+
+    return this.ReturnNullableResult(version,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{req.Name}"));
   }
 
 }

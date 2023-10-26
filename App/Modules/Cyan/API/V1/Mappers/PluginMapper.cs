@@ -6,6 +6,23 @@ namespace App.Modules.Cyan.API.V1.Mappers;
 
 public static class PluginMapper
 {
+  public static (PluginRecord, PluginMetadata, PluginVersionRecord, PluginVersionProperty) ToDomain(
+    this PushPluginReq req) =>
+  (
+    new PluginRecord { Name = req.Name },
+    new PluginMetadata
+    {
+      Project = req.Project,
+      Source = req.Source,
+      Email = req.Email,
+      Tags = req.Tags,
+      Description = req.Description,
+      Readme = req.Readme
+    },
+    new PluginVersionRecord { Description = req.Description, },
+    new PluginVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha, }
+  );
+
   public static (PluginRecord, PluginMetadata) ToDomain(this CreatePluginReq req) =>
     (new PluginRecord { Name = req.Name },
       new PluginMetadata
@@ -56,15 +73,11 @@ public static class PluginVersionMapper
     (new PluginVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha },
       new PluginVersionRecord { Description = req.Description });
 
-  public static PluginVersionRecord ToDomain(this UpdatePluginVersionReq req) => new() { Description = req.Description };
+  public static PluginVersionRecord ToDomain(this UpdatePluginVersionReq req) =>
+    new() { Description = req.Description };
 
   public static PluginVersionSearch ToDomain(this SearchPluginVersionQuery query) =>
-    new()
-    {
-      Search = query.Search,
-      Limit = query.Limit ?? 20,
-      Skip = query.Skip ?? 0,
-    };
+    new() { Search = query.Search, Limit = query.Limit ?? 20, Skip = query.Skip ?? 0, };
 
   public static PluginVersionPrincipalResp ToResp(this PluginVersionPrincipal principal) =>
     new(principal.Id, principal.Version, principal.CreatedAt,

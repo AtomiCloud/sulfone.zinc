@@ -11,15 +11,17 @@ public class TemplateService : ITemplateService
   private readonly IPluginRepository _plugin;
   private readonly IProcessorRepository _processor;
   private readonly ILogger<TemplateService> _logger;
+  private readonly IUserRepository _user;
 
 
   public TemplateService(ITemplateRepository repo, IPluginRepository plugin, IProcessorRepository processor,
-    ILogger<TemplateService> logger)
+    ILogger<TemplateService> logger, IUserRepository user)
   {
     this._repo = repo;
     this._plugin = plugin;
     this._processor = processor;
     this._logger = logger;
+    this._user = user;
   }
 
 
@@ -99,6 +101,28 @@ public class TemplateService : ITemplateService
     return await this._repo.GetVersion(username, name, version);
   }
 
+  public async Task<Result<TemplateVersion?>> GetVersion(string username, string name, bool bumpDownload)
+  {
+    if (bumpDownload)
+    {
+      return await this._repo.GetVersion(username, name)
+        .DoAwait(DoType.Ignore, async _ =>
+        {
+          var r = await this._repo.IncrementDownload(username, name);
+          if (r.IsFailure())
+          {
+            var err = r.FailureOrDefault();
+            this._logger.LogError(err,
+              "Failed to increment download when obtaining version for Template '{Username}/{Name}'", username, name);
+          }
+
+          return r;
+        });
+    }
+
+    return await this._repo.GetVersion(username, name);
+  }
+
   public Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version)
   {
     return this._repo.GetVersion(userId, id, version);
@@ -118,8 +142,10 @@ public class TemplateService : ITemplateService
       .ThenAwait(refs =>
       {
         var (pl, pr) = refs;
-        this._logger.LogInformation("Creating Template Version '{Name}' for '{UserId}', Processors: {@Processors}", name, userId, processors);
-        this._logger.LogInformation("Creating Template Version '{Name}' for '{UserId}', Plugins: {@Plugins}", name, userId, pl);
+        this._logger.LogInformation("Creating Template Version '{Name}' for '{UserId}', Processors: {@Processors}",
+          name, userId, processors);
+        this._logger.LogInformation("Creating Template Version '{Name}' for '{UserId}', Plugins: {@Plugins}", name,
+          userId, pl);
         return this._repo.CreateVersion(userId, name, record, property, pr, pl);
       });
   }
@@ -153,5 +179,20 @@ public class TemplateService : ITemplateService
     TemplateVersionRecord record)
   {
     return this._repo.UpdateVersion(userId, name, version, record);
+  }
+
+  public async Task<Result<TemplateVersionPrincipal?>> Push(string username, TemplateRecord pRecord,
+    TemplateMetadata metadata, TemplateVersionRecord record,
+    TemplateVersionProperty property,
+    IEnumerable<ProcessorVersionRef> processors, IEnumerable<PluginVersionRef> plugins)
+  {
+    return await this._repo.Get(username, pRecord.Name)
+      .ThenAwait(async p =>
+      {
+        if (p != null) return p.Principal.ToResult();
+        return await this._user.GetByUsername(username)
+          .ThenAwait(u => this._repo.Create(u!.Principal.Id, pRecord, metadata));
+      })
+      .ThenAwait(x => this.CreateVersion(username, pRecord.Name, record, property, processors, plugins));
   }
 }

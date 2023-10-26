@@ -8,12 +8,14 @@ namespace Domain.Service;
 public class ProcessorService : IProcessorService
 {
   private readonly IProcessorRepository _repo;
+  private readonly IUserRepository _user;
   private readonly ILogger<ProcessorService> _logger;
 
-  public ProcessorService(IProcessorRepository repo, ILogger<ProcessorService> logger)
+  public ProcessorService(IProcessorRepository repo, ILogger<ProcessorService> logger, IUserRepository user)
   {
     this._repo = repo;
     this._logger = logger;
+    this._user = user;
   }
 
   public Task<Result<IEnumerable<ProcessorPrincipal>>> Search(ProcessorSearch search)
@@ -66,7 +68,7 @@ public class ProcessorService : IProcessorService
     return this._repo.SearchVersion(userId, id, version);
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> GetVersion(string username, string name, ulong version, bool bumpDownload)
+  public async Task<Result<ProcessorVersion?>> GetVersion(string username, string name, ulong version, bool bumpDownload)
   {
     if (bumpDownload)
     {
@@ -87,7 +89,28 @@ public class ProcessorService : IProcessorService
     return await this._repo.GetVersion(username, name, version);
   }
 
-  public Task<Result<ProcessorVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version)
+  public async Task<Result<ProcessorVersion?>> GetVersion(string username, string name, bool bumpDownload)
+  {
+    if (bumpDownload)
+    {
+      return await this._repo.GetVersion(username, name)
+        .DoAwait(DoType.Ignore, async _ =>
+        {
+          var r = await this._repo.IncrementDownload(username, name);
+          if (r.IsFailure())
+          {
+            var err = r.FailureOrDefault();
+            this._logger.LogError(err, "Failed to increment download when obtaining version for Processor '{Username}/{Name}'",
+              username, name);
+          }
+
+          return r;
+        });
+    }
+    return await this._repo.GetVersion(username, name);
+  }
+
+  public Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version)
   {
     return this._repo.GetVersion(userId, id, version);
   }
@@ -110,5 +133,18 @@ public class ProcessorService : IProcessorService
   public Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(string username, string name, ulong version, ProcessorVersionRecord record)
   {
     return this._repo.UpdateVersion(username, name, version, record);
+  }
+
+  public async Task<Result<ProcessorVersionPrincipal?>> Push(string username, ProcessorRecord pRecord, ProcessorMetadata metadata, ProcessorVersionRecord record,
+    ProcessorVersionProperty property)
+  {
+    return await this._repo.Get(username, pRecord.Name)
+      .ThenAwait(async p =>
+      {
+        if (p != null) return p.Principal.ToResult();
+        return await this._user.GetByUsername(username)
+          .ThenAwait(u => this._repo.Create(u!.Principal.Id, pRecord, metadata));
+      })
+      .ThenAwait(x => this._repo.CreateVersion(username, pRecord.Name, record, property));
   }
 }

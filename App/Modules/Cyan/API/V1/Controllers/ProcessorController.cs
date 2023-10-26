@@ -32,6 +32,7 @@ public class ProcessorController : AtomiControllerBase
   private readonly CreateProcessorVersionReqValidator _createProcessorVersionReqValidator;
   private readonly UpdateProcessorVersionReqValidator _updateProcessorVersionReqValidator;
   private readonly SearchProcessorVersionQueryValidator _searchProcessorVersionQueryValidator;
+  private readonly PushProcessorReqValidator _processorReqValidator;
 
 
   public ProcessorController(IProcessorService service,
@@ -39,7 +40,7 @@ public class ProcessorController : AtomiControllerBase
     SearchProcessorQueryValidator searchProcessorQueryValidator,
     CreateProcessorVersionReqValidator createProcessorVersionReqValidator,
     UpdateProcessorVersionReqValidator updateProcessorVersionReqValidator,
-    SearchProcessorVersionQueryValidator searchProcessorVersionQueryValidator, IUserService userService)
+    SearchProcessorVersionQueryValidator searchProcessorVersionQueryValidator, IUserService userService, PushProcessorReqValidator processorReqValidator)
   {
     this._service = service;
     this._createProcessorReqValidator = createProcessorReqValidator;
@@ -49,6 +50,7 @@ public class ProcessorController : AtomiControllerBase
     this._updateProcessorVersionReqValidator = updateProcessorVersionReqValidator;
     this._searchProcessorVersionQueryValidator = searchProcessorVersionQueryValidator;
     this._userService = userService;
+    this._processorReqValidator = processorReqValidator;
   }
 
   [HttpGet]
@@ -170,23 +172,34 @@ public class ProcessorController : AtomiControllerBase
   }
 
   [HttpGet("slug/{username}/{processorName}/versions/{ver}")]
-  public async Task<ActionResult<ProcessorVersionPrincipalResp>> GetVersion(string username, string processorName, ulong ver,
+  public async Task<ActionResult<ProcessorVersionResp>> GetVersion(string username, string processorName, ulong ver,
     bool bumpDownload)
   {
     var processor = await this._service.GetVersion(username, processorName, ver, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(processor,
-      new EntityNotFound("Processor not found", typeof(ProcessorVersionPrincipal), $"{username}/{processorName}:{ver}"));
+      new EntityNotFound("Processor not found", typeof(ProcessorVersion), $"{username}/{processorName}:{ver}"));
+  }
+
+  [HttpGet("slug/{username}/{processorName}/versions/latest")]
+  public async Task<ActionResult<ProcessorVersionResp>> GetVersion(string username, string processorName, bool bumpDownload)
+  {
+    var processor = await this._service.GetVersion(username, processorName, bumpDownload)
+      .Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(processor,
+      new EntityNotFound("Processor not found", typeof(ProcessorVersion), $"{username}/{processorName}"));
   }
 
   [HttpGet("id/{userId}/{processorId:guid}/versions/{ver}")]
-  public async Task<ActionResult<ProcessorVersionPrincipalResp>> GetVersion(string userId, Guid processorId, ulong ver)
+  public async Task<ActionResult<ProcessorVersionResp>> GetVersion(string userId, Guid processorId, ulong ver)
   {
     var processor = await this._service.GetVersion(userId, processorId, ver)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(processor,
-      new EntityNotFound("Processor not found", typeof(ProcessorVersionPrincipal), $"{userId}/{processorId}:{ver}"));
+      new EntityNotFound("Processor not found", typeof(ProcessorVersion), $"{userId}/{processorId}:{ver}"));
   }
+
+
 
   [Authorize, HttpPost("slug/{username}/{processorName}/versions")]
   public async Task<ActionResult<ProcessorVersionPrincipalResp>> CreateVersion(string username, string processorName,
@@ -253,6 +266,36 @@ public class ProcessorController : AtomiControllerBase
 
     return this.ReturnNullableResult(version,
       new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{userId}/{processorId}"));
+  }
+
+  [Authorize, HttpPost("push/{username}")]
+  public async Task<ActionResult<ProcessorVersionPrincipalResp>> CreateVersion(string username, [FromBody] PushProcessorReq req)
+  {
+    var sub = this.Sub();
+    var version = await this._userService
+      .GetByUsername(username)
+      .ThenAwait(x => Task.FromResult(x?.Principal.Id == sub), Errors.MapAll)
+      .ThenAwait(async x =>
+      {
+        if (x)
+        {
+          return await this._processorReqValidator
+            .ValidateAsyncResult(req, "Invalid PushProcessorReq")
+            .Then(push => push.ToDomain(), Errors.MapAll)
+            .ThenAwait(domain =>
+            {
+              var (record, metadata, vRecord, vProperty) = domain;
+              return this._service.Push(username, record, metadata, vRecord, vProperty);
+            })
+            .Then(c => c?.ToResp(), Errors.MapAll);
+        }
+
+        return new Unauthorized("You are not authorized to create a processor for this user")
+          .ToException();
+      });
+
+    return this.ReturnNullableResult(version,
+      new EntityNotFound("Processor not found", typeof(ProcessorPrincipal), $"{username}/{req.Name}"));
   }
 
 }

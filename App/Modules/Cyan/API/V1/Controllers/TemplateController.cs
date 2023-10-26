@@ -26,12 +26,16 @@ public class TemplateController : AtomiControllerBase
 {
   private readonly ITemplateService _service;
   private readonly IUserService _userService;
+
+  private readonly ILogger<TemplateController> _logger;
+
   private readonly CreateTemplateReqValidator _createTemplateReqValidator;
   private readonly UpdateTemplateReqValidator _updateTemplateReqValidator;
   private readonly SearchTemplateQueryValidator _searchTemplateQueryValidator;
   private readonly CreateTemplateVersionReqValidator _createTemplateVersionReqValidator;
   private readonly UpdateTemplateVersionReqValidator _updateTemplateVersionReqValidator;
   private readonly SearchTemplateVersionQueryValidator _searchTemplateVersionQueryValidator;
+  private readonly PushTemplateReqValidator _templateReqValidator;
 
 
   public TemplateController(ITemplateService service,
@@ -39,7 +43,7 @@ public class TemplateController : AtomiControllerBase
     SearchTemplateQueryValidator searchTemplateQueryValidator,
     CreateTemplateVersionReqValidator createTemplateVersionReqValidator,
     UpdateTemplateVersionReqValidator updateTemplateVersionReqValidator,
-    SearchTemplateVersionQueryValidator searchTemplateVersionQueryValidator, IUserService userService)
+    SearchTemplateVersionQueryValidator searchTemplateVersionQueryValidator, IUserService userService, PushTemplateReqValidator templateReqValidator, ILogger<TemplateController> logger)
   {
     this._service = service;
     this._createTemplateReqValidator = createTemplateReqValidator;
@@ -49,6 +53,8 @@ public class TemplateController : AtomiControllerBase
     this._updateTemplateVersionReqValidator = updateTemplateVersionReqValidator;
     this._searchTemplateVersionQueryValidator = searchTemplateVersionQueryValidator;
     this._userService = userService;
+    this._templateReqValidator = templateReqValidator;
+    this._logger = logger;
   }
 
   [HttpGet]
@@ -182,6 +188,15 @@ public class TemplateController : AtomiControllerBase
       new EntityNotFound("Template not found", typeof(TemplateVersionResp), $"{username}/{templateName}:{ver}"));
   }
 
+  [HttpGet("slug/{username}/{templateName}/versions/latest")]
+  public async Task<ActionResult<TemplateVersionResp>> GetVersion(string username, string templateName, bool bumpDownload)
+  {
+    var template = await this._service.GetVersion(username, templateName, bumpDownload)
+      .Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(template,
+      new EntityNotFound("Template not found", typeof(TemplateVersionResp), $"{username}/{templateName}"));
+  }
+
   [HttpGet("id/{userId}/{templateId:guid}/versions/{ver}")]
   public async Task<ActionResult<TemplateVersionResp>> GetVersion(string userId, Guid templateId, ulong ver)
   {
@@ -190,6 +205,9 @@ public class TemplateController : AtomiControllerBase
     return this.ReturnNullableResult(template,
       new EntityNotFound("Template not found", typeof(TemplateVersionPrincipal), $"{userId}/{templateId}:{ver}"));
   }
+
+
+
 
   [Authorize, HttpPost("slug/{username}/{templateName}/versions")]
   public async Task<ActionResult<TemplateVersionPrincipalResp>> CreateVersion(string username, string templateName,
@@ -263,5 +281,38 @@ public class TemplateController : AtomiControllerBase
 
     return this.ReturnNullableResult(version,
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{userId}/{templateId}"));
+  }
+
+  [Authorize, HttpPost("push/{username}")]
+  public async Task<ActionResult<TemplateVersionPrincipalResp>> CreateVersion(string username, [FromBody] PushTemplateReq req)
+  {
+    this._logger.LogInformation("Version, Template: {Template}", req.ToJson());
+    var sub = this.Sub();
+    var version = await this._userService
+      .GetByUsername(username)
+      .ThenAwait(x => Task.FromResult(x?.Principal.Id == sub), Errors.MapAll)
+      .ThenAwait(async x =>
+      {
+        if (x)
+        {
+          return await this._templateReqValidator
+            .ValidateAsyncResult(req, "Invalid PushTemplateReq")
+            .Then(push => push.ToDomain(), Errors.MapAll)
+            .ThenAwait(domain =>
+            {
+              var (record, metadata, vRecord, vProperty) = domain;
+              return this._service.Push(username, record, metadata, vRecord, vProperty,
+                req.Processors.Select(p => p.ToDomain()),
+                req.Plugins.Select(p => p.ToDomain()));
+            })
+            .Then(c => c?.ToResp(), Errors.MapAll);
+        }
+
+        return new Unauthorized("You are not authorized to create a template for this user")
+          .ToException();
+      });
+
+    return this.ReturnNullableResult(version,
+      new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{username}/{req.Name}"));
   }
 }

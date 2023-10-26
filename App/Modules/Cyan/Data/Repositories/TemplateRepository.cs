@@ -428,6 +428,32 @@ public class TemplateRepository : ITemplateRepository
     }
   }
 
+  public async Task<Result<TemplateVersion?>> GetVersion(string username, string name)
+  {
+    try
+    {
+      this._logger.LogInformation(
+        "Getting template version for User '{UserId}', Template: '{TemplateId}'", username, name);
+      var template = await this._db.TemplateVersions
+        .Include(x => x.Template)
+        .ThenInclude(x => x.User)
+        .Include(x => x.Plugins)
+        .ThenInclude(x => x.Plugin)
+        .Include(x => x.Processors)
+        .ThenInclude(x => x.Processor)
+        .Where(x => x.Template.User.Username == username && x.Template.Name == name)
+        .OrderByDescending(x => x.Version)
+        .FirstOrDefaultAsync();
+      return template?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      this._logger
+        .LogError(e, "Failed to get template version: User '{Username}/{Name}''", username, name);
+      return e;
+    }
+  }
+
   public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(string username, string name,
     TemplateVersionRecord record,
     TemplateVersionProperty property, IEnumerable<Guid> processors, IEnumerable<Guid> plugins)
@@ -618,6 +644,7 @@ public class TemplateRepository : ITemplateRepository
       return e;
     }
   }
+
 
   public async Task<Result<TemplateVersionPrincipal?>> UpdateVersion(string userId, Guid id, ulong version,
     TemplateVersionRecord v2)

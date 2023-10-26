@@ -34,3 +34,34 @@ public class UpdateProcessorVersionReqValidator : AbstractValidator<UpdateProces
       .DescriptionValid();
   }
 }
+
+public class PushProcessorReqValidator : AbstractValidator<PushProcessorReq>
+{
+  public PushProcessorReqValidator()
+  {
+    this.RuleFor(x => x.Name)
+      .NotNull()
+      .UsernameValid();
+    this.RuleFor(x => x.Project)
+      .UrlValid();
+    this.RuleFor(x => x.Source)
+      .UrlValid();
+    this.RuleFor(x => x.Email)
+      .EmailAddress();
+    this.RuleForEach(x => x.Tags)
+      .UsernameValid()
+      .NotNull();
+    this.RuleFor(x => x.Tags)
+      .NotNull();
+    this.RuleFor(x => x.Description)
+      .DescriptionValid();
+    this.RuleFor(x => x.Readme)
+      .NotNull();
+    this.RuleFor(x => x.VersionDescription)
+      .DescriptionValid();
+    this.RuleFor(x => x.DockerReference)
+      .DockerReferenceValid();
+    this.RuleFor(x => x.DockerSha)
+      .ShaValid();
+  }
+}

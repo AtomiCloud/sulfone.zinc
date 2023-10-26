@@ -405,17 +405,24 @@ public class ProcessorRepository : IProcessorRepository
       var query = this._db.ProcessorVersions
         .Include(x => x.Processor)
         .ThenInclude(x => x.User)
+        .Include(x => x.Processor)
+        .ThenInclude(x => x.Versions)
         .AsQueryable();
 
       var predicate = PredicateBuilder.New<ProcessorVersionData>(true);
 
       predicate = processorRefs.Aggregate(predicate, (c, r) =>
-        c.Or(x => x.Version == r.Version && x.Processor.Name == r.Name && x.Processor.User.Username == r.Username));
+        r.Version != null
+          ? c.Or(x => x.Version == r.Version && x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
+          : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username &&
+                      x.Version == x.Processor.Versions.Max(p => p.Version))
+      );
 
       query = query.Where(predicate);
 
       var processorReferences = await query.ToArrayAsync();
-      this._logger.LogInformation("Processor References: {@ProcessorReferences}", processorReferences.Select(x => x.Id));
+      this._logger.LogInformation("Processor References: {@ProcessorReferences}",
+        processorReferences.Select(x => x.Id));
 
       if (processorReferences.Length != processorRefs.Length)
       {
@@ -437,7 +444,7 @@ public class ProcessorRepository : IProcessorRepository
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> GetVersion(string username, string name, ulong version)
+  public async Task<Result<ProcessorVersion?>> GetVersion(string username, string name, ulong version)
   {
     try
     {
@@ -448,7 +455,7 @@ public class ProcessorRepository : IProcessorRepository
         .Where(x => x.Processor.User.Username == username && x.Processor.Name == name && x.Version == version)
         .FirstOrDefaultAsync();
 
-      return processor?.ToPrincipal();
+      return processor?.ToDomain();
     }
     catch (Exception e)
     {
@@ -458,7 +465,29 @@ public class ProcessorRepository : IProcessorRepository
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version)
+  public async Task<Result<ProcessorVersion?>> GetVersion(string username, string name)
+  {
+    try
+    {
+      this._logger.LogInformation("Getting processor version '{Username}/{Name}'", username, name);
+      var processor = await this._db.ProcessorVersions
+        .Include(x => x.Processor)
+        .ThenInclude(x => x.User)
+        .Where(x => x.Processor.User.Username == username && x.Processor.Name == name)
+        .OrderByDescending(x => x.Version)
+        .FirstOrDefaultAsync();
+
+      return processor?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      this._logger
+        .LogError(e, "Failed to get processor version '{Username}/{Name}'", username, name);
+      return e;
+    }
+  }
+
+  public async Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version)
   {
     try
     {
@@ -470,7 +499,7 @@ public class ProcessorRepository : IProcessorRepository
         .Where(x => x.Processor.UserId == userId && x.Processor.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
 
-      return processor?.ToPrincipal();
+      return processor?.ToDomain();
     }
     catch (Exception e)
     {

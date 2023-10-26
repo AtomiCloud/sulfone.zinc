@@ -1,4 +1,3 @@
-using App.Modules.Cyan.Data;
 using App.Modules.Cyan.Data.Models;
 
 namespace App.Modules.Users.Data;

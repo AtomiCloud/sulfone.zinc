@@ -30,6 +30,7 @@ public interface ITemplateRepository
   Task<Result<TemplateVersion?>> GetVersion(string userId, string name, ulong version);
 
   Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version);
+  Task<Result<TemplateVersion?>> GetVersion(string username, string name);
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(string userId, string name, TemplateVersionRecord record,
     TemplateVersionProperty property, IEnumerable<Guid> processors,
@@ -44,4 +45,5 @@ public interface ITemplateRepository
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(string userId, string name, ulong version,
     TemplateVersionRecord record);
+
 }

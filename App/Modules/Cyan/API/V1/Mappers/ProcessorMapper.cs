@@ -6,6 +6,23 @@ namespace App.Modules.Cyan.API.V1.Mappers;
 
 public static class ProcessorMapper
 {
+  public static (ProcessorRecord, ProcessorMetadata, ProcessorVersionRecord, ProcessorVersionProperty) ToDomain(
+    this PushProcessorReq req) =>
+  (
+    new ProcessorRecord { Name = req.Name },
+    new ProcessorMetadata
+    {
+      Project = req.Project,
+      Source = req.Source,
+      Email = req.Email,
+      Tags = req.Tags,
+      Description = req.Description,
+      Readme = req.Readme
+    },
+    new ProcessorVersionRecord { Description = req.Description, },
+    new ProcessorVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha, }
+  );
+
   public static (ProcessorRecord, ProcessorMetadata) ToDomain(this CreateProcessorReq req) =>
     (new ProcessorRecord { Name = req.Name },
       new ProcessorMetadata

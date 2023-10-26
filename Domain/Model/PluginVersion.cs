@@ -17,7 +17,7 @@ public record PluginVersion
   public required PluginPrincipal PluginPrincipal { get; init; }
 }
 
-public record PluginVersionRef(string Username, string Name, ulong Version);
+public record PluginVersionRef(string Username, string Name, ulong? Version);
 
 public record PluginVersionPrincipal
 {

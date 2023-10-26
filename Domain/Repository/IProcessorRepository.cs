@@ -29,9 +29,11 @@ public interface IProcessorRepository
 
   Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(string userId, Guid id, ProcessorVersionSearch version);
 
-  Task<Result<ProcessorVersionPrincipal?>> GetVersion(string userId, string name, ulong version);
+  Task<Result<ProcessorVersion?>> GetVersion(string userId, string name, ulong version);
 
-  Task<Result<ProcessorVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version);
+  Task<Result<ProcessorVersion?>> GetVersion(string username, string name);
+
+  Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version);
 
   Task<Result<ProcessorVersionPrincipal?>> CreateVersion(string userId, string name, ProcessorVersionRecord record,
     ProcessorVersionProperty property);

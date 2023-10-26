@@ -6,6 +6,29 @@ namespace App.Modules.Cyan.API.V1.Mappers;
 
 public static class TemplateMapper
 {
+  public static (TemplateRecord, TemplateMetadata, TemplateVersionRecord, TemplateVersionProperty) ToDomain(
+    this PushTemplateReq req) =>
+  (
+    new TemplateRecord { Name = req.Name },
+    new TemplateMetadata
+    {
+      Project = req.Project,
+      Source = req.Source,
+      Email = req.Email,
+      Tags = req.Tags,
+      Description = req.Description,
+      Readme = req.Readme
+    },
+    new TemplateVersionRecord { Description = req.Description, },
+    new TemplateVersionProperty
+    {
+      BlobDockerReference = req.BlobDockerReference,
+      BlobDockerSha = req.BlobDockerSha,
+      TemplateDockerReference = req.TemplateDockerReference,
+      TemplateDockerSha = req.TemplateDockerSha,
+    }
+  );
+
   public static (TemplateRecord, TemplateMetadata) ToDomain(this CreateTemplateReq req) =>
     (new TemplateRecord { Name = req.Name },
       new TemplateMetadata
@@ -52,7 +75,8 @@ public static class TemplateMapper
 
 public static class TemplateVersionMapper
 {
-  public static TemplateVersionRecord ToRecord(this CreateTemplateVersionReq req) => new() { Description = req.Description };
+  public static TemplateVersionRecord ToRecord(this CreateTemplateVersionReq req) =>
+    new() { Description = req.Description };
 
   public static TemplateVersionProperty ToProperty(this CreateTemplateVersionReq req) =>
     new()
@@ -63,14 +87,16 @@ public static class TemplateVersionMapper
       TemplateDockerSha = req.TemplateDockerSha
     };
 
-  public static TemplateVersionRecord ToDomain(this UpdateTemplateVersionReq req) => new() { Description = req.Description };
+  public static TemplateVersionRecord ToDomain(this UpdateTemplateVersionReq req) =>
+    new() { Description = req.Description };
 
   public static TemplateVersionSearch ToDomain(this SearchTemplateVersionQuery query) =>
     new() { Search = query.Search, Limit = query.Limit ?? 20, Skip = query.Skip ?? 0, };
 
-  public static PluginVersionRef ToDomain(this PluginReferenceReq req) => new(req.Username, req.Name, req.Version);
+  public static PluginVersionRef ToDomain(this PluginReferenceReq req) => new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
-  public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) => new(req.Username, req.Name, req.Version);
+  public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) =>
+    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
   public static TemplateVersionPrincipalResp ToResp(this TemplateVersionPrincipal principal) =>
     new(principal.Id, principal.Version, principal.CreatedAt,

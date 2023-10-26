@@ -406,7 +406,11 @@ public class PluginRepository : IPluginRepository
       var predicate = PredicateBuilder.New<PluginVersionData>(true);
 
       predicate = pluginRefs.Aggregate(predicate, (c, r) =>
-        c.Or(x => x.Version == r.Version && x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username));
+        r.Version != null
+          ? c.Or(x => x.Version == r.Version && x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username)
+          : c.Or(x => x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username &&
+                      x.Version == x.Plugin.Versions.Max(p => p.Version))
+      );
 
       query = query.Where(predicate);
 
@@ -431,7 +435,7 @@ public class PluginRepository : IPluginRepository
     }
   }
 
-  public async Task<Result<PluginVersionPrincipal?>> GetVersion(string username, string name, ulong version)
+  public async Task<Result<PluginVersion?>> GetVersion(string username, string name, ulong version)
   {
     try
     {
@@ -442,7 +446,7 @@ public class PluginRepository : IPluginRepository
         .Where(x => x.Plugin.User.Username == username && x.Plugin.Name == name && x.Version == version)
         .FirstOrDefaultAsync();
 
-      return plugin?.ToPrincipal();
+      return plugin?.ToDomain();
     }
     catch (Exception e)
     {
@@ -452,18 +456,41 @@ public class PluginRepository : IPluginRepository
     }
   }
 
-  public async Task<Result<PluginVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version)
+  public async Task<Result<PluginVersion?>> GetVersion(string username, string name)
+  {
+    try
+    {
+      this._logger.LogInformation("Getting plugin version '{Username}/{Name}'", username, name);
+      var plugin = await this._db.PluginVersions
+        .Include(x => x.Plugin)
+        .ThenInclude(x => x.User)
+        .Where(x => x.Plugin.User.Username == username && x.Plugin.Name == name)
+        .OrderByDescending(x => x.Version)
+        .FirstOrDefaultAsync();
+
+      return plugin?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      this._logger
+        .LogError(e, "Failed to get plugin version '{Username}/{Name}'", username, name);
+      return e;
+    }
+  }
+
+  public async Task<Result<PluginVersion?>> GetVersion(string userId, Guid id, ulong version)
   {
     try
     {
       this._logger.LogInformation(
         "Getting plugin version for User '{UserId}', Plugin: '{PluginId}', Version: {Version}'", userId, id, version);
+
       var plugin = await this._db.PluginVersions
         .Include(x => x.Plugin)
         .Where(x => x.Plugin.UserId == userId && x.Plugin.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
 
-      return plugin?.ToPrincipal();
+      return plugin?.ToDomain();
     }
     catch (Exception e)
     {

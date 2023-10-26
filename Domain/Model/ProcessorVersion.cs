@@ -16,7 +16,7 @@ public record ProcessorVersion
   public required ProcessorPrincipal ProcessorPrincipal { get; init; }
 }
 
-public record ProcessorVersionRef(string Username, string Name, ulong Version);
+public record ProcessorVersionRef(string Username, string Name, ulong? Version);
 
 public record ProcessorVersionPrincipal
 {

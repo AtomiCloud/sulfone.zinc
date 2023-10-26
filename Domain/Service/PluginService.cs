@@ -8,11 +8,13 @@ namespace Domain.Service;
 public class PluginService : IPluginService
 {
   private readonly IPluginRepository _repo;
+  private readonly IUserRepository _user;
   private readonly ILogger<PluginService> _logger;
 
-  public PluginService(IPluginRepository repo, ILogger<PluginService> logger)
+  public PluginService(IPluginRepository repo, ILogger<PluginService> logger, IUserRepository user)
   {
     this._logger = logger;
+    this._user = user;
     this._repo = repo;
   }
 
@@ -68,7 +70,7 @@ public class PluginService : IPluginService
     return this._repo.SearchVersion(userId, id, version);
   }
 
-  public async Task<Result<PluginVersionPrincipal?>> GetVersion(string username, string name, ulong version,
+  public async Task<Result<PluginVersion?>> GetVersion(string username, string name, ulong version,
     bool bumpDownload)
   {
     if (bumpDownload)
@@ -80,17 +82,44 @@ public class PluginService : IPluginService
           if (r.IsFailure())
           {
             var err = r.FailureOrDefault();
-            this._logger.LogError(err, "Failed to increment download when obtaining version for Plugin '{Username}/{Name}:{Version}'",
+            this._logger.LogError(err,
+              "Failed to increment download when obtaining version for Plugin '{Username}/{Name}:{Version}'",
               username, name, version);
           }
+
           return r;
         });
     }
+
     return await this._repo
       .GetVersion(username, name, version);
   }
 
-  public Task<Result<PluginVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version)
+  public async Task<Result<PluginVersion?>> GetVersion(string username, string name, bool bumpDownload)
+  {
+    if (bumpDownload)
+    {
+      return await this._repo.GetVersion(username, name)
+        .DoAwait(DoType.Ignore, async _ =>
+        {
+          var r = await this._repo.IncrementDownload(username, name);
+          if (r.IsFailure())
+          {
+            var err = r.FailureOrDefault();
+            this._logger.LogError(err,
+              "Failed to increment download when obtaining version for Plugin '{Username}/{Name}'",
+              username, name);
+          }
+
+          return r;
+        });
+    }
+
+    return await this._repo
+      .GetVersion(username, name);
+  }
+
+  public Task<Result<PluginVersion?>> GetVersion(string userId, Guid id, ulong version)
   {
     return this._repo.GetVersion(userId, id, version);
   }
@@ -99,6 +128,20 @@ public class PluginService : IPluginService
     PluginVersionProperty property)
   {
     return this._repo.CreateVersion(userId, name, record, property);
+  }
+
+  public async Task<Result<PluginVersionPrincipal?>> Push(string username, PluginRecord pRecord,
+    PluginMetadata metadata, PluginVersionRecord record,
+    PluginVersionProperty property)
+  {
+    return await this._repo.Get(username, pRecord.Name)
+      .ThenAwait(async p =>
+      {
+        if (p != null) return p.Principal.ToResult();
+        return await this._user.GetByUsername(username)
+          .ThenAwait(u => this._repo.Create(u!.Principal.Id, pRecord, metadata));
+      })
+      .ThenAwait(x => this._repo.CreateVersion(username, pRecord.Name, record, property));
   }
 
   public Task<Result<PluginVersionPrincipal?>> CreateVersion(string userId, Guid id, PluginVersionRecord record,

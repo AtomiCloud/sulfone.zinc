@@ -25,9 +25,12 @@ public interface IProcessorService
 
   Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(string userId, Guid id, ProcessorVersionSearch version);
 
-  Task<Result<ProcessorVersionPrincipal?>> GetVersion(string username, string name, ulong version, bool bumpDownload);
+  Task<Result<ProcessorVersion?>> GetVersion(string username, string name, ulong version, bool bumpDownload);
 
-  Task<Result<ProcessorVersionPrincipal?>> GetVersion(string userId, Guid id, ulong version);
+  Task<Result<ProcessorVersion?>> GetVersion(string username, string name, bool bumpDownload);
+  Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version);
+
+
 
   Task<Result<ProcessorVersionPrincipal?>> CreateVersion(string username, string name, ProcessorVersionRecord record,
     ProcessorVersionProperty property);
@@ -39,4 +42,8 @@ public interface IProcessorService
 
   Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(string username, string name, ulong version,
     ProcessorVersionRecord record);
+
+  Task<Result<ProcessorVersionPrincipal?>> Push(string username, ProcessorRecord pRecord,
+    ProcessorMetadata metadata, ProcessorVersionRecord record,
+    ProcessorVersionProperty property);
 }

@@ -7,6 +7,20 @@ public record CreateProcessorVersionReq(
 
 public record UpdateProcessorVersionReq(string Description);
 
+public record PushProcessorReq(
+  string Name,
+  string Project,
+  string Source,
+  string Email,
+  string[] Tags,
+  string Description,
+  string Readme,
+
+  string VersionDescription,
+  string DockerReference,
+  string DockerSha
+);
+
 public record ProcessorVersionPrincipalResp(
   Guid Id, ulong Version, DateTime CreatedAt,
   string Description, string DockerReference, string DockerSha);
