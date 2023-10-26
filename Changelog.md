@@ -1,3 +1,10 @@
+## [1.12.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.11.1...v1.12.0) (2023-10-26)
+
+
+### New Features
+
+* get latest and single-endpoint push ([0fb6ee1](https://github.com/AtomiCloud/sulfone.zinc/commit/0fb6ee105664840d8f01a846fe09d723fb4efa5b))
+
 ## [1.11.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.11.0...v1.11.1) (2023-10-25)
 
 
