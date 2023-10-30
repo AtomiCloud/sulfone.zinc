@@ -1,3 +1,10 @@
+## [1.13.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.12.1...v1.13.0) (2023-10-30)
+
+
+### New Features
+
+* change domain ([272bee8](https://github.com/AtomiCloud/sulfone.zinc/commit/272bee89381a9d39c99e61352b6d8c713a560f2b))
+
 ## [1.12.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.12.0...v1.12.1) (2023-10-26)
 
 
