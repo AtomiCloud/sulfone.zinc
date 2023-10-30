@@ -62,13 +62,13 @@ api:
     annotations:
       cert-manager.io/cluster-issuer: "entei-zinc-letsencrypt-issuer"
     hosts:
-      - host: api.zinc.sulfone.raichu.apps.cluster.atomi.cloud
+      - host: api.zinc.sulfone.raichu.cluster.atomi.cloud
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - hosts:
-          - api.zinc.sulfone.raichu.apps.cluster.atomi.cloud
+          - api.zinc.sulfone.raichu.cluster.atomi.cloud
         secretName: api-zinc-sulfone-raichu-tls
 
 migration:
