@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.1...v1.14.2) (2023-11-05)
+
+
+### Bug Fixes
+
+* recursive queries on non-tracking ORMs ([c7920ae](https://github.com/AtomiCloud/sulfone.zinc/commit/c7920ae84f1ee941337ca15329a4cd51b6a9db1a))
+
 ## [1.14.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.0...v1.14.1) (2023-11-05)
 
 
