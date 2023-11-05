@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.2...v1.14.3) (2023-11-05)
+
+
+### Bug Fixes
+
+* incorrect projection of query from LINQ ([60ae56f](https://github.com/AtomiCloud/sulfone.zinc/commit/60ae56f8fe78bfb7cdc2cbe3022402743c06daaa))
+
 ## [1.14.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.1...v1.14.2) (2023-11-05)
 
 
