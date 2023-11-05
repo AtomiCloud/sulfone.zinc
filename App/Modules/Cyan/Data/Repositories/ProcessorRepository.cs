@@ -415,22 +415,24 @@ public class ProcessorRepository : IProcessorRepository
           : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
       );
 
-      query = query.Where(predicate)
+      var all = await query.Where(predicate).ToArrayAsync();
+      var grouped = all
         .GroupBy(x => new { x.Processor.Name, x.Processor.User.Username })
-        .Select(g => g.OrderByDescending(o => o.Version).First());
+        .Select(g => g.OrderByDescending(o => o.Version).First())
+        .ToArray();
 
-      var processors = await query.Select(x => x.ToPrincipal()).ToArrayAsync();
+      var processors = grouped.Select(x => x.ToPrincipal()).ToArray();
       this._logger.LogInformation("Processor References: {@ProcessorReferences}", processors.Select(x => x.Id));
 
       if (processors.Length != processorRefs.Length)
       {
-        var found = await query.Select(x => $"{x.Processor.User.Username}/{x.Processor.Name}:{x.Version}")
-          .ToArrayAsync();
+        var found = grouped.Select(x => $"{x.Processor.User.Username}/{x.Processor.Name}:{x.Version}").ToArray();
         var search = processorRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
         var notFound = search.Except(found).ToArray();
         return new MultipleEntityNotFound("Processors not found", typeof(ProcessorPrincipal), notFound, found)
           .ToException();
       }
+
       return processors;
     }
     catch (Exception e)

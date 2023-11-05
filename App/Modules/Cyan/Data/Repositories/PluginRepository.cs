@@ -411,17 +411,19 @@ public class PluginRepository : IPluginRepository
           : c.Or(x => x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username)
       );
 
-      query = query.Where(predicate)
+      var all = await query.Where(predicate).ToArrayAsync();
+      var grouped = all
         .GroupBy(x => new { x.Plugin.Name, x.Plugin.User.Username })
-        .Select(g => g.OrderByDescending(o => o.Version).First());
+        .Select(g => g.OrderByDescending(o => o.Version).First())
+        .ToArray();
 
-      var plugins = await query.Select(x => x.ToPrincipal()).ToArrayAsync();
+      var plugins = grouped.Select(x => x.ToPrincipal()).ToArray();
 
       this._logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
 
       if (plugins.Length != pluginRefs.Length)
       {
-        var found = await query.Select(x => $"{x.Plugin.User.Username}/{x.Plugin.Name}:{x.Version}").ToArrayAsync();
+        var found = grouped.Select(x => $"{x.Plugin.User.Username}/{x.Plugin.Name}:{x.Version}").ToArray();
         var search = pluginRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
         var notFound = search.Except(found);
         return new MultipleEntityNotFound("Plugins not found", typeof(PluginPrincipal), notFound.ToArray(),
