@@ -414,18 +414,20 @@ public class PluginRepository : IPluginRepository
 
       query = query.Where(predicate);
 
-      var pluginReferences = await query.ToArrayAsync();
-      this._logger.LogInformation("Plugin References: {@PluginReferences}", pluginReferences.Select(x => x.Id));
-      if (pluginReferences.Length != pluginRefs.Length)
+      var plugins = await query.Select(x => x.ToPrincipal()).ToArrayAsync();
+
+      this._logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
+
+      if (plugins.Length != pluginRefs.Length)
       {
-        var found = pluginReferences.Select(x => $"{x.Plugin.User.Username}/{x.Plugin.Name}:{x.Version}").ToArray();
+        var found = await query.Select(x => $"{x.Plugin.User.Username}/{x.Plugin.Name}:{x.Version}").ToArrayAsync();
         var search = pluginRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
         var notFound = search.Except(found);
         return new MultipleEntityNotFound("Plugins not found", typeof(PluginPrincipal), notFound.ToArray(),
           found.ToArray()).ToException();
       }
 
-      return pluginReferences.Select(x => x.ToPrincipal()).ToResult();
+      return plugins;
     }
     catch (Exception e)
     {
