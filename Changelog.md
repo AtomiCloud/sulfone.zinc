@@ -1,3 +1,10 @@
+## [1.14.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.13.0...v1.14.0) (2023-11-05)
+
+
+### New Features
+
+* increase request for raichu API ([b5880c0](https://github.com/AtomiCloud/sulfone.zinc/commit/b5880c0b945b0a0f359da46766ae2590f67c2608))
+
 ## [1.13.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.12.1...v1.13.0) (2023-10-30)
 
 
