@@ -407,12 +407,13 @@ public class PluginRepository : IPluginRepository
 
       predicate = pluginRefs.Aggregate(predicate, (c, r) =>
         r.Version != null
-          ? c.Or(x => x.Version == r.Version && x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username)
-          : c.Or(x => x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username &&
-                      x.Version == x.Plugin.Versions.Max(p => p.Version))
+          ? c.Or(x => x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username && x.Version == r.Version)
+          : c.Or(x => x.Plugin.Name == r.Name && x.Plugin.User.Username == r.Username)
       );
 
-      query = query.Where(predicate);
+      query = query.Where(predicate)
+        .GroupBy(x => new { x.Plugin.Name, x.Plugin.User.Username })
+        .Select(g => g.OrderByDescending(o => o.Version).First());
 
       var plugins = await query.Select(x => x.ToPrincipal()).ToArrayAsync();
 

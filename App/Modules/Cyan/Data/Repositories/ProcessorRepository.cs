@@ -400,25 +400,24 @@ public class ProcessorRepository : IProcessorRepository
     var processorRefs = references as ProcessorVersionRef[] ?? references.ToArray();
     try
     {
-      this._logger.LogInformation("Getting all plugin versions {@Processors}", processorRefs.ToJson());
+      this._logger.LogInformation("Getting all processors versions {@Processors}", processorRefs.ToJson());
       if (processorRefs.IsNullOrEmpty()) return Array.Empty<ProcessorVersionPrincipal>();
       var query = this._db.ProcessorVersions
         .Include(x => x.Processor)
         .ThenInclude(x => x.User)
-        .Include(x => x.Processor)
-        .ThenInclude(x => x.Versions)
         .AsQueryable();
 
       var predicate = PredicateBuilder.New<ProcessorVersionData>(true);
 
       predicate = processorRefs.Aggregate(predicate, (c, r) =>
         r.Version != null
-          ? c.Or(x => x.Version == r.Version && x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
-          : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username &&
-                      x.Version == x.Processor.Versions.Max(p => p.Version))
+          ? c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username && x.Version == r.Version)
+          : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
       );
 
-      query = query.Where(predicate);
+      query = query.Where(predicate)
+        .GroupBy(x => new { x.Processor.Name, x.Processor.User.Username })
+        .Select(g => g.OrderByDescending(o => o.Version).First());
 
       var processors = await query.Select(x => x.ToPrincipal()).ToArrayAsync();
       this._logger.LogInformation("Processor References: {@ProcessorReferences}", processors.Select(x => x.Id));
