@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.0...v1.14.1) (2023-11-05)
+
+
+### Bug Fixes
+
+* recursive problem when materialising ORM query ([8420d53](https://github.com/AtomiCloud/sulfone.zinc/commit/8420d5334fd3e201165ddf1f7678e2232c3a74ab))
+
 ## [1.14.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.13.0...v1.14.0) (2023-11-05)
 
 
