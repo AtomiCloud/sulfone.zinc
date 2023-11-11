@@ -53,10 +53,10 @@ public static class PluginVersionMapper
     data with { Description = record.Description, };
 
   public static PluginVersionData HydrateData(this PluginVersionData data, PluginVersionProperty record) =>
-    data with { DockerReference = record.DockerReference, DockerSha = record.DockerSha, };
+    data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag, };
 
   public static PluginVersionProperty ToProperty(this PluginVersionData data) =>
-    new() { DockerReference = data.DockerReference, DockerSha = data.DockerSha, };
+    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag, };
 
   public static PluginVersionRecord ToRecord(this PluginVersionData data) =>
     new() { Description = data.Description, };

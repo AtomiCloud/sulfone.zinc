@@ -58,6 +58,15 @@ public static class ValidationUtility
       .WithMessage("DateOnly must be in the format of dd-mm-yyyy");
   }
 
+  public static IRuleBuilderOptions<T, string> TagValid<T>(this IRuleBuilder<T, string> ruleBuilder)
+  {
+    return ruleBuilder
+      .Length(1, 32)
+      .WithMessage("Docker tag must be between 1 and 32 characters")
+      .Matches(@"^[a-z0-9](\-?[a-z0-9]+)*$")
+      .WithMessage("Docker tag can only contain alphanumeric characters and dashes, and cannot star or end with dash");
+  }
+
   public static IRuleBuilderOptions<T, string> UsernameValid<T>(
     this IRuleBuilder<T, string> ruleBuilder)
   {

@@ -23,9 +23,9 @@ public static class TemplateMapper
     new TemplateVersionProperty
     {
       BlobDockerReference = req.BlobDockerReference,
-      BlobDockerSha = req.BlobDockerSha,
+      BlobDockerTag = req.BlobDockerTag,
       TemplateDockerReference = req.TemplateDockerReference,
-      TemplateDockerSha = req.TemplateDockerSha,
+      TemplateDockerTag = req.TemplateDockerTag,
     }
   );
 
@@ -82,9 +82,9 @@ public static class TemplateVersionMapper
     new()
     {
       BlobDockerReference = req.BlobDockerReference,
-      BlobDockerSha = req.BlobDockerSha,
+      BlobDockerTag = req.BlobDockerTag,
       TemplateDockerReference = req.TemplateDockerReference,
-      TemplateDockerSha = req.TemplateDockerSha
+      TemplateDockerTag = req.TemplateDockerTag
     };
 
   public static TemplateVersionRecord ToDomain(this UpdateTemplateVersionReq req) =>
@@ -93,7 +93,8 @@ public static class TemplateVersionMapper
   public static TemplateVersionSearch ToDomain(this SearchTemplateVersionQuery query) =>
     new() { Search = query.Search, Limit = query.Limit ?? 20, Skip = query.Skip ?? 0, };
 
-  public static PluginVersionRef ToDomain(this PluginReferenceReq req) => new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+  public static PluginVersionRef ToDomain(this PluginReferenceReq req) =>
+    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
   public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
@@ -101,8 +102,8 @@ public static class TemplateVersionMapper
   public static TemplateVersionPrincipalResp ToResp(this TemplateVersionPrincipal principal) =>
     new(principal.Id, principal.Version, principal.CreatedAt,
       principal.Record.Description, principal.Property.BlobDockerReference,
-      principal.Property.BlobDockerSha, principal.Property.TemplateDockerReference,
-      principal.Property.TemplateDockerSha);
+      principal.Property.BlobDockerTag, principal.Property.TemplateDockerReference,
+      principal.Property.TemplateDockerTag);
 
   public static TemplateVersionResp ToResp(this TemplateVersion version) =>
     new(

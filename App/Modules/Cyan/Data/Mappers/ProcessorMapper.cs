@@ -59,10 +59,10 @@ public static class ProcessorVersionMapper
     data with { Description = record.Description, };
 
   public static ProcessorVersionData HydrateData(this ProcessorVersionData data, ProcessorVersionProperty record) =>
-    data with { DockerReference = record.DockerReference, DockerSha = record.DockerSha, };
+    data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag, };
 
   public static ProcessorVersionProperty ToProperty(this ProcessorVersionData data) =>
-    new() { DockerReference = data.DockerReference, DockerSha = data.DockerSha, };
+    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag, };
 
   public static ProcessorVersionRecord ToRecord(this ProcessorVersionData data) =>
     new() { Description = data.Description, };

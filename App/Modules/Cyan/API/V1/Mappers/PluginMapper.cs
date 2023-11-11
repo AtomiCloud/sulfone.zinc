@@ -20,7 +20,7 @@ public static class PluginMapper
       Readme = req.Readme
     },
     new PluginVersionRecord { Description = req.Description, },
-    new PluginVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha, }
+    new PluginVersionProperty { DockerReference = req.DockerReference, DockerTag = req.DockerTag, }
   );
 
   public static (PluginRecord, PluginMetadata) ToDomain(this CreatePluginReq req) =>
@@ -70,7 +70,7 @@ public static class PluginMapper
 public static class PluginVersionMapper
 {
   public static (PluginVersionProperty, PluginVersionRecord) ToDomain(this CreatePluginVersionReq req) =>
-    (new PluginVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha },
+    (new PluginVersionProperty { DockerReference = req.DockerReference, DockerTag = req.DockerTag },
       new PluginVersionRecord { Description = req.Description });
 
   public static PluginVersionRecord ToDomain(this UpdatePluginVersionReq req) =>
@@ -82,7 +82,7 @@ public static class PluginVersionMapper
   public static PluginVersionPrincipalResp ToResp(this PluginVersionPrincipal principal) =>
     new(principal.Id, principal.Version, principal.CreatedAt,
       principal.Record.Description, principal.Property.DockerReference,
-      principal.Property.DockerSha);
+      principal.Property.DockerTag);
 
   public static PluginVersionResp ToResp(this PluginVersion version) =>
     new(version.Principal.ToResp(), version.PluginPrincipal.ToResp());

@@ -42,9 +42,9 @@ public record TemplateVersionProperty
 {
   public required string BlobDockerReference { get; init; }
 
-  public required string BlobDockerSha { get; init; }
+  public required string BlobDockerTag { get; init; }
 
   public required string TemplateDockerReference { get; init; }
 
-  public required string TemplateDockerSha { get; init; }
+  public required string TemplateDockerTag { get; init; }
 }

@@ -20,7 +20,7 @@ public static class ProcessorMapper
       Readme = req.Readme
     },
     new ProcessorVersionRecord { Description = req.Description, },
-    new ProcessorVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha, }
+    new ProcessorVersionProperty { DockerReference = req.DockerReference, DockerTag = req.DockerTag, }
   );
 
   public static (ProcessorRecord, ProcessorMetadata) ToDomain(this CreateProcessorReq req) =>
@@ -70,23 +70,19 @@ public static class ProcessorMapper
 public static class ProcessorVersionMapper
 {
   public static (ProcessorVersionProperty, ProcessorVersionRecord) ToDomain(this CreateProcessorVersionReq req) =>
-    (new ProcessorVersionProperty { DockerReference = req.DockerReference, DockerSha = req.DockerSha },
+    (new ProcessorVersionProperty { DockerReference = req.DockerReference, DockerTag = req.DockerTag },
       new ProcessorVersionRecord { Description = req.Description });
 
-  public static ProcessorVersionRecord ToDomain(this UpdateProcessorVersionReq req) => new() { Description = req.Description };
+  public static ProcessorVersionRecord ToDomain(this UpdateProcessorVersionReq req) =>
+    new() { Description = req.Description };
 
   public static ProcessorVersionSearch ToDomain(this SearchProcessorVersionQuery query) =>
-    new()
-    {
-      Search = query.Search,
-      Limit = query.Limit ?? 20,
-      Skip = query.Skip ?? 0,
-    };
+    new() { Search = query.Search, Limit = query.Limit ?? 20, Skip = query.Skip ?? 0, };
 
   public static ProcessorVersionPrincipalResp ToResp(this ProcessorVersionPrincipal principal) =>
     new(principal.Id, principal.Version, principal.CreatedAt,
       principal.Record.Description, principal.Property.DockerReference,
-      principal.Property.DockerSha);
+      principal.Property.DockerTag);
 
   public static ProcessorVersionResp ToResp(this ProcessorVersion version) =>
     new(version.Principal.ToResp(), version.ProcessorPrincipal.ToResp());

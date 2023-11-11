@@ -12,7 +12,7 @@ public record PluginVersionData
 
   public string DockerReference { get; set; } = string.Empty;
 
-  public string DockerSha { get; set; } = string.Empty;
+  public string DockerTag { get; set; } = string.Empty;
 
   // Foreign Keys
   public Guid PluginId { get; set; }

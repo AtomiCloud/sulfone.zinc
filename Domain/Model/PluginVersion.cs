@@ -39,9 +39,7 @@ public record PluginVersionRecord
 
 public record PluginVersionProperty
 {
-
   public required string DockerReference { get; init; }
 
-  public required string DockerSha { get; init; }
-
+  public required string DockerTag { get; init; }
 }

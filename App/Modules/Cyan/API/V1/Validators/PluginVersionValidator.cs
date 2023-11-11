@@ -21,8 +21,8 @@ public class CreatePluginVersionReqValidator : AbstractValidator<CreatePluginVer
       .DescriptionValid();
     this.RuleFor(x => x.DockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.DockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.DockerTag)
+      .TagValid();
   }
 }
 
@@ -61,7 +61,7 @@ public class PushPluginReqValidator : AbstractValidator<PushPluginReq>
       .DescriptionValid();
     this.RuleFor(x => x.DockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.DockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.DockerTag)
+      .TagValid();
   }
 }

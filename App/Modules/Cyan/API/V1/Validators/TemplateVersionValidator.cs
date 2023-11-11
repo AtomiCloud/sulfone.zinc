@@ -21,12 +21,12 @@ public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplat
       .DescriptionValid();
     this.RuleFor(x => x.BlobDockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.BlobDockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.BlobDockerTag)
+      .TagValid();
     this.RuleFor(x => x.TemplateDockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.TemplateDockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.TemplateDockerTag)
+      .TagValid();
   }
 }
 
@@ -65,11 +65,11 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
       .DescriptionValid();
     this.RuleFor(x => x.BlobDockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.BlobDockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.BlobDockerTag)
+      .TagValid();
     this.RuleFor(x => x.TemplateDockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.TemplateDockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.TemplateDockerTag)
+      .TagValid();
   }
 }

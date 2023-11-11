@@ -5,9 +5,9 @@ public record SearchTemplateVersionQuery(string? Search, int? Limit, int? Skip);
 public record CreateTemplateVersionReq(
   string Description,
   string BlobDockerReference,
-  string BlobDockerSha,
+  string BlobDockerTag,
   string TemplateDockerReference,
-  string TemplateDockerSha,
+  string TemplateDockerTag,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors
 );
@@ -20,12 +20,11 @@ public record PushTemplateReq(
   string[] Tags,
   string Description,
   string Readme,
-
   string VersionDescription,
   string BlobDockerReference,
-  string BlobDockerSha,
+  string BlobDockerTag,
   string TemplateDockerReference,
-  string TemplateDockerSha,
+  string TemplateDockerTag,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors
 );
@@ -39,8 +38,8 @@ public record UpdateTemplateVersionReq(string Description);
 public record TemplateVersionPrincipalResp(
   Guid Id, ulong Version, DateTime CreatedAt,
   string Description,
-  string BlobDockerReference, string BlobDockerSha,
-  string TemplateDockerReference, string TemplateDockerSha
+  string BlobDockerReference, string BlobDockerTag,
+  string TemplateDockerReference, string TemplateDockerTag
 );
 
 public record TemplateVersionResp(

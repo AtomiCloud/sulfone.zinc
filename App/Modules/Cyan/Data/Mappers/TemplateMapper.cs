@@ -62,18 +62,18 @@ public static class TemplateVersionMapper
     data with
     {
       BlobDockerReference = record.BlobDockerReference,
-      BlobDockerSha = record.BlobDockerSha,
+      BlobDockerTag = record.BlobDockerTag,
       TemplateDockerReference = record.TemplateDockerReference,
-      TemplateDockerSha = record.TemplateDockerSha,
+      TemplateDockerTag = record.TemplateDockerTag,
     };
 
   public static TemplateVersionProperty ToProperty(this TemplateVersionData data) =>
     new()
     {
       BlobDockerReference = data.BlobDockerReference,
-      BlobDockerSha = data.BlobDockerSha,
+      BlobDockerTag = data.BlobDockerTag,
       TemplateDockerReference = data.TemplateDockerReference,
-      TemplateDockerSha = data.TemplateDockerSha,
+      TemplateDockerTag = data.TemplateDockerTag,
     };
 
   public static TemplateVersionRecord ToRecord(this TemplateVersionData data) =>

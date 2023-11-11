@@ -12,11 +12,11 @@ public record TemplateVersionData
 
   public string BlobDockerReference { get; set; } = string.Empty;
 
-  public string BlobDockerSha { get; set; } = string.Empty;
+  public string BlobDockerTag { get; set; } = string.Empty;
 
   public string TemplateDockerReference { get; set; } = string.Empty;
 
-  public string TemplateDockerSha { get; set; } = string.Empty;
+  public string TemplateDockerTag { get; set; } = string.Empty;
 
   // Foreign Keys
   public Guid TemplateId { get; set; }

@@ -21,8 +21,8 @@ public class CreateProcessorVersionReqValidator : AbstractValidator<CreateProces
       .DescriptionValid();
     this.RuleFor(x => x.DockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.DockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.DockerTag)
+      .TagValid();
   }
 }
 
@@ -61,7 +61,7 @@ public class PushProcessorReqValidator : AbstractValidator<PushProcessorReq>
       .DescriptionValid();
     this.RuleFor(x => x.DockerReference)
       .DockerReferenceValid();
-    this.RuleFor(x => x.DockerSha)
-      .ShaValid();
+    this.RuleFor(x => x.DockerTag)
+      .TagValid();
   }
 }
