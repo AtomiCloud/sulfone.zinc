@@ -116,6 +116,7 @@ migration:
       Mode: Migration
 
   backoffLimit: 4
+
   configMountPath: /app/Config
 
   image:
