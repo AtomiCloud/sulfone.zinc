@@ -1,3 +1,10 @@
+## [1.15.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.3...v1.15.0) (2023-11-11)
+
+
+### New Features
+
+* migrate to tag-based images ([7b3e966](https://github.com/AtomiCloud/sulfone.zinc/commit/7b3e9667b099db6ec1b7c4a9d2544914e01b19c6))
+
 ## [1.14.3](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.2...v1.14.3) (2023-11-05)
 
 
