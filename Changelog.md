@@ -1,3 +1,10 @@
+## [1.16.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.15.0...v1.16.0) (2023-11-19)
+
+
+### New Features
+
+* remove TTL for migration ([373ad40](https://github.com/AtomiCloud/sulfone.zinc/commit/373ad4050ea8b1a0e0b346b0330f2e75f2b32066))
+
 ## [1.15.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.14.3...v1.15.0) (2023-11-11)
 
 
