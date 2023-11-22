@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.0...v1.16.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* remove job TTL ([bedfb1d](https://github.com/AtomiCloud/sulfone.zinc/commit/bedfb1d7586c5de762ea51dbf4a4f6dde1969cf7))
+
 ## [1.16.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.15.0...v1.16.0) (2023-11-19)
 
 
