@@ -74,6 +74,7 @@ Root Chart to a single Service
 | maindb.nameOverride | string | `"main-database"` |  |
 | maindb.primary.persistence.enabled | bool | `false` |  |
 | migration.affinity | object | `{}` |  |
+| migration.annotations."argocd.argoproj.io/hook-delete-policy" | string | `"HookSucceeded"` |  |
 | migration.annotations."argocd.argoproj.io/sync-wave" | string | `"3"` |  |
 | migration.appSettings.App.Mode | string | `"Migration"` |  |
 | migration.aspNetEnv | string | `"Development"` |  |

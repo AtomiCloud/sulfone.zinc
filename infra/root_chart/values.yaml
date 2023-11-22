@@ -102,6 +102,8 @@ api:
 migration:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
   enabled: false
   nameOverride: "migration"
   fullnameOverride: ""
