@@ -127,6 +127,15 @@ pre-commit-lib.run {
       pass_filenames = false;
     };
 
+    a-infisical-staged = {
+      enable = true;
+      name = "Secrets Scanning (Staged files)";
+      description = "Scan for possible secrets in staged files";
+      entry = "${packages.infisical}/bin/infisical scan git-changes --staged -v";
+      language = "system";
+      pass_filenames = false;
+    };
+
     a-gitlint = {
       enable = true;
       name = "Gitlint";
