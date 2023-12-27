@@ -19,6 +19,7 @@ api:
   enabled: true
   annotations:
     argocd.argoproj.io/sync-wave: "4"
+    drop_log: "true"
   nameOverride: "api"
   fullnameOverride: ""
 
@@ -103,6 +104,7 @@ migration:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    drop_log: "true"
 
   enabled: false
   nameOverride: "migration"
