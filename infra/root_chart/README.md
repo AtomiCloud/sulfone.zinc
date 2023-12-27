@@ -18,6 +18,7 @@ Root Chart to a single Service
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | api.affinity | object | `{}` |  |
+| api.annotations."argocd.argoproj.io/hook" | string | `"Sync"` |  |
 | api.annotations."argocd.argoproj.io/sync-wave" | string | `"4"` |  |
 | api.annotations.drop_log | string | `"true"` |  |
 | api.appSettings.App.Mode | string | `"Server"` |  |
@@ -39,12 +40,14 @@ Root Chart to a single Service
 | api.ingress.tls[0].secretName | string | `"sample"` |  |
 | api.livenessProbe.httpGet.path | string | `"/"` |  |
 | api.livenessProbe.httpGet.port | string | `"http"` |  |
+| api.livenessProbe.periodSeconds | int | `30` |  |
 | api.nameOverride | string | `"api"` |  |
 | api.nodeSelector | object | `{}` |  |
 | api.podAnnotations | object | `{}` |  |
 | api.podSecurityContext | object | `{}` |  |
 | api.readinessProbe.httpGet.path | string | `"/"` |  |
 | api.readinessProbe.httpGet.port | string | `"http"` |  |
+| api.readinessProbe.periodSeconds | int | `30` |  |
 | api.replicaCount | int | `1` |  |
 | api.resources.limits.cpu | string | `"1"` |  |
 | api.resources.limits.memory | string | `"1Gi"` |  |
@@ -66,7 +69,7 @@ Root Chart to a single Service
 | api.topologySpreadConstraints | object | `{}` |  |
 | bromine.annotations."argocd.argoproj.io/sync-wave" | string | `"1"` |  |
 | bromine.enable | bool | `false` |  |
-| bromine.rootSecret | object | `{"ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
+| bromine.rootSecret | object | `{"name":"sulfone-zinc-doppler","ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
 | bromine.rootSecret.ref | string | `"SULFONE_ZINC"` | DOPPLER Token Reference |
 | bromine.storeName | string | `"sulfone-zinc"` | Store name to create |
 | maindb.auth.database | string | `"sulfone-zinc"` |  |
@@ -75,7 +78,7 @@ Root Chart to a single Service
 | maindb.nameOverride | string | `"main-database"` |  |
 | maindb.primary.persistence.enabled | bool | `false` |  |
 | migration.affinity | object | `{}` |  |
-| migration.annotations."argocd.argoproj.io/hook-delete-policy" | string | `"HookSucceeded"` |  |
+| migration.annotations."argocd.argoproj.io/hook" | string | `"Sync"` |  |
 | migration.annotations."argocd.argoproj.io/sync-wave" | string | `"3"` |  |
 | migration.annotations.drop_log | string | `"true"` |  |
 | migration.appSettings.App.Mode | string | `"Migration"` |  |

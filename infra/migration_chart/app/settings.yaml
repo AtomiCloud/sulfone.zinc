@@ -7,7 +7,7 @@ Kestrel:
       Url: http://+:9001
 Logging:
   LogLevel:
-    Default: None
+    Default: Information
   Console:
     LogLevel:
       Default: Information

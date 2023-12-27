@@ -15,10 +15,13 @@ bromine:
     # -- DOPPLER Token Reference
     ref: "SULFONE_ZINC"
 
+    name: "sulfone-zinc-doppler"
+
 api:
   enabled: true
   annotations:
     argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/hook: Sync
     drop_log: "true"
   nameOverride: "api"
   fullnameOverride: ""
@@ -83,11 +86,13 @@ api:
 
   autoscaling: {}
   readinessProbe:
+    periodSeconds: 30
     httpGet:
       path: /
       port: http
 
   livenessProbe:
+    periodSeconds: 30
     httpGet:
       path: /
       port: http
@@ -103,13 +108,13 @@ api:
 migration:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/hook: Sync
     drop_log: "true"
 
   enabled: false
   nameOverride: "migration"
-  fullnameOverride: ""
 
+  fullnameOverride: ""
   serviceTree:
     <<: *serviceTree
     module: migration
