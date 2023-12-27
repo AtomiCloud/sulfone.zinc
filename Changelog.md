@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.1...v1.16.2) (2023-12-27)
+
+
+### Bug Fixes
+
+* drop_log annotation to disable double logging ([6252749](https://github.com/AtomiCloud/sulfone.zinc/commit/6252749d6b6814a57aa3a6eee1623f32ff21a7a5))
+
 ## [1.16.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.0...v1.16.1) (2023-11-22)
 
 
