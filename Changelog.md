@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.2...v1.16.3) (2023-12-27)
+
+
+### Bug Fixes
+
+* missing logs and longer healthcheck period ([5ce2d87](https://github.com/AtomiCloud/sulfone.zinc/commit/5ce2d872555d8ef50816ee6143390a831db7daf4))
+
 ## [1.16.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.1...v1.16.2) (2023-12-27)
 
 
