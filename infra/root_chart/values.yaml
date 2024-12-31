@@ -1,30 +1,34 @@
 serviceTree: &serviceTree
   landscape: lapras
   platform: sulfone
-  service: zinc
-  layer: "2"
+  service: &service zinc
+  layer: '2'
 
 bromine:
+  serviceTree:
+    <<: *serviceTree
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: '1'
   enable: false
-  # -- Store name to create
-  storeName: sulfone-zinc
-  # -- Secret of Secrets reference
+  storeName: *service
   rootSecret:
-    # -- DOPPLER Token Reference
-    ref: "SULFONE_ZINC"
-
-    name: "sulfone-zinc-doppler"
+    name: *service
+    # -- Infisical Token Reference
+    ref:
+      clientId: SULFONE_ZINC_CLIENT_ID
+      clientSecret: SULFONE_ZINC_CLIENT_SECRET
+  target: *service
 
 api:
   enabled: true
   annotations:
-    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-wave: '4'
     argocd.argoproj.io/hook: Sync
-    drop_log: "true"
-  nameOverride: "api"
-  fullnameOverride: ""
+    drop_log: 'true'
+  nameOverride: 'api'
+  fullnameOverride: ''
+
+  envFromSecret: *service
 
   serviceTree:
     <<: *serviceTree
@@ -44,12 +48,12 @@ api:
     repository: sulfone-zinc-api
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: ''
 
   serviceAccount:
     create: false
     annotations: {}
-    name: ""
+    name: ''
 
   podAnnotations: {}
 
@@ -78,7 +82,7 @@ api:
 
   resources:
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
     requests:
       cpu: 100m
@@ -106,15 +110,16 @@ api:
   topologySpreadConstraints: {}
 
 migration:
+  envFromSecret: *service
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: '3'
     argocd.argoproj.io/hook: Sync
-    drop_log: "true"
+    drop_log: 'true'
 
   enabled: false
-  nameOverride: "migration"
+  nameOverride: 'migration'
 
-  fullnameOverride: ""
+  fullnameOverride: ''
   serviceTree:
     <<: *serviceTree
     module: migration
@@ -132,14 +137,14 @@ migration:
     repository: sulfone-zinc-migration
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: ''
 
   imagePullSecrets: []
 
   serviceAccount:
     create: false
     annotations: {}
-    name: ""
+    name: ''
 
   podAnnotations: {}
 

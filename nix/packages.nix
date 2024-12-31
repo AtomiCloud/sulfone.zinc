@@ -1,4 +1,4 @@
-{ pkgs, pkgs-2305, atomi, pkgs-feb-23-24 }:
+{ pkgs, pkgs-2305, pkgs-2411, atomi, pkgs-feb-23-24 }:
 let
 
   all = {
@@ -6,7 +6,6 @@ let
       with atomi;
       {
         inherit
-          infisical
           mirrord
           pls
           sg;
@@ -19,6 +18,13 @@ let
           tilt
           dotnet-sdk_8
           hadolint;
+      }
+    );
+    nix-2411 = (
+      with pkgs-2411;
+      {
+        inherit
+          infisical;
       }
     );
     feb-23-24 = (
@@ -57,6 +63,7 @@ let
   };
 in
 with all;
+nix-2411 //
 nix-2305 //
 atomipkgs //
 feb-23-24

@@ -10,7 +10,7 @@ Root Chart to a single Service
 |------------|------|---------|
 | file://../api_chart | api(dotnet-chart) | 0.1.0 |
 | file://../migration_chart | migration(dotnet-migration) | 0.1.0 |
-| oci://ghcr.io/atomicloud/sulfoxide.bromine | bromine(sulfoxide-bromine) | 1.2.3 |
+| oci://ghcr.io/atomicloud/sulfoxide.bromine | bromine(sulfoxide-bromine) | 1.6.0 |
 | oci://registry-1.docker.io/bitnamicharts | maindb(postgresql) | 12.5.5 |
 
 ## Values
@@ -25,6 +25,7 @@ Root Chart to a single Service
 | api.autoscaling | object | `{}` |  |
 | api.configMountPath | string | `"/app/Config"` |  |
 | api.enabled | bool | `true` |  |
+| api.envFromSecret | string | `"zinc"` |  |
 | api.fullnameOverride | string | `""` |  |
 | api.image.pullPolicy | string | `"IfNotPresent"` |  |
 | api.image.repository | string | `"sulfone-zinc-api"` |  |
@@ -69,9 +70,14 @@ Root Chart to a single Service
 | api.topologySpreadConstraints | object | `{}` |  |
 | bromine.annotations."argocd.argoproj.io/sync-wave" | string | `"1"` |  |
 | bromine.enable | bool | `false` |  |
-| bromine.rootSecret | object | `{"name":"sulfone-zinc-doppler","ref":"SULFONE_ZINC"}` | Secret of Secrets reference |
-| bromine.rootSecret.ref | string | `"SULFONE_ZINC"` | DOPPLER Token Reference |
-| bromine.storeName | string | `"sulfone-zinc"` | Store name to create |
+| bromine.rootSecret.name | string | `"zinc"` |  |
+| bromine.rootSecret.ref | object | `{"clientId":"SULFONE_ZINC_CLIENT_ID","clientSecret":"SULFONE_ZINC_CLIENT_SECRET"}` | Infisical Token Reference |
+| bromine.serviceTree.<<.landscape | string | `"lapras"` |  |
+| bromine.serviceTree.<<.layer | string | `"2"` |  |
+| bromine.serviceTree.<<.platform | string | `"sulfone"` |  |
+| bromine.serviceTree.<<.service | string | `"zinc"` |  |
+| bromine.storeName | string | `"zinc"` |  |
+| bromine.target | string | `"zinc"` |  |
 | maindb.auth.database | string | `"sulfone-zinc"` |  |
 | maindb.auth.password | string | `"supersecret"` |  |
 | maindb.auth.username | string | `"admin"` |  |
@@ -86,6 +92,7 @@ Root Chart to a single Service
 | migration.backoffLimit | int | `4` |  |
 | migration.configMountPath | string | `"/app/Config"` |  |
 | migration.enabled | bool | `false` |  |
+| migration.envFromSecret | string | `"zinc"` |  |
 | migration.fullnameOverride | string | `""` |  |
 | migration.image.pullPolicy | string | `"IfNotPresent"` |  |
 | migration.image.repository | string | `"sulfone-zinc-migration"` |  |

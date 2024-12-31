@@ -3,8 +3,8 @@ serviceTree:
 
 bromine:
   enable: true
-
-  target: &target "sulfone-zinc"
+  serviceTree:
+    landscape: *landscape
 
 # -- YAML Anchor for PodSecurityContext
 podSecurityContext: &podSecurityContext
@@ -36,14 +36,12 @@ xSecurityContext: &migrateSecurityContext
 
 api:
   enabled: true
-  envFromSecret: *target
 
-  fullnameOverride: "zinc-api"
-
+  fullnameOverride: 'zinc-api'
   serviceTree:
     landscape: *landscape
   image:
-    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
+    repository: ghcr.io/atomicloud/sulfone.zinc/api
   imagePullSecrets: []
   securityContext: *securityContext
   podSecurityContext: *podSecurityContext
@@ -60,7 +58,7 @@ api:
     enabled: true
     className: nginx
     annotations:
-      cert-manager.io/cluster-issuer: "entei-zinc-letsencrypt-issuer"
+      cert-manager.io/cluster-issuer: 'entei-zinc-letsencrypt-issuer'
     hosts:
       - host: api.zinc.sulfone.pichu.cluster.atomi.cloud
         paths:
@@ -74,15 +72,14 @@ api:
 migration:
   enabled: true
 
-  fullnameOverride: "zinc-migration"
+  fullnameOverride: 'zinc-migration'
 
-  envFromSecret: *target
   securityContext: *migrateSecurityContext
   podSecurityContext: *podSecurityContext
   configMountPath: /app/Config
 
   image:
-    repository: ghcr.io/atomicloud/sulfone.zinc/migrate-amd
+    repository: ghcr.io/atomicloud/sulfone.zinc/migrate
   serviceTree:
     landscape: *landscape
 
