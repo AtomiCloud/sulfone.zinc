@@ -38,6 +38,7 @@ plugins:
         - Changelog.md
         - CommitConventions.md
   - module: '@semantic-release/github'
+    version: 10.3.5
 
 # Angular Conventional Commit Example: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
 types:
