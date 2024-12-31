@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.1...v1.17.2) (2024-12-31)
+
+
+### Bug Fixes
+
+* incorret pikachu image reference ([0c109e6](https://github.com/AtomiCloud/sulfone.zinc/commit/0c109e6163ab95094852e7ff1418cd8281771b7a))
+
 ## [1.17.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.0...v1.17.1) (2024-12-31)
 
 
