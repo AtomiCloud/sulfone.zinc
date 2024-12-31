@@ -1,3 +1,18 @@
+## [1.17.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.3...v1.17.0) (2024-12-31)
+
+
+### New Features
+
+* migrate to infisical ([e81e93d](https://github.com/AtomiCloud/sulfone.zinc/commit/e81e93d4780d666fac22a5fe057857af232b41bc))
+* upgrade all actions ([63c94c4](https://github.com/AtomiCloud/sulfone.zinc/commit/63c94c465e630290c7bbe0a347ea8834eaac9ce1))
+
+
+### Bug Fixes
+
+* atomi_release configurations ([fcd8bb8](https://github.com/AtomiCloud/sulfone.zinc/commit/fcd8bb83e6a96fb797f88e5b4a34797467004756))
+* missing version for github release for sg ([52d94bb](https://github.com/AtomiCloud/sulfone.zinc/commit/52d94bb99cf0eb72ee8ebbc634599e508cca6fc5))
+* precommit failures ([dc65924](https://github.com/AtomiCloud/sulfone.zinc/commit/dc659240c93cffc2c7abeddfe36677cada9ff897))
+
 ## [1.16.3](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.2...v1.16.3) (2023-12-27)
 
 
