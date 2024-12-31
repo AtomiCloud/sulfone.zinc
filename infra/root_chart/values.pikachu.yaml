@@ -39,7 +39,7 @@ api:
   serviceTree:
     landscape: *landscape
   image:
-    repository: ghcr.io/atomicloud/sulfone.zinc/api-amd
+    repository: ghcr.io/atomicloud/sulfone.zinc/api
   imagePullSecrets: []
   securityContext: *securityContext
   podSecurityContext: *podSecurityContext
@@ -82,7 +82,7 @@ migration:
   configMountPath: /app/Config
 
   image:
-    repository: ghcr.io/atomicloud/sulfone.zinc/migrate-amd
+    repository: ghcr.io/atomicloud/sulfone.zinc/migrate
   serviceTree:
     landscape: *landscape
 
