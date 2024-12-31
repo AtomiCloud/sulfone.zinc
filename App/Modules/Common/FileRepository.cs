@@ -16,18 +16,9 @@ public interface IFileRepository
   Task<Result<string?>> SignedLink(string store, string key, int seconds);
 }
 
-public class FileRepository : IFileRepository
+public class FileRepository(IBlockStorageFactory factory, ContentInspector inspector) : IFileRepository
 {
-  private readonly IBlockStorageFactory _factory;
-  private readonly ContentInspector _inspector;
-
-  public FileRepository(IBlockStorageFactory factory, ContentInspector inspector)
-  {
-    this._factory = factory;
-    this._inspector = inspector;
-  }
-
-  private IBlockStorage Store(string key) => this._factory.Get(key);
+  private IBlockStorage Store(string key) => factory.Get(key);
 
   public Task<Result<string?>> Save(string store, string dir, string name, byte[] content, bool appendExt)
   {
@@ -43,7 +34,7 @@ public class FileRepository : IFileRepository
   {
     var s = this.Store(store);
     content.Position = 0;
-    var d = this._inspector
+    var d = inspector
       .Inspect(content)
       .MaxBy(x => x.Points)?.Definition;
 

@@ -1,6 +1,6 @@
 $schema: ./schema.json
 # Native
-AllowedHosts: "*"
+AllowedHosts: '*'
 Kestrel:
   Endpoints:
     Http:
@@ -28,7 +28,7 @@ App:
   GenerateConfig: false
 Swagger:
   Title: Lapras CarboxylicAcid Carbon API
-  Description: "Sulfone-Zinc: Registry API for CyanPrint"
+  Description: 'Sulfone-Zinc: Registry API for CyanPrint'
   OpenApiContact:
     Name: kirinnee
     Email: kirinnee97@gmail.com
@@ -49,14 +49,14 @@ Logs:
       Enabled: false
     Otlp:
       Enabled: false
-      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
+      Endpoint: 'http://silicon-otlp-collector.sulfoxide.svc:4317'
       ProcessorType: Batch # or simple
       Protocol: Grpc # or HttpProtobuf
       Timeout: 30000
       BatchSize: 512
       QueueSize: 2048
       Delay: 5000
-      Headers: ""
+      Headers: ''
 
 Trace:
   Instrument:
@@ -85,14 +85,14 @@ Trace:
       Enabled: false
     Otlp:
       Enabled: false
-      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
+      Endpoint: 'http://silicon-otlp-collector.sulfoxide.svc:4317'
       Timeout: 30000
       ProcessorType: Batch # or simple
       Protocol: Grpc # or HttpProtobuf
       BatchSize: 512
       QueueSize: 2048
       Delay: 5000
-      Headers: ""
+      Headers: ''
 
 Metrics:
   Instrument:
@@ -106,7 +106,7 @@ Metrics:
       ExportInterval: 1000
     Otlp:
       Enabled: false
-      Endpoint: "http://silicon-otlp-collector.sulfoxide.svc:4317"
+      Endpoint: 'http://silicon-otlp-collector.sulfoxide.svc:4317'
       ExportInterval: 1000
       Timeout: 30000
       ProcessorType: Batch # or simple
@@ -114,7 +114,7 @@ Metrics:
       BatchSize: 512
       QueueSize: 2048
       Delay: 5000
-      Headers: ""
+      Headers: ''
 
 # Infra-based
 Database:
@@ -138,8 +138,8 @@ Auth:
       OnlyAdmin:
         Target:
           - Admin
-        Type: "All"
-        Field: "roles"
+        Type: 'All'
+        Field: 'roles'
     Issuer: P2Wskb04HSJQRfckShfhtWXwUiUd
     Audience: P2Wskb04HSJQRfckShfhtWXwUiUd
     Domain: api.descope.com/P2Wskb04HSJQRfckShfhtWXwUiUd

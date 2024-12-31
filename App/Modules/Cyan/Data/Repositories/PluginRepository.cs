@@ -14,23 +14,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace App.Modules.Cyan.Data.Repositories;
 
-public class PluginRepository : IPluginRepository
+public class PluginRepository(MainDbContext db, ILogger<PluginRepository> logger) : IPluginRepository
 {
-  private readonly MainDbContext _db;
-  private readonly ILogger<PluginRepository> _logger;
-
-  public PluginRepository(MainDbContext db, ILogger<PluginRepository> logger)
-  {
-    this._db = db;
-    this._logger = logger;
-  }
-
   public async Task<Result<IEnumerable<PluginPrincipal>>> Search(PluginSearch search)
   {
     try
     {
-      this._logger.LogInformation("Searching for plugins with Search Params '{@SearchParams}'", search.ToJson());
-      var plugins = this._db.Plugins.AsQueryable();
+      logger.LogInformation("Searching for plugins with Search Params '{@SearchParams}'", search.ToJson());
+      var plugins = db.Plugins.AsQueryable();
 
       if (search.Owner != null)
         plugins = plugins
@@ -72,7 +63,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting plugins with Search Params '{@SearchParams}'", search.ToJson());
       return e;
     }
@@ -82,8 +73,8 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation("Getting plugin with '{ID}'", id);
-      var plugin = await this._db.Plugins
+      logger.LogInformation("Getting plugin with '{ID}'", id);
+      var plugin = await db.Plugins
         .Include(x => x.User)
         .Where(x => x.Id == id && x.UserId == userId)
         .Include(x => x.Likes)
@@ -103,7 +94,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting plugin '{PluginId}'", id);
       return e;
     }
@@ -113,8 +104,8 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation("Getting plugin '{Username}/{Name}'", username, name);
-      var plugin = await this._db.Plugins
+      logger.LogInformation("Getting plugin '{Username}/{Name}'", username, name);
+      var plugin = await db.Plugins
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .Include(x => x.Likes)
@@ -135,7 +126,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting plugin '{Username}/{Name}'", username, name);
       return e;
     }
@@ -154,16 +145,16 @@ public class PluginRepository : IPluginRepository
         User = null!,
         UserId = userId,
       };
-      this._logger.LogInformation("Creating plugin {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
+      logger.LogInformation("Creating plugin {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
         record.ToJson(), metadata.ToJson());
 
-      var r = this._db.Plugins.Add(data);
-      await this._db.SaveChangesAsync();
+      var r = db.Plugins.Add(data);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (UniqueConstraintException e)
     {
-      this._logger.LogError(e,
+      logger.LogError(e,
         "Failed to create plugin due to conflict: {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
         record.ToJson(), metadata.ToJson());
       return new AlreadyExistException("Failed to create Plugin due to conflicting with existing record", e,
@@ -171,7 +162,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed updating plugin {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
           record.ToJson(), metadata.ToJson());
       return e;
@@ -182,19 +173,19 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var v1 = await this._db.Plugins
+      var v1 = await db.Plugins
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
       if (v1 == null) return (PluginPrincipal?)null;
 
       var v3 = v1.HydrateData(v2) with { User = null!, };
-      var updated = this._db.Plugins.Update(v3);
-      await this._db.SaveChangesAsync();
+      var updated = db.Plugins.Update(v3);
+      await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to update Plugin with User ID '{UserID}' and Plugin ID '{PluginID}': {@Record}",
+      logger.LogError(e, "Failed to update Plugin with User ID '{UserID}' and Plugin ID '{PluginID}': {@Record}",
         userId, id, v2.ToJson());
       return e;
     }
@@ -204,20 +195,20 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var v1 = await this._db.Plugins
+      var v1 = await db.Plugins
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
       if (v1 == null) return (PluginPrincipal?)null;
 
       var v3 = v1.HydrateData(v2) with { User = null!, };
-      var updated = this._db.Plugins.Update(v3);
-      await this._db.SaveChangesAsync();
+      var updated = db.Plugins.Update(v3);
+      await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to update Plugin '{Username}/{Name}': {@Record}",
+      logger.LogError(e, "Failed to update Plugin '{Username}/{Name}': {@Record}",
         username, name, v2.ToJson());
       return e;
     }
@@ -227,18 +218,18 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var a = await this._db.Plugins
+      var a = await db.Plugins
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
       if (a == null) return (Unit?)null;
 
-      this._db.Plugins.Remove(a);
-      await this._db.SaveChangesAsync();
+      db.Plugins.Remove(a);
+      await db.SaveChangesAsync();
       return new Unit();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to delete Plugin '{PluginId}' for User '{UserId}", id, userId);
+      logger.LogError(e, "Failed to delete Plugin '{PluginId}' for User '{UserId}", id, userId);
       return e;
     }
   }
@@ -248,7 +239,7 @@ public class PluginRepository : IPluginRepository
     try
     {
       // check if like already exist
-      var likeExist = await this._db.PluginLikes
+      var likeExist = await db.PluginLikes
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .AnyAsync(x => x.UserId == likerId
@@ -260,7 +251,7 @@ public class PluginRepository : IPluginRepository
         return new LikeConflictError("Failed to like plugins", $"{username}/{name}", "plugin",
           like ? "like" : "unlike").ToException();
 
-      var p = await this._db.Plugins
+      var p = await db.Plugins
         .Include(x => x.User)
         .FirstOrDefaultAsync(x => x.User.Username == username && x.Name == name);
 
@@ -270,17 +261,17 @@ public class PluginRepository : IPluginRepository
       {
         // if like, check for conflict
         var l = new PluginLikeData { UserId = likerId, User = null!, PluginId = p.Id, Plugin = null! };
-        var r = this._db.PluginLikes.Add(l);
-        await this._db.SaveChangesAsync();
+        var r = db.PluginLikes.Add(l);
+        await db.SaveChangesAsync();
         return new Unit();
       }
       else
       {
-        var l = await this._db.PluginLikes
+        var l = await db.PluginLikes
           .FirstOrDefaultAsync(x => x.UserId == likerId && x.PluginId == p.Id);
         if (l == null)
         {
-          this._logger.LogError(
+          logger.LogError(
             "Race Condition, Failed to unlike Plugin '{Username}/{Name}' for User '{UserId}'. User-Plugin-Like entry does not exist even though it exist at the start of the query",
             username, name, likerId);
 
@@ -288,14 +279,14 @@ public class PluginRepository : IPluginRepository
             like ? "like" : "unlike").ToException();
         }
 
-        this._db.Remove(l with { User = null!, Plugin = null! });
-        await this._db.SaveChangesAsync();
+        db.Remove(l with { User = null!, Plugin = null! });
+        await db.SaveChangesAsync();
         return new Unit();
       }
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to {Like} Plugin '{Username}/{Name}' for User '{UserId}",
+      logger.LogError(e, "Failed to {Like} Plugin '{Username}/{Name}' for User '{UserId}",
         like ? "like" : "unlike", username, name, likerId);
       return e;
     }
@@ -305,7 +296,7 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var plugin = await this._db.Plugins
+      var plugin = await db.Plugins
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
@@ -313,13 +304,13 @@ public class PluginRepository : IPluginRepository
 
       plugin = plugin with { Downloads = plugin.Downloads + 1, User = null! };
 
-      var updated = this._db.Plugins.Update(plugin);
-      await this._db.SaveChangesAsync();
+      var updated = db.Plugins.Update(plugin);
+      await db.SaveChangesAsync();
       return updated.Entity.Downloads;
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to increment download count for Plugin '{Username}/{Name}'",
+      logger.LogError(e, "Failed to increment download count for Plugin '{Username}/{Name}'",
         username, name);
       return e;
     }
@@ -330,7 +321,7 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var query = this._db.PluginVersions
+      var query = db.PluginVersions
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .Where(x => x.Plugin.User.Username == username && x.Plugin.Name == name)
@@ -351,7 +342,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed searching plugin version of Plugin '{Username}/{Name}' with {@Params}",
           username, name, version.ToJson());
       return e;
@@ -363,7 +354,7 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      var query = this._db.PluginVersions
+      var query = db.PluginVersions
         .Include(x => x.Plugin)
         .Where(x => x.Plugin.UserId == userId && x.Plugin.Id == id)
         .AsQueryable();
@@ -383,7 +374,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed searching plugin version of Plugin '{PluginId}' of User '{UserId}' with {@Params}",
           id, userId, version.ToJson());
       return e;
@@ -395,9 +386,9 @@ public class PluginRepository : IPluginRepository
     var pluginRefs = references as PluginVersionRef[] ?? references.ToArray();
     try
     {
-      this._logger.LogInformation("Getting all plugin versions {@References}", pluginRefs.ToJson());
+      logger.LogInformation("Getting all plugin versions {@References}", pluginRefs.ToJson());
       if (pluginRefs.IsNullOrEmpty()) return Array.Empty<PluginVersionPrincipal>();
-      var query = this._db.PluginVersions
+      var query = db.PluginVersions
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .AsQueryable();
@@ -418,7 +409,7 @@ public class PluginRepository : IPluginRepository
 
       var plugins = grouped.Select(x => x.ToPrincipal()).ToArray();
 
-      this._logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
+      logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
 
       if (plugins.Length != pluginRefs.Length)
       {
@@ -433,7 +424,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed searching plugin versions '{@References}'", pluginRefs.ToJson());
       return e;
     }
@@ -443,8 +434,8 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation("Getting plugin version '{Username}/{Name}:{Version}'", username, name, version);
-      var plugin = await this._db.PluginVersions
+      logger.LogInformation("Getting plugin version '{Username}/{Name}:{Version}'", username, name, version);
+      var plugin = await db.PluginVersions
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .Where(x => x.Plugin.User.Username == username && x.Plugin.Name == name && x.Version == version)
@@ -454,7 +445,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get plugin version '{Username}/{Name}:{Version}'", username, name, version);
       return e;
     }
@@ -464,8 +455,8 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation("Getting plugin version '{Username}/{Name}'", username, name);
-      var plugin = await this._db.PluginVersions
+      logger.LogInformation("Getting plugin version '{Username}/{Name}'", username, name);
+      var plugin = await db.PluginVersions
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .Where(x => x.Plugin.User.Username == username && x.Plugin.Name == name)
@@ -476,7 +467,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get plugin version '{Username}/{Name}'", username, name);
       return e;
     }
@@ -486,10 +477,10 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Getting plugin version for User '{UserId}', Plugin: '{PluginId}', Version: {Version}'", userId, id, version);
 
-      var plugin = await this._db.PluginVersions
+      var plugin = await db.PluginVersions
         .Include(x => x.Plugin)
         .Where(x => x.Plugin.UserId == userId && x.Plugin.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
@@ -498,7 +489,7 @@ public class PluginRepository : IPluginRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get plugin version: User '{UserId}', Plugin '{Name}', Version {Version}'", userId, id,
           version);
       return e;
@@ -511,11 +502,11 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Creating plugin version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
         username, name, record.ToJson(), property.ToJson());
 
-      var plugin = await this._db.Plugins
+      var plugin = await db.Plugins
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
@@ -523,12 +514,12 @@ public class PluginRepository : IPluginRepository
       if (plugin == null) return (PluginVersionPrincipal?)null;
 
 
-      this._logger.LogInformation("Getting latest version for '{Username}/{Name}'", username, name);
-      var latest = this._db.PluginVersions
+      logger.LogInformation("Getting latest version for '{Username}/{Name}'", username, name);
+      var latest = db.PluginVersions
         .Where(x => x.PluginId == plugin.Id)
         .Max(x => x.Version as ulong?) ?? 0;
 
-      this._logger.LogInformation("Latest version for '{Username}/{Name}' is {Version}", username, name, latest);
+      logger.LogInformation("Latest version for '{Username}/{Name}' is {Version}", username, name, latest);
 
       var data = new PluginVersionData();
       data = data
@@ -542,13 +533,13 @@ public class PluginRepository : IPluginRepository
         CreatedAt = DateTime.UtcNow,
       };
 
-      var r = this._db.PluginVersions.Add(data);
-      await this._db.SaveChangesAsync();
+      var r = db.PluginVersions.Add(data);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to create plugin version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
           username, name, record.ToJson(), property.ToJson());
@@ -561,17 +552,17 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Creating plugin version for User '{UserId}', Plugin '{Id}' with Record {@Record} and Property {@Property} ",
         userId, id, record.ToJson(), property.ToJson());
 
-      var plugin = await this._db.Plugins
+      var plugin = await db.Plugins
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
 
       if (plugin == null) return (PluginVersionPrincipal?)null;
 
-      var latest = this._db.PluginVersions
+      var latest = db.PluginVersions
         .Where(x => x.PluginId == plugin.Id)
         .Max(x => x.Version);
 
@@ -587,13 +578,13 @@ public class PluginRepository : IPluginRepository
         CreatedAt = DateTime.Now,
       };
 
-      var r = this._db.PluginVersions.Add(data);
-      await this._db.SaveChangesAsync();
+      var r = db.PluginVersions.Add(data);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to create plugin version for User '{UserId}', Plugin '{Id}' with Record {@Record} and Property {@Property}",
           userId, id, record.ToJson(), property.ToJson());
@@ -606,12 +597,12 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Updating plugin '{Username}/{Name}:{Version}' with Record {@Record}",
         username, name, version, v2.ToJson());
 
 
-      var v1 = await this._db.PluginVersions
+      var v1 = await db.PluginVersions
         .Include(x => x.Plugin)
         .ThenInclude(x => x.User)
         .Where(x => x.Version == version && x.Plugin.Name == name && x.Plugin.User.Username == username)
@@ -625,13 +616,13 @@ public class PluginRepository : IPluginRepository
         Plugin = null!,
       };
 
-      var r = this._db.PluginVersions.Update(v3);
-      await this._db.SaveChangesAsync();
+      var r = db.PluginVersions.Update(v3);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to update plugin '{Username}/{Name}:{Version}' with Record {@Record}",
           username, name, version, v2.ToJson());
@@ -644,12 +635,12 @@ public class PluginRepository : IPluginRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Updating plugin for User '{UserId}', Plugin '{Id}' with Record {@Record}",
         userId, id, v2.ToJson());
 
 
-      var v1 = await this._db.PluginVersions
+      var v1 = await db.PluginVersions
         .Include(x => x.Plugin)
         .Where(x => x.Version == version && x.Plugin.Id == id && x.Plugin.UserId == userId)
         .FirstOrDefaultAsync();
@@ -662,13 +653,13 @@ public class PluginRepository : IPluginRepository
         Plugin = null!,
       };
 
-      var r = this._db.PluginVersions.Update(v3);
-      await this._db.SaveChangesAsync();
+      var r = db.PluginVersions.Update(v3);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to update plugin for User '{UserId}', Plugin '{Id}' with Record {@Record}",
           userId, id, v2.ToJson());

@@ -713,15 +713,7 @@
         "DatabaseOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "Host",
-            "User",
-            "Password",
-            "Port",
-            "Database",
-            "AutoMigrate",
-            "Timeout"
-          ],
+          "required": ["Host", "User", "Password", "Port", "Database", "AutoMigrate", "Timeout"],
           "properties": {
             "Host": {
               "type": "string",

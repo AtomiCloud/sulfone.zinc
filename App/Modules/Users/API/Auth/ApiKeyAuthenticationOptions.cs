@@ -14,17 +14,13 @@ public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions
   public string TokenHeaderName { get; set; } = "X-API-TOKEN";
 }
 
-public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
+public class ApiKeyAuthenticationHandler(
+  IOptionsMonitor<ApiKeyAuthenticationOptions> options,
+  ILoggerFactory logger,
+  UrlEncoder encoder,
+  ITokenService token)
+  : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
 {
-  private readonly ITokenService token;
-
-  public ApiKeyAuthenticationHandler
-  (IOptionsMonitor<ApiKeyAuthenticationOptions> options,
-    ILoggerFactory logger, UrlEncoder encoder, ITokenService token) : base(options, logger, encoder)
-  {
-    this.token = token;
-  }
-
   protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
   {
     //check header first
@@ -34,9 +30,9 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
     }
 
     //get the header and validate
-    string token = value!;
+    string token1 = value!;
 
-    var uR = await this.token.Validate(token);
+    var uR = await token.Validate(token1);
     if (uR.IsFailure()) return AuthenticateResult.Fail("Invalid token");
 
     var u = uR.Get();

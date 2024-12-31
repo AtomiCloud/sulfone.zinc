@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 vars:
   CHART_PATH: infra/root_chart

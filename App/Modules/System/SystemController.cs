@@ -9,19 +9,12 @@ namespace App.Modules.System;
 [ApiVersionNeutral]
 [ApiController]
 [Route("/")]
-public class SystemController : AtomiControllerBase
+public class SystemController(IOptionsSnapshot<AppOption> app) : AtomiControllerBase
 {
-  private readonly IOptionsSnapshot<AppOption> _app;
-
-  public SystemController(IOptionsSnapshot<AppOption> app)
-  {
-    this._app = app;
-  }
-
   [HttpGet]
   public ActionResult<object> SystemInfo()
   {
-    var v = this._app.Value;
+    var v = app.Value;
     return this.Ok(new
     {
       v.Landscape,

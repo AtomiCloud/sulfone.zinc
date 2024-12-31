@@ -7,22 +7,14 @@ using Minio;
 
 namespace App.StartUp.Migrator;
 
-public class BlockStorageMigrator
+public class BlockStorageMigrator(
+  ILogger<BlockStorageMigrator> logger,
+  IBlockStorageFactory factory,
+  IOptionsMonitor<Dictionary<string, BlockStorageOption>> store)
 {
-  private readonly ILogger<BlockStorageMigrator> _logger;
-  private readonly IBlockStorageFactory _factory;
-  private readonly IOptionsMonitor<Dictionary<string, BlockStorageOption>> _store;
-
-  public BlockStorageMigrator(ILogger<BlockStorageMigrator> logger, IBlockStorageFactory factory, IOptionsMonitor<Dictionary<string, BlockStorageOption>> store)
-  {
-    this._logger = logger;
-    this._factory = factory;
-    this._store = store;
-  }
-
   public async Task<Result<IEnumerable<Unit>>> Migrate()
   {
-    var result = await this._store.CurrentValue
+    var result = await store.CurrentValue
       .Select(x => this.MigrateBlockStorage(x.Key, x.Value))
       .AwaitAll();
     return result.ToResultOfSeq();
@@ -31,24 +23,24 @@ public class BlockStorageMigrator
   {
     if (!o.EnsureBucketCreation)
     {
-      this._logger.LogInformation("Bucket check skipped: {BlockStorageName}", key);
+      logger.LogInformation("Bucket check skipped: {BlockStorageName}", key);
       return new Unit();
     }
 
-    using var scope = this._logger.BeginScope("Check BlockStorage: {BlockStorageName}", key);
+    using var scope = logger.BeginScope("Check BlockStorage: {BlockStorageName}", key);
     try
     {
-      var b = this._factory.Get(key);
+      var b = factory.Get(key);
 
-      this._logger.LogInformation("Checking bucket for: {BlockStorageName}", key);
+      logger.LogInformation("Checking bucket for: {BlockStorageName}", key);
       var beArgs = new BucketExistsArgs().WithBucket(o.Bucket);
       var found = await b.Client.BucketExistsAsync(beArgs);
-      this._logger.LogInformation("Bucket {BucketName} Exist: {BucketExist}", key, found);
+      logger.LogInformation("Bucket {BucketName} Exist: {BucketExist}", key, found);
       if (found) return new Unit();
 
       var mbArgs = new MakeBucketArgs().WithBucket(o.Bucket);
       await b.Client.MakeBucketAsync(mbArgs);
-      this._logger.LogInformation("Bucket created: {BlockStorageName}", key);
+      logger.LogInformation("Bucket created: {BlockStorageName}", key);
       if (o.Policy != "Public") return new Unit();
       var policy = $$"""
   {
@@ -76,12 +68,12 @@ public class BlockStorageMigrator
         .WithPolicy(policy);
 
       await b.Client.SetPolicyAsync(spa).ConfigureAwait(false);
-      this._logger.LogInformation("Configured Bucket: {BlockStorageName}", key);
+      logger.LogInformation("Configured Bucket: {BlockStorageName}", key);
       return new Unit();
     }
     catch (Exception e)
     {
-      this._logger.LogCritical(e, "Bucket check failed: {Message}", e.Message);
+      logger.LogCritical(e, "Bucket check failed: {Message}", e.Message);
       return e;
     }
   }

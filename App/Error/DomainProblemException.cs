@@ -1,11 +1,6 @@
 namespace App.Error;
 
-public class DomainProblemException : Exception
+public class DomainProblemException(IDomainProblem problem) : Exception
 {
-  public DomainProblemException(IDomainProblem problem)
-  {
-    this.Problem = problem;
-  }
-
-  public IDomainProblem Problem { get; set; }
+  public IDomainProblem Problem { get; set; } = problem;
 }

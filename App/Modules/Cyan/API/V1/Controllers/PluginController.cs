@@ -22,43 +22,24 @@ namespace App.Modules.Cyan.API.V1.Controllers;
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class PluginController : AtomiControllerBase
+public class PluginController(
+  IPluginService service,
+  CreatePluginReqValidator createPluginReqValidator,
+  UpdatePluginReqValidator updatePluginReqValidator,
+  SearchPluginQueryValidator searchPluginQueryValidator,
+  CreatePluginVersionReqValidator createPluginVersionReqValidator,
+  UpdatePluginVersionReqValidator updatePluginVersionReqValidator,
+  SearchPluginVersionQueryValidator searchPluginVersionQueryValidator,
+  IUserService userService,
+  PushPluginReqValidator pluginReqValidator)
+  : AtomiControllerBase
 {
-  private readonly IPluginService _service;
-  private readonly IUserService _userService;
-  private readonly CreatePluginReqValidator _createPluginReqValidator;
-  private readonly UpdatePluginReqValidator _updatePluginReqValidator;
-  private readonly SearchPluginQueryValidator _searchPluginQueryValidator;
-  private readonly CreatePluginVersionReqValidator _createPluginVersionReqValidator;
-  private readonly UpdatePluginVersionReqValidator _updatePluginVersionReqValidator;
-  private readonly SearchPluginVersionQueryValidator _searchPluginVersionQueryValidator;
-  private readonly PushPluginReqValidator _pluginReqValidator;
-
-
-  public PluginController(IPluginService service,
-    CreatePluginReqValidator createPluginReqValidator, UpdatePluginReqValidator updatePluginReqValidator,
-    SearchPluginQueryValidator searchPluginQueryValidator,
-    CreatePluginVersionReqValidator createPluginVersionReqValidator,
-    UpdatePluginVersionReqValidator updatePluginVersionReqValidator,
-    SearchPluginVersionQueryValidator searchPluginVersionQueryValidator, IUserService userService, PushPluginReqValidator pluginReqValidator)
-  {
-    this._service = service;
-    this._createPluginReqValidator = createPluginReqValidator;
-    this._updatePluginReqValidator = updatePluginReqValidator;
-    this._searchPluginQueryValidator = searchPluginQueryValidator;
-    this._createPluginVersionReqValidator = createPluginVersionReqValidator;
-    this._updatePluginVersionReqValidator = updatePluginVersionReqValidator;
-    this._searchPluginVersionQueryValidator = searchPluginVersionQueryValidator;
-    this._userService = userService;
-    this._pluginReqValidator = pluginReqValidator;
-  }
-
   [HttpGet]
   public async Task<ActionResult<IEnumerable<PluginPrincipalResp>>> Search([FromQuery] SearchPluginQuery query)
   {
-    var plugins = await this._searchPluginQueryValidator
+    var plugins = await searchPluginQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginQuery")
-      .ThenAwait(x => this._service.Search(x.ToDomain()))
+      .ThenAwait(x => service.Search(x.ToDomain()))
       .Then(x => x.Select(u => u.ToResp())
         .ToResult());
 
@@ -69,7 +50,7 @@ public class PluginController : AtomiControllerBase
   [HttpGet("id/{userId}/{pluginId:guid}")]
   public async Task<ActionResult<PluginResp>> Get(string userId, Guid pluginId)
   {
-    var plugin = await this._service.Get(userId, pluginId)
+    var plugin = await service.Get(userId, pluginId)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
@@ -78,7 +59,7 @@ public class PluginController : AtomiControllerBase
   [HttpGet("slug/{username}/{name}")]
   public async Task<ActionResult<PluginResp>> Get(string username, string name)
   {
-    var plugin = await this._service.Get(username, name)
+    var plugin = await service.Get(username, name)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{name}"));
@@ -95,9 +76,9 @@ public class PluginController : AtomiControllerBase
       return this.ReturnResult(e);
     }
 
-    var plugin = await this._createPluginReqValidator
+    var plugin = await createPluginReqValidator
       .ValidateAsyncResult(req, "Invalid CreatePluginReq")
-      .ThenAwait(x => this._service.Create(userId, x.ToDomain().Item1, x.ToDomain().Item2))
+      .ThenAwait(x => service.Create(userId, x.ToDomain().Item1, x.ToDomain().Item2))
       .Then(x => x.ToResp(), Errors.MapAll);
     return this.ReturnResult(plugin);
   }
@@ -115,9 +96,9 @@ public class PluginController : AtomiControllerBase
       return this.ReturnResult(e);
     }
 
-    var plugin = await this._updatePluginReqValidator
+    var plugin = await updatePluginReqValidator
       .ValidateAsyncResult(req, "Invalid UpdatePluginReq")
-      .ThenAwait(x => this._service.Update(userId, pluginId, x.ToDomain()))
+      .ThenAwait(x => service.Update(userId, pluginId, x.ToDomain()))
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin, new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
   }
@@ -133,7 +114,7 @@ public class PluginController : AtomiControllerBase
       return this.ReturnResult(e);
     }
 
-    var plugin = await this._service.Like(likerId, username, pluginName, like)
+    var plugin = await service.Like(likerId, username, pluginName, like)
       .Then(x => x.ToResult());
     return this.ReturnUnitNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}"));
@@ -142,7 +123,7 @@ public class PluginController : AtomiControllerBase
   [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("id/{userId}/{pluginId:guid}")]
   public async Task<ActionResult<Unit>> Delete(string userId, Guid pluginId)
   {
-    var plugin = await this._service.Delete(userId, pluginId)
+    var plugin = await service.Delete(userId, pluginId)
       .Then(x => x.ToResult());
     return this.ReturnUnitNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
@@ -152,9 +133,9 @@ public class PluginController : AtomiControllerBase
   public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string username,
     string pluginName, [FromQuery] SearchPluginVersionQuery query)
   {
-    var plugins = await this._searchPluginVersionQueryValidator
+    var plugins = await searchPluginVersionQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginVersionQuery")
-      .ThenAwait(x => this._service.SearchVersion(username, pluginName, x.ToDomain()))
+      .ThenAwait(x => service.SearchVersion(username, pluginName, x.ToDomain()))
       .Then(x => x.Select(u => u.ToResp())
         .ToResult());
     return this.ReturnResult(plugins);
@@ -164,9 +145,9 @@ public class PluginController : AtomiControllerBase
   public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string userId, Guid pluginId,
     [FromQuery] SearchPluginVersionQuery query)
   {
-    var plugins = await this._searchPluginVersionQueryValidator
+    var plugins = await searchPluginVersionQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginVersionQuery")
-      .ThenAwait(x => this._service.SearchVersion(userId, pluginId, x.ToDomain()))
+      .ThenAwait(x => service.SearchVersion(userId, pluginId, x.ToDomain()))
       .Then(x => x.Select(u => u.ToResp())
         .ToResult());
     return this.ReturnResult(plugins);
@@ -176,7 +157,7 @@ public class PluginController : AtomiControllerBase
   public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, ulong ver,
     bool bumpDownload)
   {
-    var plugin = await this._service.GetVersion(username, pluginName, ver, bumpDownload)
+    var plugin = await service.GetVersion(username, pluginName, ver, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}:{ver}"));
@@ -185,7 +166,7 @@ public class PluginController : AtomiControllerBase
   [HttpGet("slug/{username}/{pluginName}/versions/latest")]
   public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, bool bumpDownload)
   {
-    var plugin = await this._service.GetVersion(username, pluginName, bumpDownload)
+    var plugin = await service.GetVersion(username, pluginName, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}"));
@@ -194,7 +175,7 @@ public class PluginController : AtomiControllerBase
   [HttpGet("id/{userId}/{pluginId:guid}/versions/{ver}")]
   public async Task<ActionResult<PluginVersionResp>> GetVersion(string userId, Guid pluginId, ulong ver)
   {
-    var plugin = await this._service.GetVersion(userId, pluginId, ver)
+    var plugin = await service.GetVersion(userId, pluginId, ver)
       .Then(x => x?.ToResp(), Errors.MapAll);
     return this.ReturnNullableResult(plugin,
       new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{userId}/{pluginId}:{ver}"));
@@ -205,16 +186,16 @@ public class PluginController : AtomiControllerBase
     [FromBody] CreatePluginVersionReq req)
   {
     var sub = this.Sub();
-    var version = await this._userService
+    var version = await userService
       .GetByUsername(username)
       .ThenAwait(x => Task.FromResult(x?.Principal.Id == sub), Errors.MapAll)
       .ThenAwait(async x =>
       {
         if (x)
         {
-          return await this._createPluginVersionReqValidator
+          return await createPluginVersionReqValidator
             .ValidateAsyncResult(req, "Invalid CreatePluginVersionReq")
-            .ThenAwait(c => this._service.CreateVersion(username, pluginName, c.ToDomain().Item2, c.ToDomain().Item1))
+            .ThenAwait(c => service.CreateVersion(username, pluginName, c.ToDomain().Item2, c.ToDomain().Item1))
             .Then(c => c?.ToResp(), Errors.MapAll);
         }
 
@@ -237,9 +218,9 @@ public class PluginController : AtomiControllerBase
       return this.ReturnResult(e);
     }
 
-    var version = await this._createPluginVersionReqValidator
+    var version = await createPluginVersionReqValidator
       .ValidateAsyncResult(req, "Invalid CreatePluginVersionReq")
-      .ThenAwait(x => this._service.CreateVersion(userId, pluginId, x.ToDomain().Item2, x.ToDomain().Item1))
+      .ThenAwait(x => service.CreateVersion(userId, pluginId, x.ToDomain().Item2, x.ToDomain().Item1))
       .Then(x => x?.ToResp(), Errors.MapAll);
 
     return this.ReturnNullableResult(version,
@@ -258,9 +239,9 @@ public class PluginController : AtomiControllerBase
       return this.ReturnResult(e);
     }
 
-    var version = await this._updatePluginVersionReqValidator
+    var version = await updatePluginVersionReqValidator
       .ValidateAsyncResult(req, "Invalid UpdatePluginVersionReq")
-      .ThenAwait(x => this._service.UpdateVersion(userId, pluginId, ver, x.ToDomain()))
+      .ThenAwait(x => service.UpdateVersion(userId, pluginId, ver, x.ToDomain()))
       .Then(x => x?.ToResp(), Errors.MapAll);
 
     return this.ReturnNullableResult(version,
@@ -271,20 +252,20 @@ public class PluginController : AtomiControllerBase
   public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string username, [FromBody] PushPluginReq req)
   {
     var sub = this.Sub();
-    var version = await this._userService
+    var version = await userService
       .GetByUsername(username)
       .ThenAwait(x => Task.FromResult(x?.Principal.Id == sub), Errors.MapAll)
       .ThenAwait(async x =>
       {
         if (x)
         {
-          return await this._pluginReqValidator
+          return await pluginReqValidator
             .ValidateAsyncResult(req, "Invalid PushPluginReq")
             .Then(push => push.ToDomain(), Errors.MapAll)
             .ThenAwait(domain =>
               {
                 var (record, metadata, vRecord, vProperty) = domain;
-                return this._service.Push(username, record, metadata, vRecord, vProperty);
+                return service.Push(username, record, metadata, vRecord, vProperty);
               })
             .Then(c => c?.ToResp(), Errors.MapAll);
         }

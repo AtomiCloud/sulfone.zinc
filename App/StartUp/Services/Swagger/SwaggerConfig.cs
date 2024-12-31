@@ -9,6 +9,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace App.StartUp.Services.Swagger;
 
+#pragma warning disable IDE0290
+
+
 /// <summary>
 /// Configures the Swagger generation options.
 /// </summary>
@@ -85,3 +88,5 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     return info;
   }
 }
+
+#pragma warning restore IDE0290

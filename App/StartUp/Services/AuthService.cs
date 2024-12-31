@@ -76,7 +76,7 @@ public static class AuthService
         };
       });
 
-    var p = s.Policies is null ? new Dictionary<string, AuthPolicyOption>() : s.Policies;
+    var p = s.Policies ?? new Dictionary<string, AuthPolicyOption>();
 
     services.AddAuthorization(opt =>
     {

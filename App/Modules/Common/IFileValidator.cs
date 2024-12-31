@@ -20,17 +20,8 @@ public interface IFileValidator
   Task<Result<Stream>> Validate(Stream stream, FileValidationParam param);
 }
 
-public class FileValidator : IFileValidator
+public class FileValidator(ContentInspector inspector, ILogger<FileValidator> logger) : IFileValidator
 {
-  private readonly ContentInspector _inspector;
-  private readonly ILogger<FileValidator> _logger;
-
-  public FileValidator(ContentInspector inspector, ILogger<FileValidator> logger)
-  {
-    this._inspector = inspector;
-    this._logger = logger;
-  }
-
   public async Task<Result<Stream>> Validate(IFormFile file, FileValidationParam param)
   {
     using var fStream = new MemoryStream();
@@ -44,13 +35,13 @@ public class FileValidator : IFileValidator
     stream.Position = 0;
 
     // Validate file
-    var d = this._inspector
+    var d = inspector
       .Inspect(stream)
       .MaxBy(x => x.Points)?.Definition;
     if (d == null)
     {
       var err = new UnknownFileType("Unknown file format");
-      this._logger.LogError(err.ToException(), "Server cannot detect the MIME type of the file");
+      logger.LogError(err.ToException(), "Server cannot detect the MIME type of the file");
       return Task.FromResult<Result<Stream>>(err.ToException());
     }
 
@@ -59,16 +50,16 @@ public class FileValidator : IFileValidator
     if (mime == null || ext == null)
     {
       var err = new UnknownFileType("Unknown file format");
-      this._logger.LogError(err.ToException(), "Server cannot detect the MIME type of the file");
+      logger.LogError(err.ToException(), "Server cannot detect the MIME type of the file");
       return Task.FromResult<Result<Stream>>(err.ToException());
     }
 
-    this._logger.LogInformation("File is a '{Mime}' file with Extension: {Ext}", mime, ext);
+    logger.LogInformation("File is a '{Mime}' file with Extension: {Ext}", mime, ext);
     if (param.AllowedMime != null && !param.AllowedMime.Contains(mime))
     {
       var err = new InvalidFileType($"File must be one of '{param.AllowedMime.Humanize()}' but was '{mime}'", mime,
         param.AllowedMime);
-      this._logger.LogError(err.ToException(), "File must be one of '{Allowed}' but was '{Mime}'",
+      logger.LogError(err.ToException(), "File must be one of '{Allowed}' but was '{Mime}'",
         param.AllowedMime.Humanize(), mime);
       return Task.FromResult<Result<Stream>>(err.ToException());
     }
@@ -78,7 +69,7 @@ public class FileValidator : IFileValidator
       var err = new InvalidFileExt(
         $"File must be one of '{param.AllowedExt.Humanize()}' but was '{d.File.Extensions.Humanize()}'", ext,
         param.AllowedExt);
-      this._logger.LogError(err.ToException(), "File must be one of '{Allowed}' but was '{Extension}'",
+      logger.LogError(err.ToException(), "File must be one of '{Allowed}' but was '{Extension}'",
         param.AllowedExt.Humanize(), d.File.Extensions.Humanize());
       return Task.FromResult<Result<Stream>>(err.ToException());
     }
@@ -90,7 +81,7 @@ public class FileValidator : IFileValidator
         $"File must be smaller than {maxSize.Bits().Humanize()} but received {stream.Length.Bits().Humanize()}",
         stream.Length,
         maxSize);
-      this._logger.LogError(err.ToException(),
+      logger.LogError(err.ToException(),
         "File must be smaller than {AcceptedFileSize} ({AcceptedFileSizeFriendly}) but received {ReceivedFileSize} ({ReceivedFileSizeFriendly})",
         maxSize, maxSize.Bits().Humanize(), stream.Length, stream.Length.Bits().Humanize());
       return Task.FromResult<Result<Stream>>(err.ToException());

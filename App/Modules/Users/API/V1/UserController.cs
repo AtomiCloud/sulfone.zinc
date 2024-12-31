@@ -19,42 +19,24 @@ namespace App.Modules.Users.API.V1;
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class UserController : AtomiControllerBase
+public class UserController(
+  IUserService service,
+  CreateUserReqValidator createUserReqValidator,
+  UpdateUserReqValidator updateUserReqValidator,
+  UserSearchQueryValidator userSearchQueryValidator,
+  ITokenService token,
+  ILogger<UserController> logger,
+  CreateTokenReqValidator createTokenReqValidator,
+  UpdateTokenReqValidator updateTokenReqValidator)
+  : AtomiControllerBase
 
 {
-  private readonly IUserService _service;
-  private readonly ITokenService _token;
-  private readonly ILogger<UserController> _logger;
-
-  private readonly CreateUserReqValidator _createUserReqValidator;
-  private readonly UpdateUserReqValidator _updateUserReqValidator;
-  private readonly UserSearchQueryValidator _userSearchQueryValidator;
-
-  private readonly CreateTokenReqValidator _createTokenReqValidator;
-  private readonly UpdateTokenReqValidator _updateTokenReqValidator;
-
-
-  public UserController(IUserService service,
-    CreateUserReqValidator createUserReqValidator, UpdateUserReqValidator updateUserReqValidator,
-    UserSearchQueryValidator userSearchQueryValidator, ITokenService token, ILogger<UserController> logger,
-    CreateTokenReqValidator createTokenReqValidator, UpdateTokenReqValidator updateTokenReqValidator)
-  {
-    this._service = service;
-    this._createUserReqValidator = createUserReqValidator;
-    this._updateUserReqValidator = updateUserReqValidator;
-    this._userSearchQueryValidator = userSearchQueryValidator;
-    this._token = token;
-    this._logger = logger;
-    this._createTokenReqValidator = createTokenReqValidator;
-    this._updateTokenReqValidator = updateTokenReqValidator;
-  }
-
   [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpGet]
   public async Task<ActionResult<IEnumerable<UserPrincipalResp>>> Search([FromQuery] SearchUserQuery query)
   {
-    var x = await this._userSearchQueryValidator
+    var x = await userSearchQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchUserQuery")
-      .ThenAwait(q => this._service.Search(q.ToDomain()))
+      .ThenAwait(q => service.Search(q.ToDomain()))
       .Then(x => x.Select(u => u.ToResp()).ToResult());
     return this.ReturnResult(x);
   }
@@ -68,11 +50,11 @@ public class UserController : AtomiControllerBase
   [Authorize, HttpGet("{id}")]
   public async Task<ActionResult<UserResp>> GetById(string id)
   {
-    var user = await this._service.GetById(id)
+    var user = await service.GetById(id)
       .Then(x => (x?.ToResp()).ToResult())
       .Then(x =>
       {
-        this._logger.LogInformation("Accessor: {Accessor}, Accessee: {Accessee}", this.Sub(), x?.Principal?.Id);
+        logger.LogInformation("Accessor: {Accessor}, Accessee: {Accessee}", this.Sub(), x?.Principal?.Id);
         if (x?.Principal?.Id == this.Sub()) return x.ToResult();
         return new Unauthorized("You are not authorized to access this resource")
           .ToException();
@@ -85,7 +67,7 @@ public class UserController : AtomiControllerBase
   [Authorize, HttpGet("username/{username}")]
   public async Task<ActionResult<UserResp>> GetByUsername(string username)
   {
-    var user = await this._service.GetByUsername(username)
+    var user = await service.GetByUsername(username)
       .Then(x => (x?.ToResp()).ToResult())
       .Then(x =>
       {
@@ -100,7 +82,7 @@ public class UserController : AtomiControllerBase
   [Authorize, HttpGet("exist/{username}")]
   public async Task<ActionResult<UserExistResp>> Exist(string username)
   {
-    var exist = await this._service.Exists(username)
+    var exist = await service.Exists(username)
       .Then(x => new UserExistResp(x), Errors.MapAll);
     return this.ReturnResult(exist);
   }
@@ -115,9 +97,9 @@ public class UserController : AtomiControllerBase
       return this.ReturnResult(x);
     }
 
-    var user = await this._createUserReqValidator
+    var user = await createUserReqValidator
       .ValidateAsyncResult(req, "Invalid CreateUserReq")
-      .ThenAwait(x => this._service.Create(id, x.ToRecord()))
+      .ThenAwait(x => service.Create(id, x.ToRecord()))
       .Then(x => x.ToResp().ToResult());
     return this.ReturnResult(user);
   }
@@ -132,9 +114,9 @@ public class UserController : AtomiControllerBase
       return this.ReturnResult(x);
     }
 
-    var user = await this._updateUserReqValidator
+    var user = await updateUserReqValidator
       .ValidateAsyncResult(req, "Invalid UpdateUserReq")
-      .ThenAwait(x => this._service.Update(id, x.ToRecord()))
+      .ThenAwait(x => service.Update(id, x.ToRecord()))
       .Then(x => (x?.ToResp()).ToResult());
     return this.ReturnNullableResult(user, new EntityNotFound(
       "User Not Found", typeof(UserPrincipal), id.ToString()));
@@ -143,7 +125,7 @@ public class UserController : AtomiControllerBase
   [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("{id:guid}")]
   public async Task<ActionResult> Delete(string id)
   {
-    var user = await this._service.Delete(id);
+    var user = await service.Delete(id);
     return this.ReturnUnitNullableResult(user, new EntityNotFound(
       "User Not Found", typeof(UserPrincipal), id.ToString()));
   }
@@ -159,7 +141,7 @@ public class UserController : AtomiControllerBase
       return this.ReturnResult(x);
     }
 
-    var tokens = await this._token.Search(sub)
+    var tokens = await token.Search(sub)
       .Then(x => x.Select(t => t.ToResp()), Errors.MapAll);
     return this.ReturnResult(tokens);
   }
@@ -174,10 +156,10 @@ public class UserController : AtomiControllerBase
       return this.ReturnResult(x);
     }
 
-    var token = await this._createTokenReqValidator.ValidateAsyncResult(req, "Invalid CreateTokenReq")
-      .ThenAwait(r => this._token.Create(sub, r.ToRecord()))
+    var token1 = await createTokenReqValidator.ValidateAsyncResult(req, "Invalid CreateTokenReq")
+      .ThenAwait(r => token.Create(sub, r.ToRecord()))
       .Then(x => x.ToOTResp(), Errors.MapAll);
-    return this.ReturnResult(token);
+    return this.ReturnResult(token1);
   }
 
   [Authorize, HttpPut("{userId}/tokens/{tokenId:guid}")]
@@ -191,11 +173,11 @@ public class UserController : AtomiControllerBase
       return this.ReturnResult(x);
     }
 
-    var token = await this._updateTokenReqValidator.ValidateAsyncResult(req, "Invalid UpdateTokenReq")
-      .ThenAwait(r => this._token.Update(sub, tokenId, r.ToRecord()))
+    var token1 = await updateTokenReqValidator.ValidateAsyncResult(req, "Invalid UpdateTokenReq")
+      .ThenAwait(r => token.Update(sub, tokenId, r.ToRecord()))
       .Then(x => x?.ToResp(), Errors.MapAll);
 
-    return this.ReturnNullableResult(token,
+    return this.ReturnNullableResult(token1,
       new EntityNotFound("Cannot update entity that does not exist", typeof(TokenPrincipal), tokenId.ToString())
     );
   }
@@ -210,8 +192,8 @@ public class UserController : AtomiControllerBase
       return this.ReturnUnitResult(x);
     }
 
-    var token = await this._token.Revoke(sub, tokenId);
-    return this.ReturnUnitNullableResult(token,
+    var token1 = await token.Revoke(sub, tokenId);
+    return this.ReturnUnitNullableResult(token1,
       new EntityNotFound("Cannot revoke entity that does not exist", typeof(TokenPrincipal), tokenId.ToString()));
   }
 
@@ -225,8 +207,8 @@ public class UserController : AtomiControllerBase
       return this.ReturnUnitResult(x);
     }
 
-    var token = await this._token.Delete(sub, tokenId);
-    return this.ReturnUnitNullableResult(token,
+    var token1 = await token.Delete(sub, tokenId);
+    return this.ReturnUnitNullableResult(token1,
       new EntityNotFound("Cannot delete entity that does not exist", typeof(TokenPrincipal), tokenId.ToString()));
   }
 }

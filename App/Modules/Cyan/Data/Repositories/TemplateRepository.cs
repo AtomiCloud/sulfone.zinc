@@ -14,23 +14,14 @@ using NpgsqlTypes;
 
 namespace App.Modules.Cyan.Data.Repositories;
 
-public class TemplateRepository : ITemplateRepository
+public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> logger) : ITemplateRepository
 {
-  private readonly MainDbContext _db;
-  private readonly ILogger<TemplateRepository> _logger;
-
-  public TemplateRepository(MainDbContext db, ILogger<TemplateRepository> logger)
-  {
-    this._db = db;
-    this._logger = logger;
-  }
-
   public async Task<Result<IEnumerable<TemplatePrincipal>>> Search(TemplateSearch search)
   {
     try
     {
-      this._logger.LogInformation("Searching for templates with Search Params '{@SearchParams}'", search.ToJson());
-      var templates = this._db.Templates.AsQueryable();
+      logger.LogInformation("Searching for templates with Search Params '{@SearchParams}'", search.ToJson());
+      var templates = db.Templates.AsQueryable();
 
       if (search.Owner != null)
         templates = templates
@@ -71,7 +62,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting templates with Search Params '{@SearchParams}'", search.ToJson());
       return e;
     }
@@ -81,8 +72,8 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation("Getting template with '{ID}'", id);
-      var template = await this._db.Templates
+      logger.LogInformation("Getting template with '{ID}'", id);
+      var template = await db.Templates
         .Where(x => x.Id == id && x.UserId == userId)
         .Include(x => x.Likes)
         .Include(x => x.User)
@@ -96,7 +87,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting template '{TemplateId}'", id);
       return e;
     }
@@ -106,8 +97,8 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation("Getting template '{Username}/{Name}'", username, name);
-      var template = await this._db.Templates
+      logger.LogInformation("Getting template '{Username}/{Name}'", username, name);
+      var template = await db.Templates
         .Include(x => x.Likes)
         .Include(x => x.Versions)
         .Include(x => x.User)
@@ -121,7 +112,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting template '{Username}/{Name}'", username, name);
       return e;
     }
@@ -131,7 +122,7 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation("Creating template {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
+      logger.LogInformation("Creating template {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
         record.ToJson(), metadata.ToJson());
       var data = new TemplateData();
       data = data
@@ -142,14 +133,14 @@ public class TemplateRepository : ITemplateRepository
         User = null!,
         UserId = userId,
       };
-      this._logger.LogInformation("Creating template with Template Data: {@Template}", data.ToJson());
-      var r = this._db.Templates.Add(data);
-      await this._db.SaveChangesAsync();
+      logger.LogInformation("Creating template with Template Data: {@Template}", data.ToJson());
+      var r = db.Templates.Add(data);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (UniqueConstraintException e)
     {
-      this._logger.LogError(e,
+      logger.LogError(e,
         "Failed to create template due to conflict: {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
         record.ToJson(), metadata.ToJson());
       return new AlreadyExistException("Failed to create Template due to conflicting with existing record", e,
@@ -157,7 +148,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed updating template {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
           record.ToJson(), metadata.ToJson());
       return e;
@@ -168,19 +159,19 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var v1 = await this._db.Templates
+      var v1 = await db.Templates
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
       if (v1 == null) return (TemplatePrincipal?)null;
 
       var v3 = v1.HydrateData(v2) with { User = null!, };
-      var updated = this._db.Templates.Update(v3);
-      await this._db.SaveChangesAsync();
+      var updated = db.Templates.Update(v3);
+      await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e,
+      logger.LogError(e,
         "Failed to update Template with User ID '{UserID}' and Template ID '{TemplateID}': {@Record}",
         userId, id, v2.ToJson());
       return e;
@@ -191,20 +182,20 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var v1 = await this._db.Templates
+      var v1 = await db.Templates
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
       if (v1 == null) return (TemplatePrincipal?)null;
 
       var v3 = v1.HydrateData(v2) with { User = null!, };
-      var updated = this._db.Templates.Update(v3);
-      await this._db.SaveChangesAsync();
+      var updated = db.Templates.Update(v3);
+      await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to update Template '{Username}/{Name}': {@Record}",
+      logger.LogError(e, "Failed to update Template '{Username}/{Name}': {@Record}",
         username, name, v2.ToJson());
       return e;
     }
@@ -214,18 +205,18 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var a = await this._db.Templates
+      var a = await db.Templates
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
       if (a == null) return (Unit?)null;
 
-      this._db.Templates.Remove(a);
-      await this._db.SaveChangesAsync();
+      db.Templates.Remove(a);
+      await db.SaveChangesAsync();
       return new Unit();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to delete Template '{TemplateId}' for User '{UserId}", id, userId);
+      logger.LogError(e, "Failed to delete Template '{TemplateId}' for User '{UserId}", id, userId);
       return e;
     }
   }
@@ -235,7 +226,7 @@ public class TemplateRepository : ITemplateRepository
     try
     {
       // check if like already exist
-      var likeExist = await this._db.TemplateLikes
+      var likeExist = await db.TemplateLikes
         .Include(x => x.Template)
         .ThenInclude(x => x.User)
         .AnyAsync(x => x.UserId == likerId
@@ -247,7 +238,7 @@ public class TemplateRepository : ITemplateRepository
         return new LikeConflictError("Failed to like templates", $"{username}/{name}", "template",
           like ? "like" : "unlike").ToException();
 
-      var p = await this._db.Templates
+      var p = await db.Templates
         .Include(x => x.User)
         .FirstOrDefaultAsync(x => x.User.Username == username && x.Name == name);
 
@@ -257,17 +248,17 @@ public class TemplateRepository : ITemplateRepository
       {
         // if like, check for conflict
         var l = new TemplateLikeData { UserId = likerId, User = null!, TemplateId = p.Id, Template = null! };
-        var r = this._db.TemplateLikes.Add(l);
-        await this._db.SaveChangesAsync();
+        var r = db.TemplateLikes.Add(l);
+        await db.SaveChangesAsync();
         return new Unit();
       }
       else
       {
-        var l = await this._db.TemplateLikes
+        var l = await db.TemplateLikes
           .FirstOrDefaultAsync(x => x.UserId == likerId && x.TemplateId == p.Id);
         if (l == null)
         {
-          this._logger.LogError(
+          logger.LogError(
             "Race Condition, Failed to unlike Template '{Username}/{Name}' for User '{UserId}'. User-Template-Like entry does not exist even though it exist at the start of the query",
             username, name, likerId);
 
@@ -275,15 +266,15 @@ public class TemplateRepository : ITemplateRepository
             like ? "like" : "unlike").ToException();
         }
 
-        this._logger.LogInformation("Removing {@Like}", l);
-        this._db.TemplateLikes.Remove(l with { Template = null!, User = null!, });
-        await this._db.SaveChangesAsync();
+        logger.LogInformation("Removing {@Like}", l);
+        db.TemplateLikes.Remove(l with { Template = null!, User = null!, });
+        await db.SaveChangesAsync();
         return new Unit();
       }
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to {Like} Template '{Username}/{Name}' for User '{UserId}",
+      logger.LogError(e, "Failed to {Like} Template '{Username}/{Name}' for User '{UserId}",
         like ? "like" : "unlike", username, name, likerId);
       return e;
     }
@@ -293,7 +284,7 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var template = await this._db.Templates
+      var template = await db.Templates
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
@@ -301,13 +292,13 @@ public class TemplateRepository : ITemplateRepository
 
       template = template with { Downloads = template.Downloads + 1, User = null!, };
 
-      var updated = this._db.Templates.Update(template);
-      await this._db.SaveChangesAsync();
+      var updated = db.Templates.Update(template);
+      await db.SaveChangesAsync();
       return updated.Entity.Downloads;
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to increment download count for Template '{Username}/{Name}'",
+      logger.LogError(e, "Failed to increment download count for Template '{Username}/{Name}'",
         username, name);
       return e;
     }
@@ -318,7 +309,7 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var query = this._db.TemplateVersions
+      var query = db.TemplateVersions
         .Include(x => x.Template)
         .ThenInclude(x => x.User)
         .Where(x => x.Template.User.Username == username && x.Template.Name == name)
@@ -339,7 +330,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed searching template version of Template '{Username}/{Name}' with {@Params}",
           username, name, version.ToJson());
       return e;
@@ -351,7 +342,7 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      var query = this._db.TemplateVersions
+      var query = db.TemplateVersions
         .Include(x => x.Template)
         .Where(x => x.Template.UserId == userId && x.Template.Id == id)
         .AsQueryable();
@@ -371,7 +362,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed searching template version of Template '{TemplateId}' of User '{UserId}' with {@Params}",
           id, userId, version.ToJson());
       return e;
@@ -382,8 +373,8 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation("Getting template version '{Username}/{Name}:{Version}'", username, name, version);
-      var template = await this._db.TemplateVersions
+      logger.LogInformation("Getting template version '{Username}/{Name}:{Version}'", username, name, version);
+      var template = await db.TemplateVersions
         .Include(x => x.Template)
         .ThenInclude(x => x.User)
         .Include(x => x.Plugins)
@@ -396,7 +387,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get template version '{Username}/{Name}:{Version}'", username, name, version);
       return e;
     }
@@ -406,10 +397,10 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Getting template version for User '{UserId}', Template: '{TemplateId}', Version: {Version}'", userId, id,
         version);
-      var template = await this._db.TemplateVersions
+      var template = await db.TemplateVersions
         .Include(x => x.Template)
         .Include(x => x.Plugins)
         .Include(x => x.Processors)
@@ -420,7 +411,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get template version: User '{UserId}', Template '{Name}', Version {Version}'", userId,
           id,
           version);
@@ -432,9 +423,9 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Getting template version for User '{UserId}', Template: '{TemplateId}'", username, name);
-      var template = await this._db.TemplateVersions
+      var template = await db.TemplateVersions
         .Include(x => x.Template)
         .ThenInclude(x => x.User)
         .Include(x => x.Plugins)
@@ -448,7 +439,7 @@ public class TemplateRepository : ITemplateRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed to get template version: User '{Username}/{Name}''", username, name);
       return e;
     }
@@ -458,14 +449,14 @@ public class TemplateRepository : ITemplateRepository
     TemplateVersionRecord record,
     TemplateVersionProperty property, IEnumerable<Guid> processors, IEnumerable<Guid> plugins)
   {
-    await using var transaction = await this._db.Database.BeginTransactionAsync();
+    await using var transaction = await db.Database.BeginTransactionAsync();
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Creating template version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
         username, name, record.ToJson(), property.ToJson());
 
-      var template = await this._db.Templates
+      var template = await db.Templates
         .Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
@@ -476,12 +467,12 @@ public class TemplateRepository : ITemplateRepository
         return (TemplateVersionPrincipal?)null;
       }
 
-      this._logger.LogInformation("Getting latest version for '{Username}/{Name}'", username, name);
-      var latest = this._db.TemplateVersions
+      logger.LogInformation("Getting latest version for '{Username}/{Name}'", username, name);
+      var latest = db.TemplateVersions
         .Where(x => x.TemplateId == template.Id)
         .Max(x => x.Version as ulong?) ?? 0;
 
-      this._logger.LogInformation("Obtained latest version for '{Username}/{Name}': {Version}", username, name, latest);
+      logger.LogInformation("Obtained latest version for '{Username}/{Name}': {Version}", username, name, latest);
 
       var data = new TemplateVersionData();
       data = data
@@ -497,8 +488,8 @@ public class TemplateRepository : ITemplateRepository
         Processors = null!,
       };
 
-      var r = this._db.TemplateVersions.Add(data);
-      await this._db.SaveChangesAsync();
+      var r = db.TemplateVersions.Add(data);
+      await db.SaveChangesAsync();
       var t = r.Entity.ToPrincipal();
 
       // save plugin links
@@ -509,9 +500,9 @@ public class TemplateRepository : ITemplateRepository
         TemplateId = t.Id,
         Template = null!,
       });
-      this._logger.LogInformation("Saving plugins links for '{Username}/{Name}:{Version}', Plugins: {@Plugins}",
+      logger.LogInformation("Saving plugins links for '{Username}/{Name}:{Version}', Plugins: {@Plugins}",
         username, name, latest, pluginLinks.ToJson());
-      this._db.TemplatePluginVersions.AddRange(pluginLinks);
+      db.TemplatePluginVersions.AddRange(pluginLinks);
       var processorLinks = processors.Select(x => new TemplateProcessorVersionData
       {
         ProcessorId = x,
@@ -519,18 +510,18 @@ public class TemplateRepository : ITemplateRepository
         TemplateId = t.Id,
         Template = null!,
       });
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Saving processors links for '{Username}/{Name}:{Version}', Processors: {@Processors}", username, name, latest,
         processorLinks.ToJson());
-      this._db.TemplateProcessorVersions.AddRange(processorLinks);
-      await this._db.SaveChangesAsync();
+      db.TemplateProcessorVersions.AddRange(processorLinks);
+      await db.SaveChangesAsync();
       await transaction.CommitAsync();
       return t;
     }
     catch (Exception e)
     {
       await transaction.RollbackAsync();
-      this._logger
+      logger
         .LogError(e,
           "Failed to create template version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
           username, name, record.ToJson(), property.ToJson());
@@ -542,20 +533,20 @@ public class TemplateRepository : ITemplateRepository
     TemplateVersionRecord record,
     TemplateVersionProperty property, IEnumerable<Guid> processors, IEnumerable<Guid> plugins)
   {
-    await using var transaction = await this._db.Database.BeginTransactionAsync();
+    await using var transaction = await db.Database.BeginTransactionAsync();
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Creating template version for User '{UserId}', Template '{Id}' with Record {@Record} and Property {@Property} ",
         userId, id, record.ToJson(), property.ToJson());
 
-      var template = await this._db.Templates
+      var template = await db.Templates
         .Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
 
       if (template == null) return (TemplateVersionPrincipal?)null;
 
-      var latest = this._db.TemplateVersions
+      var latest = db.TemplateVersions
         .Where(x => x.TemplateId == template.Id)
         .Max(x => x.Version as ulong?) ?? 0;
 
@@ -571,8 +562,8 @@ public class TemplateRepository : ITemplateRepository
         CreatedAt = DateTime.UtcNow,
       };
 
-      var r = this._db.TemplateVersions.Add(data);
-      await this._db.SaveChangesAsync();
+      var r = db.TemplateVersions.Add(data);
+      await db.SaveChangesAsync();
       var t = r.Entity.ToPrincipal();
 
       // save plugin links
@@ -583,7 +574,7 @@ public class TemplateRepository : ITemplateRepository
         TemplateId = t.Id,
         Template = null!,
       });
-      this._db.TemplatePluginVersions.AddRange(pluginLinks);
+      db.TemplatePluginVersions.AddRange(pluginLinks);
       var processorLinks = processors.Select(x => new TemplateProcessorVersionData
       {
         ProcessorId = x,
@@ -591,15 +582,15 @@ public class TemplateRepository : ITemplateRepository
         TemplateId = t.Id,
         Template = null!,
       });
-      this._db.TemplateProcessorVersions.AddRange(processorLinks);
-      await this._db.SaveChangesAsync();
+      db.TemplateProcessorVersions.AddRange(processorLinks);
+      await db.SaveChangesAsync();
       await transaction.CommitAsync();
       return t;
     }
     catch (Exception e)
     {
       await transaction.RollbackAsync();
-      this._logger
+      logger
         .LogError(e,
           "Failed to create template version for User '{UserId}', Template '{Id}' with Record {@Record} and Property {@Property}",
           userId, id, record.ToJson(), property.ToJson());
@@ -612,12 +603,12 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Updating template '{Username}/{Name}:{Version}' with Record {@Record}",
         username, name, version, v2.ToJson());
 
 
-      var v1 = await this._db.TemplateVersions
+      var v1 = await db.TemplateVersions
         .Include(x => x.Template)
         .ThenInclude(x => x.User)
         .Where(x => x.Version == version && x.Template.Name == name && x.Template.User.Username == username)
@@ -631,13 +622,13 @@ public class TemplateRepository : ITemplateRepository
         Template = null!,
       };
 
-      var r = this._db.TemplateVersions.Update(v3);
-      await this._db.SaveChangesAsync();
+      var r = db.TemplateVersions.Update(v3);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to update template '{Username}/{Name}:{Version}' with Record {@Record}",
           username, name, version, v2.ToJson());
@@ -651,12 +642,12 @@ public class TemplateRepository : ITemplateRepository
   {
     try
     {
-      this._logger.LogInformation(
+      logger.LogInformation(
         "Updating template for User '{UserId}', Template '{Id}' with Record {@Record}",
         userId, id, v2.ToJson());
 
 
-      var v1 = await this._db.TemplateVersions
+      var v1 = await db.TemplateVersions
         .Include(x => x.Template)
         .Where(x => x.Version == version && x.Template.Id == id && x.Template.UserId == userId)
         .FirstOrDefaultAsync();
@@ -669,13 +660,13 @@ public class TemplateRepository : ITemplateRepository
         Template = null!,
       };
 
-      var r = this._db.TemplateVersions.Update(v3);
-      await this._db.SaveChangesAsync();
+      var r = db.TemplateVersions.Update(v3);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e,
           "Failed to update template for User '{UserId}', Template '{Id}' with Record {@Record}",
           userId, id, v2.ToJson());

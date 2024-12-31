@@ -10,7 +10,8 @@ using NpgsqlTypes;
 
 namespace App.StartUp.Database;
 
-public class MainDbContext : DbContext
+public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> options)
+  : DbContext
 {
   public const string Key = "MAIN";
   public DbSet<UserData> Users { get; set; } = null!;
@@ -32,17 +33,10 @@ public class MainDbContext : DbContext
   public DbSet<PluginLikeData> PluginLikes { get; set; } = null!;
   public DbSet<ProcessorLikeData> ProcessorLikes { get; set; } = null!;
 
-  private readonly IOptionsMonitor<Dictionary<string, DatabaseOption>> _options;
-
-  public MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> options)
-  {
-    this._options = options;
-  }
-
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
     optionsBuilder
-      .AddPostgres(this._options.CurrentValue, Key)
+      .AddPostgres(options.CurrentValue, Key)
       .UseExceptionProcessor()
       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
   }

@@ -7,23 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Modules.Users.Data;
 
-public class TokenRepository : ITokenRepository
+public class TokenRepository(MainDbContext db, ILogger<TokenRepository> logger) : ITokenRepository
 {
-  private readonly MainDbContext _db;
-  private readonly ILogger<TokenRepository> _logger;
-
-  public TokenRepository(MainDbContext db, ILogger<TokenRepository> logger)
-  {
-    this._db = db;
-    this._logger = logger;
-  }
-
   public async Task<Result<IEnumerable<TokenPrincipal>>> Search(string userId)
   {
     try
     {
-      this._logger.LogInformation("Getting all token for user '{UserId}'", userId);
-      var tokens = await this._db
+      logger.LogInformation("Getting all token for user '{UserId}'", userId);
+      var tokens = await db
         .Tokens
         .Where(x => x.UserId == userId && !x.Revoked)
         .ToArrayAsync();
@@ -31,7 +22,7 @@ public class TokenRepository : ITokenRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed getting all token for user '{UserId}'", userId);
       return e;
     }
@@ -41,8 +32,8 @@ public class TokenRepository : ITokenRepository
   {
     try
     {
-      this._logger.LogInformation("Retrieving Token for User '{User}' with ID '{Id}'", userId, id);
-      var user = await this._db.Tokens
+      logger.LogInformation("Retrieving Token for User '{User}' with ID '{Id}'", userId, id);
+      var user = await db.Tokens
         .Where(x => x.UserId == userId && x.Id == id)
         .Include(x => x.User)
         .FirstOrDefaultAsync();
@@ -50,7 +41,7 @@ public class TokenRepository : ITokenRepository
     }
     catch (Exception e)
     {
-      this._logger
+      logger
         .LogError(e, "Failed retrieving Token for User '{User}' with ID '{Id}'", userId, id);
       return e;
     }
@@ -67,14 +58,14 @@ public class TokenRepository : ITokenRepository
         ApiToken = token,
         User = null!,
       };
-      this._logger.LogInformation("Creating token for User '{UserId}' with record {@Record}", userId, data.ToJson());
-      var r = this._db.Tokens.Add(data);
-      await this._db.SaveChangesAsync();
+      logger.LogInformation("Creating token for User '{UserId}' with record {@Record}", userId, data.ToJson());
+      var r = db.Tokens.Add(data);
+      await db.SaveChangesAsync();
       return r.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to create token for User '{UserId}' with record {@Record}", userId,
+      logger.LogError(e, "Failed to create token for User '{UserId}' with record {@Record}", userId,
         record.ToJson());
       return e;
     }
@@ -84,7 +75,7 @@ public class TokenRepository : ITokenRepository
   {
     try
     {
-      var v1 = await this._db.Tokens
+      var v1 = await db.Tokens
         .Where(x => x.Id == tokenId && x.UserId == userId && !x.Revoked)
         .FirstOrDefaultAsync();
       if (v1 == null) return (TokenPrincipal?)null;
@@ -97,13 +88,13 @@ public class TokenRepository : ITokenRepository
         ApiToken = v1.ApiToken,
         User = null!,
       };
-      var updated = this._db.Tokens.Update(v3);
-      await this._db.SaveChangesAsync();
+      var updated = db.Tokens.Update(v3);
+      await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to update Token  with User ID '{UserID}' and Token ID '{TokenID}': {@Record}",
+      logger.LogError(e, "Failed to update Token  with User ID '{UserID}' and Token ID '{TokenID}': {@Record}",
         userId, tokenId, v2.ToJson());
       return e;
     }
@@ -113,19 +104,19 @@ public class TokenRepository : ITokenRepository
   {
     try
     {
-      var v1 = await this._db.Tokens
+      var v1 = await db.Tokens
         .Where(x => x.Id == tokenId && x.UserId == userId && !x.Revoked)
         .FirstOrDefaultAsync();
       if (v1 == null) return (Unit?)null;
 
       var v2 = v1 with { Revoked = true, User = null! };
-      var updated = this._db.Tokens.Update(v2);
-      await this._db.SaveChangesAsync();
+      var updated = db.Tokens.Update(v2);
+      await db.SaveChangesAsync();
       return new Unit();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to revoke Token with User ID '{UserID}' and Token ID '{TokenID}'",
+      logger.LogError(e, "Failed to revoke Token with User ID '{UserID}' and Token ID '{TokenID}'",
         userId, tokenId);
       return e;
     }
@@ -135,7 +126,7 @@ public class TokenRepository : ITokenRepository
   {
     try
     {
-      var a = await this._db.Tokens
+      var a = await db.Tokens
         .Where(x => x.ApiToken == token && !x.Revoked)
         .Include(x => x.User)
         .FirstOrDefaultAsync();
@@ -143,7 +134,7 @@ public class TokenRepository : ITokenRepository
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to validate token");
+      logger.LogError(e, "Failed to validate token");
       return e;
     }
   }
@@ -152,18 +143,18 @@ public class TokenRepository : ITokenRepository
   {
     try
     {
-      var a = await this._db.Tokens
+      var a = await db.Tokens
         .Where(x => x.Id == tokenId && x.UserId == userId && !x.Revoked)
         .FirstOrDefaultAsync();
       if (a == null) return (Unit?)null;
 
-      this._db.Tokens.Remove(a);
-      await this._db.SaveChangesAsync();
+      db.Tokens.Remove(a);
+      await db.SaveChangesAsync();
       return new Unit();
     }
     catch (Exception e)
     {
-      this._logger.LogError(e, "Failed to delete Token '{TokenId}' for User '{UserId}", userId, tokenId);
+      logger.LogError(e, "Failed to delete Token '{TokenId}' for User '{UserId}", userId, tokenId);
       return e;
     }
   }

@@ -20,44 +20,21 @@ using Utils = App.Utility.Utils;
 
 namespace App.StartUp;
 
-public class Server
+public class Server(
+  IOptionsMonitor<List<CorsOption>> cors,
+  IOptionsMonitor<AppOption> app,
+  IOptionsMonitor<MetricOption> metrics,
+  IOptionsMonitor<LogsOption> logs,
+  IOptionsMonitor<TraceOption> trace,
+  IOptionsMonitor<ErrorPortalOption> errorPortal,
+  IOptionsMonitor<Dictionary<string, BlockStorageOption>> store,
+  IOptionsMonitor<Dictionary<string, HttpClientOption>> http,
+  IOptionsMonitor<AuthOption> auth,
+  IOptionsMonitor<Dictionary<string, CacheOption>> cache)
 {
-  private readonly IOptionsMonitor<List<CorsOption>> _cors;
-  private readonly IOptionsMonitor<AppOption> _app;
-  private readonly IOptionsMonitor<MetricOption> _metrics;
-  private readonly IOptionsMonitor<TraceOption> _trace;
-  private readonly IOptionsMonitor<LogsOption> _logs;
-  private readonly IOptionsMonitor<ErrorPortalOption> _errorPortal;
-  private readonly IOptionsMonitor<AuthOption> _auth;
-  private readonly IOptionsMonitor<Dictionary<string, CacheOption>> _cache;
-  private readonly IOptionsMonitor<Dictionary<string, BlockStorageOption>> _store;
-  private readonly IOptionsMonitor<Dictionary<string, HttpClientOption>> _http;
-
-  public Server(
-    IOptionsMonitor<List<CorsOption>> cors,
-    IOptionsMonitor<AppOption> app,
-    IOptionsMonitor<MetricOption> metrics,
-    IOptionsMonitor<LogsOption> logs,
-    IOptionsMonitor<TraceOption> trace, IOptionsMonitor<ErrorPortalOption> errorPortal,
-    IOptionsMonitor<Dictionary<string, BlockStorageOption>> store,
-    IOptionsMonitor<Dictionary<string, HttpClientOption>> http, IOptionsMonitor<AuthOption> auth,
-    IOptionsMonitor<Dictionary<string, CacheOption>> cache)
-  {
-    this._cors = cors;
-    this._app = app;
-    this._metrics = metrics;
-    this._logs = logs;
-    this._trace = trace;
-    this._errorPortal = errorPortal;
-    this._store = store;
-    this._http = http;
-    this._auth = auth;
-    this._cache = cache;
-  }
-
   private void ConfigureResourceBuilder(ResourceBuilder r)
   {
-    var a = this._app.CurrentValue;
+    var a = app.CurrentValue;
     r.AddService(serviceName: $"{a.Platform}.{a.Service}.{a.Module}")
       .AddAttributes(new KeyValuePair<string, object>[]
       {
@@ -72,7 +49,7 @@ public class Server
 
   public void Start(string landscape, string[] args)
   {
-    var meter = $"{this._app.CurrentValue.Platform}.{this._app.CurrentValue.Service}.{this._app.CurrentValue.Module}";
+    var meter = $"{app.CurrentValue.Platform}.{app.CurrentValue.Service}.{app.CurrentValue.Module}";
 
     var builder = WebApplication
       .CreateBuilder(args);
@@ -89,7 +66,7 @@ public class Server
         var b = ResourceBuilder.CreateDefault();
         this.ConfigureResourceBuilder(b);
         o.SetResourceBuilder(b);
-        o.AddLogsService(this._logs);
+        o.AddLogsService(logs);
       });
 
     var services = builder.Services;
@@ -100,9 +77,9 @@ public class Server
     services.AddMimeDetectionService()
       .AddScoped<IFileValidator, FileValidator>();
 
-    services.AddSingleton(new Instrumentation(this._app, meter));
+    services.AddSingleton(new Instrumentation(app, meter));
 
-    services.AddProblemDetailsService(this._errorPortal.CurrentValue, this._app.CurrentValue)
+    services.AddProblemDetailsService(errorPortal.CurrentValue, app.CurrentValue)
       .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     services.AddControllers();
 
@@ -116,20 +93,20 @@ public class Server
         options.GroupNameFormat = "'v'VVV";
       });
 
-    services.AddSwaggerService(this._auth.CurrentValue);
+    services.AddSwaggerService(auth.CurrentValue);
 
     // Http Client
-    services.AddHttpClientService(this._http.CurrentValue);
+    services.AddHttpClientService(http.CurrentValue);
 
     // Cors Services
-    services.AddCorsService(this._cors.CurrentValue);
+    services.AddCorsService(cors.CurrentValue);
 
     // OTEL configuration
     services
       .AddOpenTelemetry()
       .ConfigureResource(this.ConfigureResourceBuilder)
-      .AddMetricService(this._metrics, meter)
-      .AddTraceService(this._trace);
+      .AddMetricService(metrics, meter)
+      .AddTraceService(trace);
 
     // Database Configurations
     services
@@ -139,40 +116,40 @@ public class Server
 
     // Cache Configurations
     services
-      .AddCache(this._cache.CurrentValue);
+      .AddCache(cache.CurrentValue);
 
     // Block Storage Configuration
     services
-      .AddBlockStorage(this._store.CurrentValue)
+      .AddBlockStorage(store.CurrentValue)
       .AddSingleton<BlockStorageMigrator>()
       .AddHostedService<BlockStorageHostedService>()
       .AddTransient<IFileRepository, FileRepository>();
 
     // Auth Service Configuration
-    if (this._auth.CurrentValue.Enabled)
-      services.AddAuthService(this._auth.CurrentValue);
+    if (auth.CurrentValue.Enabled)
+      services.AddAuthService(auth.CurrentValue);
 
     services.AddDomainServices();
     /*----------------------------------------*/
     // Pipeline
-    var app = builder.Build();
+    var app1 = builder.Build();
 
-    if (this._app.CurrentValue.GenerateConfig)
+    if (app.CurrentValue.GenerateConfig)
       File.WriteAllText("Config/schema.json", Utils.OptionSchema.ActualSchema.ToJson());
 
 
-    switch (this._app.CurrentValue.Mode)
+    switch (app.CurrentValue.Mode)
     {
       case "Migration":
-        app.Logger.LogInformation("Starting in Migration Mode...");
-        this.StartMigration(app).Wait();
+        app1.Logger.LogInformation("Starting in Migration Mode...");
+        this.StartMigration(app1).Wait();
         break;
       case "Server":
-        app.Logger.LogInformation("Starting in Server Mode...");
-        this.StartServer(app);
+        app1.Logger.LogInformation("Starting in Server Mode...");
+        this.StartServer(app1);
         break;
       default:
-        throw new ApplicationException($"Unknown mode: {this._app.CurrentValue.Mode}");
+        throw new ApplicationException($"Unknown mode: {app.CurrentValue.Mode}");
     }
   }
 
@@ -207,30 +184,30 @@ public class Server
     }
   }
 
-  private void StartServer(WebApplication app)
+  private void StartServer(WebApplication app1)
   {
-    using (app.Logger.BeginScope(new List<KeyValuePair<string, object>>
+    using (app1.Logger.BeginScope(new List<KeyValuePair<string, object>>
            {
-             new("app", this._app.CurrentValue.ToJson()),
-             new("metrics", this._metrics.CurrentValue.ToJson()),
-             new("logs", this._logs.CurrentValue.ToJson()),
-             new("traces", this._trace.CurrentValue.ToJson()),
-             new("cors", this._cors.CurrentValue.ToJson()),
+             new("app", app.CurrentValue.ToJson()),
+             new("metrics", metrics.CurrentValue.ToJson()),
+             new("logs", logs.CurrentValue.ToJson()),
+             new("traces", trace.CurrentValue.ToJson()),
+             new("cors", cors.CurrentValue.ToJson()),
            }))
     {
-      app.Logger.LogInformation("Configurations");
+      app1.Logger.LogInformation("Configurations");
     }
 
-    app.UseExceptionHandler();
+    app1.UseExceptionHandler();
 
-    if (this._errorPortal.CurrentValue.EnableExceptionResponse) app.UseDeveloperExceptionPage();
+    if (errorPortal.CurrentValue.EnableExceptionResponse) app1.UseDeveloperExceptionPage();
 
 
-    if (this._app.CurrentValue.EnableSwagger) app.UseSwaggerService();
-    app.UseCors(this._app.CurrentValue.DefaultCors);
+    if (app.CurrentValue.EnableSwagger) app1.UseSwaggerService();
+    app1.UseCors(app.CurrentValue.DefaultCors);
 
-    if (this._auth.CurrentValue.Enabled) app.UseAuthService();
-    app.MapControllers();
-    app.Run();
+    if (auth.CurrentValue.Enabled) app1.UseAuthService();
+    app1.MapControllers();
+    app1.Run();
   }
 }
