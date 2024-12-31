@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.0...v1.17.1) (2024-12-31)
+
+
+### Bug Fixes
+
+* incorrect single-arch image for raichu landscape ([87edfe5](https://github.com/AtomiCloud/sulfone.zinc/commit/87edfe551cd2d2545cd7a57b14f80d2069bce062))
+
 ## [1.17.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.16.3...v1.17.0) (2024-12-31)
 
 
