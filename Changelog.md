@@ -1,3 +1,10 @@
+## [1.18.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.2...v1.18.0) (2025-01-01)
+
+
+### New Features
+
+* allow more docker references to be placed ([7266622](https://github.com/AtomiCloud/sulfone.zinc/commit/726662211c85e3b7c0fe8dad4219085e5a3f94ff))
+
 ## [1.17.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.1...v1.17.2) (2024-12-31)
 
 
