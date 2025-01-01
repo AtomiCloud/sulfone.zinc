@@ -89,7 +89,7 @@ public static class ValidationUtility
     this IRuleBuilder<T, string> ruleBuilder)
   {
     return ruleBuilder
-      .Matches(@"^((\w(-?\w+)*)(\.\w(-?\w+)*)*(:\d+)?/)?\w(-?\w+)*(/\w(-?\w+)*)*$")
+      .Matches(@"^(?:(?=[^:\/]{1,253})(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(?:\.(?!-)[a-zA-Z0-9-]{1,63}(?<!-))*(?::[0-9]{1,5})?/)?((?![._-])(?:[a-z0-9._-]*)(?<![._-])(?:/(?![._-])[a-z0-9._-]*(?<![._-]))*)$")
       .WithMessage("Invalid Docker reference");
   }
 
