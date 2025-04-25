@@ -2,31 +2,20 @@
 with packages;
 {
   system = [
-    coreutils
-    findutils
-    gnugrep
-    gnused
-    yq-go
-    jq
+    atomiutils
   ];
 
   dev = [
     pls
     git
-    doppler
   ];
 
   infra = [
-    docker
-    k3d
-    helm
-    kubectl
-    tilt
-    mirrord
+    infrautils
   ];
 
   main = [
-    dotnet-sdk_8
+    dotnet
     infisical
   ];
 
@@ -34,18 +23,12 @@ with packages;
     # core
     treefmt
     gitlint
-    hadolint
     shellcheck
-    helm-docs
+    infralint
     sg
-    npm
-    docker
-    helm
   ];
 
   releaser = [
-    nodejs
     sg
-    npm
   ];
 }
