@@ -8,6 +8,7 @@ let
       nixpkgs-fmt.enable = true;
       prettier.enable = true;
       shfmt.enable = true;
+      csharpier.enable = true;
     };
   };
 in

@@ -1,10 +1,14 @@
 { pkgs, pkgs-2411, atomi }:
 let
 
-  all = {
+  all = rec {
     atomipkgs = (
       with atomi;
-      {
+      rec {
+
+        dotnetlint = atomi.dotnetlint.override { dotnetPackage = nix-2411.dotnet; };
+        helmlint = atomi.helmlint.override { helmPackage = infrautils; };
+
         inherit
           infrautils
           atomiutils

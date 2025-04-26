@@ -25,6 +25,8 @@ with packages;
     gitlint
     shellcheck
     infralint
+    dotnetlint
+    helmlint
     sg
   ];
 

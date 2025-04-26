@@ -15,9 +15,7 @@ pre-commit-lib.run {
     };
 
     # linters From https://github.com/cachix/pre-commit-hooks.nix
-    shellcheck = {
-      enable = false;
-    };
+    shellcheck.enable = false;
 
     a-config-sync = {
       enable = true;
@@ -28,94 +26,24 @@ pre-commit-lib.run {
       pass_filenames = false;
     };
 
-    a-helm-lint-api-chart = {
+    a-helm-lint-chart = {
       enable = true;
-      name = "Helm Lint API Chart";
-      description = "Lints helm API charts";
-      entry = "${packages.infrautils}/bin/helm lint -f infra/api_chart/values.yaml infra/api_chart";
-      files = "infra/api_chart/.*";
+      name = "Helm Lint Chart";
+      description = "Lints helm charts";
+      entry = "${packages.helmlint}/bin/helmlint";
+      files = "infra/.*";
       language = "system";
       pass_filenames = false;
     };
 
-    a-helm-lint-migration-chart = {
+    a-dotnet-lint = {
       enable = true;
-      name = "Helm Lint Migration Chart";
-      description = "Lints helm migration charts";
-      entry = "${packages.infrautils}/bin/helm lint -f infra/migration_chart/values.yaml infra/migration_chart";
-      files = "infra/migration_chart/.*";
+      name = "Lint .NET Projects";
+      description = "Run dotnet lint for .NET Projects";
+      entry = "${packages.dotnetlint}/bin/dotnetlint";
       language = "system";
       pass_filenames = false;
-    };
-
-    a-helm-lint-root-chart = {
-      enable = true;
-      name = "Helm Lint Root Chart";
-      description = "Lints helm root charts";
-      entry = "${packages.infrautils}/bin/helm lint -f infra/root_chart/values.yaml infra/root_chart";
-      files = "infra/root_chart/.*";
-      language = "system";
-      pass_filenames = false;
-    };
-
-    a-dotnet-fmt-app = {
-      enable = true;
-      name = "Format .NET 'App' Project";
-      description = "Run formatter for .NET Project 'App'";
-      entry = "${packages.dotnet}/bin/dotnet format whitespace --no-restore -v d ./App/App.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^App/.*\\.cs$";
-    };
-
-    a-dotnet-lint-app = {
-      enable = true;
-      name = "Lint .NET 'App' Project";
-      description = "Run formatter for .NET Project 'App'";
-      entry = "${packages.dotnet}/bin/dotnet format style --no-restore --severity info --verify-no-changes -v d ./App/App.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^App/.*\\.cs$";
-    };
-
-    a-dotnet-fmt-domain = {
-      enable = true;
-      name = "Format .NET 'Domain' Project";
-      description = "Run formatter for .NET Project 'Domain'";
-      entry = "${packages.dotnet}/bin/dotnet format whitespace --no-restore -v d ./Domain/Domain.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^Domain/.*\\.cs$";
-    };
-
-    a-dotnet-lint-domain = {
-      enable = true;
-      name = "Lint .NET 'Domain' Project";
-      description = "Run formatter for .NET Project 'Domain'";
-      entry = "${packages.dotnet}/bin/dotnet format style --no-restore --severity info --verify-no-changes -v d ./Domain/Domain.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^Domain/.*\\.cs$";
-    };
-
-    a-dotnet-fmt-unit = {
-      enable = true;
-      name = "Format .NET 'UnitTest' Project";
-      description = "Run formatter for .NET Project 'UnitTest'";
-      entry = "${packages.dotnet}/bin/dotnet format whitespace --no-restore -v d ./UnitTest/UnitTest.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^UnitTest/.*\\.cs$";
-    };
-
-    a-dotnet-lint-unit = {
-      enable = true;
-      name = "Lint .NET 'UnitTest' Project";
-      description = "Run formatter for .NET Project 'UnitTest'";
-      entry = "${packages.dotnet}/bin/dotnet format style --no-restore --severity info --verify-no-changes -v d ./UnitTest/UnitTest.csproj";
-      language = "system";
-      pass_filenames = false;
-      files = "^UnitTest/.*\\.cs$";
+      files = "^.*\\.cs$";
     };
 
     a-infisical = {
@@ -194,9 +122,5 @@ pre-commit-lib.run {
 
   };
 
-  settings = {
-    treefmt = {
-      package = formatter;
-    };
-  };
+  settings.treefmt.package = formatter;
 }
