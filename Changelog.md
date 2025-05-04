@@ -1,3 +1,12 @@
+## [1.18.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.0...v1.18.1) (2025-05-04)
+
+
+### Bug Fixes
+
+* linting etc ([11bf471](https://github.com/AtomiCloud/sulfone.zinc/commit/11bf4711c28ad6ed92bba831c17d0d709de2b8f2))
+* local development ([3f20519](https://github.com/AtomiCloud/sulfone.zinc/commit/3f205191103f785010916f8aa90bb89e60ddd9bf))
+* local development ([593e387](https://github.com/AtomiCloud/sulfone.zinc/commit/593e387e6790e872519d8e294ac7730a09b9f143))
+
 ## [1.18.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.2...v1.18.0) (2025-01-01)
 
 ### New Features
