@@ -15,57 +15,51 @@ using NpgsqlTypes;
 
 namespace App.Modules.Cyan.Data.Repositories;
 
-public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> logger) : IProcessorRepository
+public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> logger)
+  : IProcessorRepository
 {
   public async Task<Result<IEnumerable<ProcessorPrincipal>>> Search(ProcessorSearch search)
   {
     try
     {
-      logger.LogInformation("Searching for processors with Search Params '{@SearchParams}'", search.ToJson());
+      logger.LogInformation(
+        "Searching for processors with Search Params '{@SearchParams}'",
+        search.ToJson()
+      );
       var processors = db.Processors.AsQueryable();
 
       if (search.Owner != null)
-        processors = processors
-          .Include(x => x.User)
-          .Where(x => x.User.Username == search.Owner);
+        processors = processors.Include(x => x.User).Where(x => x.User.Username == search.Owner);
 
       if (search.Search != null)
         processors = processors
           .Include(x => x.User)
           .Where(x =>
             // Full text search
-            x.SearchVector
-              .Concat(
-                EF.Functions.ToTsVector("english", x.User.Username)
-              )
-              .Concat(
-                EF.Functions.ArrayToTsVector(x.Tags)
-              )
-              .Matches(EF.Functions.PlainToTsQuery("english", search.Search.Replace("/", " "))) ||
-            EF.Functions.ILike(x.Name, $"%{search.Search}%") ||
-            EF.Functions.ILike(x.User.Username, $"%{search.Search}%")
+            x.SearchVector.Concat(EF.Functions.ToTsVector("english", x.User.Username))
+              .Concat(EF.Functions.ArrayToTsVector(x.Tags))
+              .Matches(EF.Functions.PlainToTsQuery("english", search.Search.Replace("/", " ")))
+            || EF.Functions.ILike(x.Name, $"%{search.Search}%")
+            || EF.Functions.ILike(x.User.Username, $"%{search.Search}%")
           )
           // Rank with full text search
           .OrderBy(x =>
-            x.SearchVector
-              .Concat(
-                EF.Functions.ToTsVector(x.User.Username)
-              )
-              .Concat(
-                EF.Functions.ArrayToTsVector(x.Tags)
-              )
-              .Rank(EF.Functions.PlainToTsQuery("english", search.Search.Replace("/", " "))));
-
+            x.SearchVector.Concat(EF.Functions.ToTsVector(x.User.Username))
+              .Concat(EF.Functions.ArrayToTsVector(x.Tags))
+              .Rank(EF.Functions.PlainToTsQuery("english", search.Search.Replace("/", " ")))
+          );
 
       processors = processors.Skip(search.Skip).Take(search.Limit);
-      var a = await processors
-        .ToArrayAsync();
+      var a = await processors.ToArrayAsync();
       return a.Select(x => x.ToPrincipal()).ToResult();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed getting processors with Search Params '{@SearchParams}'", search.ToJson());
+      logger.LogError(
+        e,
+        "Failed getting processors with Search Params '{@SearchParams}'",
+        search.ToJson()
+      );
       return e;
     }
   }
@@ -75,28 +69,28 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     try
     {
       logger.LogInformation("Getting processor with '{ID}'", id);
-      var processor = await db.Processors
-        .Where(x => x.Id == id && x.UserId == userId)
+      var processor = await db
+        .Processors.Where(x => x.Id == id && x.UserId == userId)
         .Include(x => x.Likes)
         .Include(x => x.User)
         .Include(x => x.Versions)
         .ThenInclude(x => x.Templates)
         .FirstOrDefaultAsync();
 
-      if (processor == null) return (Processor?)null;
+      if (processor == null)
+        return (Processor?)null;
 
       var info = new ProcessorInfo
       {
         Downloads = processor.Downloads,
         Dependencies = (uint)processor.Versions.Sum(x => x.Templates.Count()),
-        Stars = (uint)processor.Likes.Count()
+        Stars = (uint)processor.Likes.Count(),
       };
       return processor?.ToDomain(info);
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed getting processor '{ProcessorId}'", id);
+      logger.LogError(e, "Failed getting processor '{ProcessorId}'", id);
       return e;
     }
   }
@@ -106,8 +100,8 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     try
     {
       logger.LogInformation("Getting processor '{Username}/{Name}'", username, name);
-      var processor = await db.Processors
-        .Include(x => x.User)
+      var processor = await db
+        .Processors.Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .Include(x => x.Likes)
         .Include(x => x.User)
@@ -115,40 +109,45 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
         .ThenInclude(x => x.Templates)
         .FirstOrDefaultAsync();
 
-      if (processor == null) return (Processor?)null;
+      if (processor == null)
+        return (Processor?)null;
 
       var info = new ProcessorInfo
       {
         Downloads = processor.Downloads,
         Dependencies = (uint)processor.Versions.Sum(x => x.Templates.Count()),
-        Stars = (uint)processor.Likes.Count()
+        Stars = (uint)processor.Likes.Count(),
       };
       return processor?.ToDomain(info);
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed getting processor '{Username}/{Name}'", username, name);
+      logger.LogError(e, "Failed getting processor '{Username}/{Name}'", username, name);
       return e;
     }
   }
 
-  public async Task<Result<ProcessorPrincipal>> Create(string userId, ProcessorRecord record,
-    ProcessorMetadata metadata)
+  public async Task<Result<ProcessorPrincipal>> Create(
+    string userId,
+    ProcessorRecord record,
+    ProcessorMetadata metadata
+  )
   {
     try
     {
       var data = new ProcessorData();
-      data = data
-          .HydrateData(record)
-          .HydrateData(metadata) with
+      data = data.HydrateData(record).HydrateData(metadata) with
       {
         Downloads = 0,
         User = null!,
         UserId = userId,
       };
-      logger.LogInformation("Creating processor {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
-        record.ToJson(), metadata.ToJson());
+      logger.LogInformation(
+        "Creating processor {UserId} with Record {@Record} and Metadata {@Metadata}",
+        userId,
+        record.ToJson(),
+        metadata.ToJson()
+      );
 
       var r = db.Processors.Add(data);
       await db.SaveChangesAsync();
@@ -156,63 +155,93 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (UniqueConstraintException e)
     {
-      logger.LogError(e,
-        "Failed to create processor due to conflict: {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
-        record.ToJson(), metadata.ToJson());
-      return new AlreadyExistException("Failed to create Processor due to conflicting with existing record", e,
-        typeof(ProcessorPrincipal));
+      logger.LogError(
+        e,
+        "Failed to create processor due to conflict: {UserId} with Record {@Record} and Metadata {@Metadata}",
+        userId,
+        record.ToJson(),
+        metadata.ToJson()
+      );
+      return new AlreadyExistException(
+        "Failed to create Processor due to conflicting with existing record",
+        e,
+        typeof(ProcessorPrincipal)
+      );
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed updating processor {UserId} with Record {@Record} and Metadata {@Metadata}", userId,
-          record.ToJson(), metadata.ToJson());
+      logger.LogError(
+        e,
+        "Failed updating processor {UserId} with Record {@Record} and Metadata {@Metadata}",
+        userId,
+        record.ToJson(),
+        metadata.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorPrincipal?>> Update(string userId, Guid id, ProcessorMetadata v2)
+  public async Task<Result<ProcessorPrincipal?>> Update(
+    string userId,
+    Guid id,
+    ProcessorMetadata v2
+  )
   {
     try
     {
-      var v1 = await db.Processors
-        .Where(x => x.UserId == userId && x.Id == id)
+      var v1 = await db
+        .Processors.Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
-      if (v1 == null) return (ProcessorPrincipal?)null;
+      if (v1 == null)
+        return (ProcessorPrincipal?)null;
 
-      var v3 = v1.HydrateData(v2) with { User = null!, };
+      var v3 = v1.HydrateData(v2) with { User = null! };
       var updated = db.Processors.Update(v3);
       await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      logger.LogError(e,
+      logger.LogError(
+        e,
         "Failed to update Processor with User ID '{UserID}' and Processor ID '{ProcessorID}': {@Record}",
-        userId, id, v2.ToJson());
+        userId,
+        id,
+        v2.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorPrincipal?>> Update(string username, string name, ProcessorMetadata v2)
+  public async Task<Result<ProcessorPrincipal?>> Update(
+    string username,
+    string name,
+    ProcessorMetadata v2
+  )
   {
     try
     {
-      var v1 = await db.Processors
-        .Include(x => x.User)
+      var v1 = await db
+        .Processors.Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
-      if (v1 == null) return (ProcessorPrincipal?)null;
+      if (v1 == null)
+        return (ProcessorPrincipal?)null;
 
-      var v3 = v1.HydrateData(v2) with { User = null!, };
+      var v3 = v1.HydrateData(v2) with { User = null! };
       var updated = db.Processors.Update(v3);
       await db.SaveChangesAsync();
       return updated.Entity.ToPrincipal();
     }
     catch (Exception e)
     {
-      logger.LogError(e, "Failed to update Processor '{Username}/{Name}': {@Record}",
-        username, name, v2.ToJson());
+      logger.LogError(
+        e,
+        "Failed to update Processor '{Username}/{Name}': {@Record}",
+        username,
+        name,
+        v2.ToJson()
+      );
       return e;
     }
   }
@@ -221,10 +250,11 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
   {
     try
     {
-      var a = await db.Processors
-        .Where(x => x.UserId == userId && x.Id == id)
+      var a = await db
+        .Processors.Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
-      if (a == null) return (Unit?)null;
+      if (a == null)
+        return (Unit?)null;
 
       db.Processors.Remove(a);
       await db.SaveChangesAsync();
@@ -232,7 +262,12 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger.LogError(e, "Failed to delete Processor '{ProcessorId}' for User '{UserId}", id, userId);
+      logger.LogError(
+        e,
+        "Failed to delete Processor '{ProcessorId}' for User '{UserId}",
+        id,
+        userId
+      );
       return e;
     }
   }
@@ -242,44 +277,62 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     try
     {
       // check if like already exist
-      var likeExist = await db.ProcessorLikes
-        .Include(x => x.Processor)
+      var likeExist = await db
+        .ProcessorLikes.Include(x => x.Processor)
         .ThenInclude(x => x.User)
-        .AnyAsync(x => x.UserId == likerId
-                       && x.Processor.User.Username == username
-                       && x.Processor.Name == name
+        .AnyAsync(x =>
+          x.UserId == likerId && x.Processor.User.Username == username && x.Processor.Name == name
         );
 
       if (like == likeExist)
-        return new LikeConflictError("Failed to like processors", $"{username}/{name}", "processor",
-          like ? "like" : "unlike").ToException();
+        return new LikeConflictError(
+          "Failed to like processors",
+          $"{username}/{name}",
+          "processor",
+          like ? "like" : "unlike"
+        ).ToException();
 
-      var p = await db.Processors
-        .Include(x => x.User)
+      var p = await db
+        .Processors.Include(x => x.User)
         .FirstOrDefaultAsync(x => x.User.Username == username && x.Name == name);
 
-      if (p == null) return (Unit?)null;
+      if (p == null)
+        return (Unit?)null;
 
       if (like)
       {
         // if like, check for conflict
-        var l = new ProcessorLikeData { UserId = likerId, User = null!, ProcessorId = p.Id, Processor = null! };
+        var l = new ProcessorLikeData
+        {
+          UserId = likerId,
+          User = null!,
+          ProcessorId = p.Id,
+          Processor = null!,
+        };
         var r = db.ProcessorLikes.Add(l);
         await db.SaveChangesAsync();
         return new Unit();
       }
       else
       {
-        var l = await db.ProcessorLikes
-          .FirstOrDefaultAsync(x => x.UserId == likerId && x.ProcessorId == p.Id);
+        var l = await db.ProcessorLikes.FirstOrDefaultAsync(x =>
+          x.UserId == likerId && x.ProcessorId == p.Id
+        );
         if (l == null)
         {
           logger.LogError(
             "Race Condition, Failed to unlike Processor '{Username}/{Name}' for User '{UserId}'. User-Processor-Like entry does not exist even though it exist at the start of the query",
-            username, name, likerId);
+            username,
+            name,
+            likerId
+          );
 
-          return new LikeRaceConditionError("Failed to like processors", $"{username}/{name}", "processor",
-            like ? "like" : "unlike").ToException();
+          return new LikeRaceConditionError(
+            "Failed to like processors",
+            $"{username}/{name}",
+            "processor",
+            like ? "like" : "unlike"
+          ).ToException();
         }
 
         db.Remove(l with { Processor = null!, User = null! });
@@ -289,8 +342,14 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger.LogError(e, "Failed to {Like} Processor '{Username}/{Name}' for User '{UserId}",
-        like ? "like" : "unlike", username, name, likerId);
+      logger.LogError(
+        e,
+        "Failed to {Like} Processor '{Username}/{Name}' for User '{UserId}",
+        like ? "like" : "unlike",
+        username,
+        name,
+        likerId
+      );
       return e;
     }
   }
@@ -299,13 +358,14 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
   {
     try
     {
-      var processor = await db.Processors
-        .Include(x => x.User)
+      var processor = await db
+        .Processors.Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
-      if (processor == null) return (uint?)null;
+      if (processor == null)
+        return (uint?)null;
 
-      processor = processor with { Downloads = processor.Downloads + 1, User = null!, };
+      processor = processor with { Downloads = processor.Downloads + 1, User = null! };
 
       var updated = db.Processors.Update(processor);
       await db.SaveChangesAsync();
@@ -313,144 +373,193 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger.LogError(e, "Failed to increment download count for Processor '{Username}/{Name}'",
-        username, name);
+      logger.LogError(
+        e,
+        "Failed to increment download count for Processor '{Username}/{Name}'",
+        username,
+        name
+      );
       return e;
     }
   }
 
-  public async Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(string username, string name,
-    ProcessorVersionSearch version)
+  public async Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(
+    string username,
+    string name,
+    ProcessorVersionSearch version
+  )
   {
     try
     {
-      var query = db.ProcessorVersions
-        .Include(x => x.Processor)
+      var query = db
+        .ProcessorVersions.Include(x => x.Processor)
         .ThenInclude(x => x.User)
         .Where(x => x.Processor.User.Username == username && x.Processor.Name == name)
         .AsQueryable();
 
       if (version.Search != null)
         query = query.Where(x =>
-          EF.Functions.ILike(x.Description, $"%{version.Search}%") ||
-          version.Search.Contains(version.Search)
+          EF.Functions.ILike(x.Description, $"%{version.Search}%")
+          || version.Search.Contains(version.Search)
         );
 
-      var processors = await query
-        .Skip(version.Skip)
-        .Take(version.Limit)
-        .ToArrayAsync();
+      var processors = await query.Skip(version.Skip).Take(version.Limit).ToArrayAsync();
 
       return processors.Select(x => x.ToPrincipal()).ToResult();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed searching processor version of Processor '{Username}/{Name}' with {@Params}",
-          username, name, version.ToJson());
+      logger.LogError(
+        e,
+        "Failed searching processor version of Processor '{Username}/{Name}' with {@Params}",
+        username,
+        name,
+        version.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(string userId, Guid id,
-    ProcessorVersionSearch version)
+  public async Task<Result<IEnumerable<ProcessorVersionPrincipal>>> SearchVersion(
+    string userId,
+    Guid id,
+    ProcessorVersionSearch version
+  )
   {
     try
     {
-      var query = db.ProcessorVersions
-        .Include(x => x.Processor)
+      var query = db
+        .ProcessorVersions.Include(x => x.Processor)
         .Where(x => x.Processor.UserId == userId && x.Processor.Id == id)
         .AsQueryable();
 
       if (version.Search != null)
         query = query.Where(x =>
-          EF.Functions.ILike(x.Description, $"%{version.Search}%") ||
-          version.Search.Contains(version.Search)
+          EF.Functions.ILike(x.Description, $"%{version.Search}%")
+          || version.Search.Contains(version.Search)
         );
 
-      var processors = await query
-        .Skip(version.Skip)
-        .Take(version.Limit)
-        .ToArrayAsync();
+      var processors = await query.Skip(version.Skip).Take(version.Limit).ToArrayAsync();
 
       return processors.Select(x => x.ToPrincipal()).ToResult();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e,
-          "Failed searching processor version of Processor '{ProcessorId}' of User '{UserId}' with {@Params}",
-          id, userId, version.ToJson());
+      logger.LogError(
+        e,
+        "Failed searching processor version of Processor '{ProcessorId}' of User '{UserId}' with {@Params}",
+        id,
+        userId,
+        version.ToJson()
+      );
       return e;
     }
   }
 
   public async Task<Result<IEnumerable<ProcessorVersionPrincipal>>> GetAllVersion(
-    IEnumerable<ProcessorVersionRef> references)
+    IEnumerable<ProcessorVersionRef> references
+  )
   {
     var processorRefs = references as ProcessorVersionRef[] ?? references.ToArray();
     try
     {
-      logger.LogInformation("Getting all processors versions {@Processors}", processorRefs.ToJson());
-      if (processorRefs.IsNullOrEmpty()) return Array.Empty<ProcessorVersionPrincipal>();
-      var query = db.ProcessorVersions
-        .Include(x => x.Processor)
+      logger.LogInformation(
+        "Getting all processors versions {@Processors}",
+        processorRefs.ToJson()
+      );
+      if (processorRefs.IsNullOrEmpty())
+        return Array.Empty<ProcessorVersionPrincipal>();
+      var query = db
+        .ProcessorVersions.Include(x => x.Processor)
         .ThenInclude(x => x.User)
         .AsQueryable();
 
       var predicate = PredicateBuilder.New<ProcessorVersionData>(true);
 
-      predicate = processorRefs.Aggregate(predicate, (c, r) =>
-        r.Version != null
-          ? c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username && x.Version == r.Version)
-          : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
+      predicate = processorRefs.Aggregate(
+        predicate,
+        (c, r) =>
+          r.Version != null
+            ? c.Or(x =>
+              x.Processor.Name == r.Name
+              && x.Processor.User.Username == r.Username
+              && x.Version == r.Version
+            )
+            : c.Or(x => x.Processor.Name == r.Name && x.Processor.User.Username == r.Username)
       );
 
       var all = await query.Where(predicate).ToArrayAsync();
-      var grouped = all
-        .GroupBy(x => new { x.Processor.Name, x.Processor.User.Username })
+      var grouped = all.GroupBy(x => new { x.Processor.Name, x.Processor.User.Username })
         .Select(g => g.OrderByDescending(o => o.Version).First())
         .ToArray();
 
       var processors = grouped.Select(x => x.ToPrincipal()).ToArray();
-      logger.LogInformation("Processor References: {@ProcessorReferences}", processors.Select(x => x.Id));
+      logger.LogInformation(
+        "Processor References: {@ProcessorReferences}",
+        processors.Select(x => x.Id)
+      );
 
       if (processors.Length != processorRefs.Length)
       {
-        var found = grouped.Select(x => $"{x.Processor.User.Username}/{x.Processor.Name}:{x.Version}").ToArray();
+        var found = grouped
+          .Select(x => $"{x.Processor.User.Username}/{x.Processor.Name}:{x.Version}")
+          .ToArray();
         var search = processorRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
         var notFound = search.Except(found).ToArray();
-        return new MultipleEntityNotFound("Processors not found", typeof(ProcessorPrincipal), notFound, found)
-          .ToException();
+        return new MultipleEntityNotFound(
+          "Processors not found",
+          typeof(ProcessorPrincipal),
+          notFound,
+          found
+        ).ToException();
       }
 
       return processors;
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed searching processor versions '{@References}'", processorRefs.ToJson());
+      logger.LogError(
+        e,
+        "Failed searching processor versions '{@References}'",
+        processorRefs.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorVersion?>> GetVersion(string username, string name, ulong version)
+  public async Task<Result<ProcessorVersion?>> GetVersion(
+    string username,
+    string name,
+    ulong version
+  )
   {
     try
     {
-      logger.LogInformation("Getting processor version '{Username}/{Name}:{Version}'", username, name, version);
-      var processor = await db.ProcessorVersions
-        .Include(x => x.Processor)
+      logger.LogInformation(
+        "Getting processor version '{Username}/{Name}:{Version}'",
+        username,
+        name,
+        version
+      );
+      var processor = await db
+        .ProcessorVersions.Include(x => x.Processor)
         .ThenInclude(x => x.User)
-        .Where(x => x.Processor.User.Username == username && x.Processor.Name == name && x.Version == version)
+        .Where(x =>
+          x.Processor.User.Username == username && x.Processor.Name == name && x.Version == version
+        )
         .FirstOrDefaultAsync();
 
       return processor?.ToDomain();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed to get processor version '{Username}/{Name}:{Version}'", username, name, version);
+      logger.LogError(
+        e,
+        "Failed to get processor version '{Username}/{Name}:{Version}'",
+        username,
+        name,
+        version
+      );
       return e;
     }
   }
@@ -460,8 +569,8 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     try
     {
       logger.LogInformation("Getting processor version '{Username}/{Name}'", username, name);
-      var processor = await db.ProcessorVersions
-        .Include(x => x.Processor)
+      var processor = await db
+        .ProcessorVersions.Include(x => x.Processor)
         .ThenInclude(x => x.User)
         .Where(x => x.Processor.User.Username == username && x.Processor.Name == name)
         .OrderByDescending(x => x.Version)
@@ -471,8 +580,7 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed to get processor version '{Username}/{Name}'", username, name);
+      logger.LogError(e, "Failed to get processor version '{Username}/{Name}'", username, name);
       return e;
     }
   }
@@ -482,10 +590,13 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     try
     {
       logger.LogInformation(
-        "Getting processor version for User '{UserId}', Processor: '{ProcessorId}', Version: {Version}'", userId, id,
-        version);
-      var processor = await db.ProcessorVersions
-        .Include(x => x.Processor)
+        "Getting processor version for User '{UserId}', Processor: '{ProcessorId}', Version: {Version}'",
+        userId,
+        id,
+        version
+      );
+      var processor = await db
+        .ProcessorVersions.Include(x => x.Processor)
         .Where(x => x.Processor.UserId == userId && x.Processor.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
 
@@ -493,40 +604,48 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed to get processor version: User '{UserId}', Processor '{Name}', Version {Version}'", userId,
-          id,
-          version);
+      logger.LogError(
+        e,
+        "Failed to get processor version: User '{UserId}', Processor '{Name}', Version {Version}'",
+        userId,
+        id,
+        version
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> CreateVersion(string username, string name,
+  public async Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
+    string username,
+    string name,
     ProcessorVersionRecord record,
-    ProcessorVersionProperty property)
+    ProcessorVersionProperty property
+  )
   {
     try
     {
       logger.LogInformation(
         "Creating processor version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
-        username, name, record.ToJson(), property.ToJson());
+        username,
+        name,
+        record.ToJson(),
+        property.ToJson()
+      );
 
-      var processor = await db.Processors
-        .Include(x => x.User)
+      var processor = await db
+        .Processors.Include(x => x.User)
         .Where(x => x.User.Username == username && x.Name == name)
         .FirstOrDefaultAsync();
 
-      if (processor == null) return (ProcessorVersionPrincipal?)null;
+      if (processor == null)
+        return (ProcessorVersionPrincipal?)null;
 
-      var latest = db.ProcessorVersions
-        .Where(x => x.ProcessorId == processor.Id)
-        .Max(x => x.Version as ulong?) ?? 0;
+      var latest =
+        db.ProcessorVersions.Where(x => x.ProcessorId == processor.Id).Max(x => x.Version as ulong?)
+        ?? 0;
 
       var data = new ProcessorVersionData();
-      data = data
-          .HydrateData(record)
-          .HydrateData(property)
-        with
+      data = data.HydrateData(record).HydrateData(property) with
       {
         ProcessorId = processor.Id,
         Processor = null!,
@@ -540,39 +659,48 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e,
-          "Failed to create processor version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
-          username, name, record.ToJson(), property.ToJson());
+      logger.LogError(
+        e,
+        "Failed to create processor version for '{Username}/{Name}' with Record {@Record} and Property {@Property} ",
+        username,
+        name,
+        record.ToJson(),
+        property.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> CreateVersion(string userId, Guid id,
+  public async Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
+    string userId,
+    Guid id,
     ProcessorVersionRecord record,
-    ProcessorVersionProperty property)
+    ProcessorVersionProperty property
+  )
   {
     try
     {
       logger.LogInformation(
         "Creating processor version for User '{UserId}', Processor '{Id}' with Record {@Record} and Property {@Property} ",
-        userId, id, record.ToJson(), property.ToJson());
+        userId,
+        id,
+        record.ToJson(),
+        property.ToJson()
+      );
 
-      var processor = await db.Processors
-        .Where(x => x.UserId == userId && x.Id == id)
+      var processor = await db
+        .Processors.Where(x => x.UserId == userId && x.Id == id)
         .FirstOrDefaultAsync();
 
-      if (processor == null) return (ProcessorVersionPrincipal?)null;
+      if (processor == null)
+        return (ProcessorVersionPrincipal?)null;
 
-      var latest = db.ProcessorVersions
-        .Where(x => x.ProcessorId == processor.Id)
-        .Max(x => x.Version as ulong?) ?? 0;
+      var latest =
+        db.ProcessorVersions.Where(x => x.ProcessorId == processor.Id).Max(x => x.Version as ulong?)
+        ?? 0;
 
       var data = new ProcessorVersionData();
-      data = data
-          .HydrateData(record)
-          .HydrateData(property)
-        with
+      data = data.HydrateData(record).HydrateData(property) with
       {
         ProcessorId = processor.Id,
         Processor = null!,
@@ -586,37 +714,47 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e,
-          "Failed to create processor version for User '{UserId}', Processor '{Id}' with Record {@Record} and Property {@Property}",
-          userId, id, record.ToJson(), property.ToJson());
+      logger.LogError(
+        e,
+        "Failed to create processor version for User '{UserId}', Processor '{Id}' with Record {@Record} and Property {@Property}",
+        userId,
+        id,
+        record.ToJson(),
+        property.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(string username, string name, ulong version,
-    ProcessorVersionRecord v2)
+  public async Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(
+    string username,
+    string name,
+    ulong version,
+    ProcessorVersionRecord v2
+  )
   {
     try
     {
       logger.LogInformation(
         "Updating processor '{Username}/{Name}:{Version}' with Record {@Record}",
-        username, name, version, v2.ToJson());
+        username,
+        name,
+        version,
+        v2.ToJson()
+      );
 
-
-      var v1 = await db.ProcessorVersions
-        .Include(x => x.Processor)
+      var v1 = await db
+        .ProcessorVersions.Include(x => x.Processor)
         .ThenInclude(x => x.User)
-        .Where(x => x.Version == version && x.Processor.Name == name && x.Processor.User.Username == username)
+        .Where(x =>
+          x.Version == version && x.Processor.Name == name && x.Processor.User.Username == username
+        )
         .FirstOrDefaultAsync();
 
-      if (v1 == null) return (ProcessorVersionPrincipal?)null;
+      if (v1 == null)
+        return (ProcessorVersionPrincipal?)null;
 
-      var v3 = v1.HydrateData(v2)
-        with
-      {
-        Processor = null!,
-      };
+      var v3 = v1.HydrateData(v2) with { Processor = null! };
 
       var r = db.ProcessorVersions.Update(v3);
       await db.SaveChangesAsync();
@@ -624,36 +762,43 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e,
-          "Failed to update processor '{Username}/{Name}:{Version}' with Record {@Record}",
-          username, name, version, v2.ToJson());
+      logger.LogError(
+        e,
+        "Failed to update processor '{Username}/{Name}:{Version}' with Record {@Record}",
+        username,
+        name,
+        version,
+        v2.ToJson()
+      );
       return e;
     }
   }
 
-  public async Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(string userId, Guid id, ulong version,
-    ProcessorVersionRecord v2)
+  public async Task<Result<ProcessorVersionPrincipal?>> UpdateVersion(
+    string userId,
+    Guid id,
+    ulong version,
+    ProcessorVersionRecord v2
+  )
   {
     try
     {
       logger.LogInformation(
         "Updating processor for User '{UserId}', Processor '{Id}' with Record {@Record}",
-        userId, id, v2.ToJson());
+        userId,
+        id,
+        v2.ToJson()
+      );
 
-
-      var v1 = await db.ProcessorVersions
-        .Include(x => x.Processor)
+      var v1 = await db
+        .ProcessorVersions.Include(x => x.Processor)
         .Where(x => x.Version == version && x.Processor.Id == id && x.Processor.UserId == userId)
         .FirstOrDefaultAsync();
 
-      if (v1 == null) return (ProcessorVersionPrincipal?)null;
+      if (v1 == null)
+        return (ProcessorVersionPrincipal?)null;
 
-      var v3 = v1.HydrateData(v2)
-        with
-      {
-        Processor = null!,
-      };
+      var v3 = v1.HydrateData(v2) with { Processor = null! };
 
       var r = db.ProcessorVersions.Update(v3);
       await db.SaveChangesAsync();
@@ -661,10 +806,13 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e,
-          "Failed to update processor for User '{UserId}', Processor '{Id}' with Record {@Record}",
-          userId, id, v2.ToJson());
+      logger.LogError(
+        e,
+        "Failed to update processor for User '{UserId}', Processor '{Id}' with Record {@Record}",
+        userId,
+        id,
+        v2.ToJson()
+      );
       return e;
     }
   }

@@ -12,15 +12,18 @@ public static class Utils
 
   public static JsonSchema OptionSchema = JsonSchema.CreateAnySchema();
 
-  public static async Task<Result<Unit>> TryFor(this int timeout,
+  public static async Task<Result<Unit>> TryFor(
+    this int timeout,
     Func<int, Task<bool>> tryAction,
-    Func<Exception> timeoutAction)
+    Func<Exception> timeoutAction
+  )
   {
     var tries = 0;
     var done = false;
     while (!done)
     {
-      if (tries > timeout) return timeoutAction.Invoke();
+      if (tries > timeout)
+        return timeoutAction.Invoke();
       done = await tryAction.Invoke(tries);
       await Task.Delay(1000);
       tries++;
@@ -39,7 +42,6 @@ public static class Utils
     return date.ToString(StandardDateFormat);
   }
 
-
   public static DomainProblemException ToException(this IDomainProblem p)
   {
     return new DomainProblemException(p);
@@ -52,13 +54,17 @@ public static class Utils
     return JsonSerializer.Serialize(obj);
   }
 
-  public static OptionsBuilder<TOptions> RegisterOption<TOptions>(this IServiceCollection service, string key)
+  public static OptionsBuilder<TOptions> RegisterOption<TOptions>(
+    this IServiceCollection service,
+    string key
+  )
     where TOptions : class
   {
     var property = JsonSchema.FromType<TOptions>();
     OptionSchema.Definitions[key] = property;
     OptionSchema.Properties[key] = new JsonSchemaProperty { Reference = property };
-    return service.AddOptions<TOptions>()
+    return service
+      .AddOptions<TOptions>()
       .BindConfiguration(key)
       .ValidateDataAnnotations()
       .ValidateOnStart();

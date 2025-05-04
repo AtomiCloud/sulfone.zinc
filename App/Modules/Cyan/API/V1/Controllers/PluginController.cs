@@ -31,48 +31,54 @@ public class PluginController(
   UpdatePluginVersionReqValidator updatePluginVersionReqValidator,
   SearchPluginVersionQueryValidator searchPluginVersionQueryValidator,
   IUserService userService,
-  PushPluginReqValidator pluginReqValidator)
-  : AtomiControllerBase
+  PushPluginReqValidator pluginReqValidator
+) : AtomiControllerBase
 {
   [HttpGet]
-  public async Task<ActionResult<IEnumerable<PluginPrincipalResp>>> Search([FromQuery] SearchPluginQuery query)
+  public async Task<ActionResult<IEnumerable<PluginPrincipalResp>>> Search(
+    [FromQuery] SearchPluginQuery query
+  )
   {
     var plugins = await searchPluginQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginQuery")
       .ThenAwait(x => service.Search(x.ToDomain()))
-      .Then(x => x.Select(u => u.ToResp())
-        .ToResult());
+      .Then(x => x.Select(u => u.ToResp()).ToResult());
 
     return this.ReturnResult(plugins);
   }
 
-
   [HttpGet("id/{userId}/{pluginId:guid}")]
   public async Task<ActionResult<PluginResp>> Get(string userId, Guid pluginId)
   {
-    var plugin = await service.Get(userId, pluginId)
-      .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
+    var plugin = await service.Get(userId, pluginId).Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString())
+    );
   }
 
   [HttpGet("slug/{username}/{name}")]
   public async Task<ActionResult<PluginResp>> Get(string username, string name)
   {
-    var plugin = await service.Get(username, name)
-      .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{name}"));
+    var plugin = await service.Get(username, name).Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{name}")
+    );
   }
 
   [Authorize, HttpPost("id/{userId}")]
-  public async Task<ActionResult<PluginPrincipalResp>> Create(string userId, [FromBody] CreatePluginReq req)
+  public async Task<ActionResult<PluginPrincipalResp>> Create(
+    string userId,
+    [FromBody] CreatePluginReq req
+  )
   {
     var sub = this.Sub();
     if (sub != userId)
     {
-      Result<PluginPrincipalResp> e = new Unauthorized("You are not authorized to create a plugin for this user")
-        .ToException();
+      Result<PluginPrincipalResp> e = new Unauthorized(
+        "You are not authorized to create a plugin for this user"
+      ).ToException();
       return this.ReturnResult(e);
     }
 
@@ -83,16 +89,19 @@ public class PluginController(
     return this.ReturnResult(plugin);
   }
 
-
   [Authorize, HttpPut("id/{userId}/{pluginId}")]
-  public async Task<ActionResult<PluginPrincipalResp>> Update(string userId, Guid pluginId,
-    [FromBody] UpdatePluginReq req)
+  public async Task<ActionResult<PluginPrincipalResp>> Update(
+    string userId,
+    Guid pluginId,
+    [FromBody] UpdatePluginReq req
+  )
   {
     var sub = this.Sub();
     if (sub != userId)
     {
-      Result<PluginPrincipalResp> e = new Unauthorized("You are not authorized to create a plugin for this user")
-        .ToException();
+      Result<PluginPrincipalResp> e = new Unauthorized(
+        "You are not authorized to create a plugin for this user"
+      ).ToException();
       return this.ReturnResult(e);
     }
 
@@ -100,90 +109,131 @@ public class PluginController(
       .ValidateAsyncResult(req, "Invalid UpdatePluginReq")
       .ThenAwait(x => service.Update(userId, pluginId, x.ToDomain()))
       .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin, new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString()));
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), pluginId.ToString())
+    );
   }
 
   [Authorize, HttpPost("slug/{username}/{pluginName}/like/{likerId}/{like}")]
-  public async Task<ActionResult<Unit>> Like(string username, string pluginName, string likerId, bool like)
+  public async Task<ActionResult<Unit>> Like(
+    string username,
+    string pluginName,
+    string likerId,
+    bool like
+  )
   {
     var sub = this.Sub();
     if (sub != likerId)
     {
-      Result<Unit> e = new Unauthorized("You are not authorized to like this plugin")
-        .ToException();
+      Result<Unit> e = new Unauthorized("You are not authorized to like this plugin").ToException();
       return this.ReturnResult(e);
     }
 
-    var plugin = await service.Like(likerId, username, pluginName, like)
-      .Then(x => x.ToResult());
-    return this.ReturnUnitNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}"));
+    var plugin = await service.Like(likerId, username, pluginName, like).Then(x => x.ToResult());
+    return this.ReturnUnitNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}")
+    );
   }
 
   [Authorize(Policy = AuthPolicies.OnlyAdmin), HttpDelete("id/{userId}/{pluginId:guid}")]
   public async Task<ActionResult<Unit>> Delete(string userId, Guid pluginId)
   {
-    var plugin = await service.Delete(userId, pluginId)
-      .Then(x => x.ToResult());
-    return this.ReturnUnitNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
+    var plugin = await service.Delete(userId, pluginId).Then(x => x.ToResult());
+    return this.ReturnUnitNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}")
+    );
   }
 
   [HttpGet("slug/{username}/{pluginName}/versions")]
-  public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string username,
-    string pluginName, [FromQuery] SearchPluginVersionQuery query)
+  public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(
+    string username,
+    string pluginName,
+    [FromQuery] SearchPluginVersionQuery query
+  )
   {
     var plugins = await searchPluginVersionQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginVersionQuery")
       .ThenAwait(x => service.SearchVersion(username, pluginName, x.ToDomain()))
-      .Then(x => x.Select(u => u.ToResp())
-        .ToResult());
+      .Then(x => x.Select(u => u.ToResp()).ToResult());
     return this.ReturnResult(plugins);
   }
 
   [HttpGet("id/{userId}/{pluginId:guid}/versions")]
-  public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(string userId, Guid pluginId,
-    [FromQuery] SearchPluginVersionQuery query)
+  public async Task<ActionResult<IEnumerable<PluginVersionPrincipalResp>>> SearchVersion(
+    string userId,
+    Guid pluginId,
+    [FromQuery] SearchPluginVersionQuery query
+  )
   {
     var plugins = await searchPluginVersionQueryValidator
       .ValidateAsyncResult(query, "Invalid SearchPluginVersionQuery")
       .ThenAwait(x => service.SearchVersion(userId, pluginId, x.ToDomain()))
-      .Then(x => x.Select(u => u.ToResp())
-        .ToResult());
+      .Then(x => x.Select(u => u.ToResp()).ToResult());
     return this.ReturnResult(plugins);
   }
 
   [HttpGet("slug/{username}/{pluginName}/versions/{ver}")]
-  public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, ulong ver,
-    bool bumpDownload)
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(
+    string username,
+    string pluginName,
+    ulong ver,
+    bool bumpDownload
+  )
   {
-    var plugin = await service.GetVersion(username, pluginName, ver, bumpDownload)
+    var plugin = await service
+      .GetVersion(username, pluginName, ver, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}:{ver}"));
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound(
+        "Plugin not found",
+        typeof(PluginVersion),
+        $"{username}/{pluginName}:{ver}"
+      )
+    );
   }
 
   [HttpGet("slug/{username}/{pluginName}/versions/latest")]
-  public async Task<ActionResult<PluginVersionResp>> GetVersion(string username, string pluginName, bool bumpDownload)
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(
+    string username,
+    string pluginName,
+    bool bumpDownload
+  )
   {
-    var plugin = await service.GetVersion(username, pluginName, bumpDownload)
+    var plugin = await service
+      .GetVersion(username, pluginName, bumpDownload)
       .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}"));
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{username}/{pluginName}")
+    );
   }
 
   [HttpGet("id/{userId}/{pluginId:guid}/versions/{ver}")]
-  public async Task<ActionResult<PluginVersionResp>> GetVersion(string userId, Guid pluginId, ulong ver)
+  public async Task<ActionResult<PluginVersionResp>> GetVersion(
+    string userId,
+    Guid pluginId,
+    ulong ver
+  )
   {
-    var plugin = await service.GetVersion(userId, pluginId, ver)
+    var plugin = await service
+      .GetVersion(userId, pluginId, ver)
       .Then(x => x?.ToResp(), Errors.MapAll);
-    return this.ReturnNullableResult(plugin,
-      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{userId}/{pluginId}:{ver}"));
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin not found", typeof(PluginVersion), $"{userId}/{pluginId}:{ver}")
+    );
   }
 
   [Authorize, HttpPost("slug/{username}/{pluginName}/versions")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string username, string pluginName,
-    [FromBody] CreatePluginVersionReq req)
+  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(
+    string username,
+    string pluginName,
+    [FromBody] CreatePluginVersionReq req
+  )
   {
     var sub = this.Sub();
     var version = await userService
@@ -195,47 +245,65 @@ public class PluginController(
         {
           return await createPluginVersionReqValidator
             .ValidateAsyncResult(req, "Invalid CreatePluginVersionReq")
-            .ThenAwait(c => service.CreateVersion(username, pluginName, c.ToDomain().Item2, c.ToDomain().Item1))
+            .ThenAwait(c =>
+              service.CreateVersion(username, pluginName, c.ToDomain().Item2, c.ToDomain().Item1)
+            )
             .Then(c => c?.ToResp(), Errors.MapAll);
         }
 
-        return new Unauthorized("You are not authorized to create a plugin for this user")
-          .ToException();
+        return new Unauthorized(
+          "You are not authorized to create a plugin for this user"
+        ).ToException();
       });
-    return this.ReturnNullableResult(version,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}"));
+    return this.ReturnNullableResult(
+      version,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{pluginName}")
+    );
   }
 
   [Authorize, HttpPost("id/{userId}/{pluginId:guid}/versions")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string userId, Guid pluginId,
-    [FromBody] CreatePluginVersionReq req)
+  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(
+    string userId,
+    Guid pluginId,
+    [FromBody] CreatePluginVersionReq req
+  )
   {
     var sub = this.Sub();
     if (sub != userId)
     {
-      Result<PluginVersionPrincipalResp> e = new Unauthorized("You are not authorized to create a plugin for this user")
-        .ToException();
+      Result<PluginVersionPrincipalResp> e = new Unauthorized(
+        "You are not authorized to create a plugin for this user"
+      ).ToException();
       return this.ReturnResult(e);
     }
 
     var version = await createPluginVersionReqValidator
       .ValidateAsyncResult(req, "Invalid CreatePluginVersionReq")
-      .ThenAwait(x => service.CreateVersion(userId, pluginId, x.ToDomain().Item2, x.ToDomain().Item1))
+      .ThenAwait(x =>
+        service.CreateVersion(userId, pluginId, x.ToDomain().Item2, x.ToDomain().Item1)
+      )
       .Then(x => x?.ToResp(), Errors.MapAll);
 
-    return this.ReturnNullableResult(version,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
+    return this.ReturnNullableResult(
+      version,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}")
+    );
   }
 
   [Authorize, HttpPut("id/{userId}/{pluginId:guid}/versions/{ver}")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> UpdateVersion(string userId, Guid pluginId, ulong ver,
-    [FromBody] UpdatePluginVersionReq req)
+  public async Task<ActionResult<PluginVersionPrincipalResp>> UpdateVersion(
+    string userId,
+    Guid pluginId,
+    ulong ver,
+    [FromBody] UpdatePluginVersionReq req
+  )
   {
     var sub = this.Sub();
     if (sub != userId)
     {
-      Result<PluginVersionPrincipalResp> e = new Unauthorized("You are not authorized to create a plugin for this user")
-        .ToException();
+      Result<PluginVersionPrincipalResp> e = new Unauthorized(
+        "You are not authorized to create a plugin for this user"
+      ).ToException();
       return this.ReturnResult(e);
     }
 
@@ -244,12 +312,17 @@ public class PluginController(
       .ThenAwait(x => service.UpdateVersion(userId, pluginId, ver, x.ToDomain()))
       .Then(x => x?.ToResp(), Errors.MapAll);
 
-    return this.ReturnNullableResult(version,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}"));
+    return this.ReturnNullableResult(
+      version,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{userId}/{pluginId}")
+    );
   }
 
   [Authorize, HttpPost("push/{username}")]
-  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(string username, [FromBody] PushPluginReq req)
+  public async Task<ActionResult<PluginVersionPrincipalResp>> CreateVersion(
+    string username,
+    [FromBody] PushPluginReq req
+  )
   {
     var sub = this.Sub();
     var version = await userService
@@ -263,19 +336,21 @@ public class PluginController(
             .ValidateAsyncResult(req, "Invalid PushPluginReq")
             .Then(push => push.ToDomain(), Errors.MapAll)
             .ThenAwait(domain =>
-              {
-                var (record, metadata, vRecord, vProperty) = domain;
-                return service.Push(username, record, metadata, vRecord, vProperty);
-              })
+            {
+              var (record, metadata, vRecord, vProperty) = domain;
+              return service.Push(username, record, metadata, vRecord, vProperty);
+            })
             .Then(c => c?.ToResp(), Errors.MapAll);
         }
 
-        return new Unauthorized("You are not authorized to create a plugin for this user")
-          .ToException();
+        return new Unauthorized(
+          "You are not authorized to create a plugin for this user"
+        ).ToException();
       });
 
-    return this.ReturnNullableResult(version,
-      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{req.Name}"));
+    return this.ReturnNullableResult(
+      version,
+      new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{req.Name}")
+    );
   }
-
 }

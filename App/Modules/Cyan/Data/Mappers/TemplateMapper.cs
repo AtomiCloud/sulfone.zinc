@@ -18,7 +18,10 @@ public static class TemplateMapper
     };
 
   public static TemplateData HydrateData(this TemplateData data, TemplateRecord record) =>
-    data with { Name = record.Name };
+    data with
+    {
+      Name = record.Name,
+    };
 
   public static TemplateMetadata ToMetadata(this TemplateData data) =>
     new()
@@ -31,8 +34,7 @@ public static class TemplateMapper
       Readme = data.Readme,
     };
 
-  public static TemplateRecord ToRecord(this TemplateData data) =>
-    new() { Name = data.Name };
+  public static TemplateRecord ToRecord(this TemplateData data) => new() { Name = data.Name };
 
   public static TemplatePrincipal ToPrincipal(this TemplateData data) =>
     new()
@@ -55,10 +57,15 @@ public static class TemplateMapper
 
 public static class TemplateVersionMapper
 {
-  public static TemplateVersionData HydrateData(this TemplateVersionData data, TemplateVersionRecord record) =>
-    data with { Description = record.Description, };
+  public static TemplateVersionData HydrateData(
+    this TemplateVersionData data,
+    TemplateVersionRecord record
+  ) => data with { Description = record.Description };
 
-  public static TemplateVersionData HydrateData(this TemplateVersionData data, TemplateVersionProperty record) =>
+  public static TemplateVersionData HydrateData(
+    this TemplateVersionData data,
+    TemplateVersionProperty record
+  ) =>
     data with
     {
       BlobDockerReference = record.BlobDockerReference,
@@ -77,7 +84,7 @@ public static class TemplateVersionMapper
     };
 
   public static TemplateVersionRecord ToRecord(this TemplateVersionData data) =>
-    new() { Description = data.Description, };
+    new() { Description = data.Description };
 
   public static TemplateVersionPrincipal ToPrincipal(this TemplateVersionData data) =>
     new()

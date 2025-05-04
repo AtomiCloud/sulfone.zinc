@@ -36,14 +36,19 @@ public record ProcessorReferenceReq(string Username, string Name, uint Version);
 public record UpdateTemplateVersionReq(string Description);
 
 public record TemplateVersionPrincipalResp(
-  Guid Id, ulong Version, DateTime CreatedAt,
+  Guid Id,
+  ulong Version,
+  DateTime CreatedAt,
   string Description,
-  string BlobDockerReference, string BlobDockerTag,
-  string TemplateDockerReference, string TemplateDockerTag
+  string BlobDockerReference,
+  string BlobDockerTag,
+  string TemplateDockerReference,
+  string TemplateDockerTag
 );
 
 public record TemplateVersionResp(
   TemplateVersionPrincipalResp Principal,
   TemplatePrincipalResp Template,
   IEnumerable<PluginVersionPrincipalResp> Plugins,
-  IEnumerable<ProcessorVersionPrincipalResp> Processors);
+  IEnumerable<ProcessorVersionPrincipalResp> Processors
+);

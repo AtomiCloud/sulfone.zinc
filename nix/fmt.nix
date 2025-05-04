@@ -9,6 +9,7 @@ let
       prettier.enable = true;
       shfmt.enable = true;
       csharpier.enable = true;
+      actionlint.enable = true;
     };
   };
 in

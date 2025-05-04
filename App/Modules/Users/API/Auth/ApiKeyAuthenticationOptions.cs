@@ -18,8 +18,8 @@ public class ApiKeyAuthenticationHandler(
   IOptionsMonitor<ApiKeyAuthenticationOptions> options,
   ILoggerFactory logger,
   UrlEncoder encoder,
-  ITokenService token)
-  : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
+  ITokenService token
+) : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, logger, encoder)
 {
   protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
   {
@@ -33,21 +33,20 @@ public class ApiKeyAuthenticationHandler(
     string token1 = value!;
 
     var uR = await token.Validate(token1);
-    if (uR.IsFailure()) return AuthenticateResult.Fail("Invalid token");
+    if (uR.IsFailure())
+      return AuthenticateResult.Fail("Invalid token");
 
     var u = uR.Get();
-    if (u == null) return AuthenticateResult.Fail("Invalid token");
+    if (u == null)
+      return AuthenticateResult.Fail("Invalid token");
 
     var id = u.Id;
     var name = u.Record.Username;
     //Success! Add details here that identifies the user
     var claims = new List<Claim> { new("sub", id), new("username", name) };
 
-    var claimsIdentity = new ClaimsIdentity
-      (claims, this.Scheme.Name, "sub", ClaimTypes.Role);
-    var claimsPrincipal = new ClaimsPrincipal
-      (claimsIdentity);
-    return AuthenticateResult.Success
-      (new AuthenticationTicket(claimsPrincipal, this.Scheme.Name));
+    var claimsIdentity = new ClaimsIdentity(claims, this.Scheme.Name, "sub", ClaimTypes.Role);
+    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, this.Scheme.Name));
   }
 }

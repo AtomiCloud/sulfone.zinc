@@ -9,5 +9,4 @@ public record TemplateProcessorVersionData
 
   public Guid ProcessorId { get; set; }
   public ProcessorVersionData Processor { get; set; } = null!;
-
 }

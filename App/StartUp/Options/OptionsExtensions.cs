@@ -46,21 +46,24 @@ public static class OptionsExtensions
     .Select(x => x!)
     .ToArray();
 
-
   public static IServiceCollection AddStartupOptions(this IServiceCollection services)
   {
     // Register App Options
-    services.RegisterOption<AppOption>(AppOption.Key)
-      .Validate(app => CorsPolicies.Any(x => x == app.DefaultCors),
-        "Option App:DefaultCors (Config) must be in CorsPolicies (Class)");
+    services
+      .RegisterOption<AppOption>(AppOption.Key)
+      .Validate(
+        app => CorsPolicies.Any(x => x == app.DefaultCors),
+        "Option App:DefaultCors (Config) must be in CorsPolicies (Class)"
+      );
 
     // Register Swagger Options
     services.RegisterOption<OpenApiOption>(OpenApiOption.Key);
 
     // Register CorsOptions
-    services.RegisterOption<List<CorsOption>>(CorsOption.Key)
-      .Validate(config =>
-          config.All(x => CorsPolicies.Any(f => f == x.Name)),
+    services
+      .RegisterOption<List<CorsOption>>(CorsOption.Key)
+      .Validate(
+        config => config.All(x => CorsPolicies.Any(f => f == x.Name)),
         "CorsOption.Name (Config File) must be in CorsPolicies (Class)"
       );
 
@@ -74,43 +77,49 @@ public static class OptionsExtensions
     services.RegisterOption<TraceOption>(TraceOption.Key);
 
     // Register Database Configurations
-    services.RegisterOption<Dictionary<string, DatabaseOption>>(DatabaseOption.Key)
-      .Validate(c =>
-        c.All(x => Databases
-          .AcceptedDatabase()
-          .Any(d => d == x.Key)
-        ), "DatabaseOption.Key (Config File) must be in Databases.List (Class)");
+    services
+      .RegisterOption<Dictionary<string, DatabaseOption>>(DatabaseOption.Key)
+      .Validate(
+        c => c.All(x => Databases.AcceptedDatabase().Any(d => d == x.Key)),
+        "DatabaseOption.Key (Config File) must be in Databases.List (Class)"
+      );
 
     // Register Database Configurations
-    services.RegisterOption<Dictionary<string, BlockStorageOption>>(BlockStorageOption.Key)
-      .Validate(c =>
-        c.All(x => BlockStorages.Any(d => d == x.Key)
-        ), "BlockStorage.Key (Config File) must be in BlockStorages (Class)");
+    services
+      .RegisterOption<Dictionary<string, BlockStorageOption>>(BlockStorageOption.Key)
+      .Validate(
+        c => c.All(x => BlockStorages.Any(d => d == x.Key)),
+        "BlockStorage.Key (Config File) must be in BlockStorages (Class)"
+      );
 
     // Register Cache Configurations
-    services.RegisterOption<Dictionary<string, CacheOption>>(CacheOption.Key)
-      .Validate(c =>
-          c.All(x => Caches.Any(d => d == x.Key)),
-        "Cache.Key (Config file) must be in Caches (Class)");
+    services
+      .RegisterOption<Dictionary<string, CacheOption>>(CacheOption.Key)
+      .Validate(
+        c => c.All(x => Caches.Any(d => d == x.Key)),
+        "Cache.Key (Config file) must be in Caches (Class)"
+      );
     // .Validate(c => c.All(x => x.Value.Endpoints.Length > 0),
     //   "Make sure all Cache Endpoints, 'Cache.<name>.Endpoints' (Config File), has more than 1 element");
 
     // Register HttpClients
-    services.RegisterOption<Dictionary<string, HttpClientOption>>(HttpClientOption.Key)
-      .Validate(c =>
-        c.All(x => HttpClients.Any(d => d == x.Key)
-        ), "HttpClient.Key (Config File) must be in HttpClients (Class)");
+    services
+      .RegisterOption<Dictionary<string, HttpClientOption>>(HttpClientOption.Key)
+      .Validate(
+        c => c.All(x => HttpClients.Any(d => d == x.Key)),
+        "HttpClient.Key (Config File) must be in HttpClients (Class)"
+      );
 
     // Register Error Portal Configurations
     services.RegisterOption<ErrorPortalOption>(ErrorPortalOption.Key);
 
     // Register Auth Configurations
-    services.RegisterOption<AuthOption>(AuthOption.Key)
+    services
+      .RegisterOption<AuthOption>(AuthOption.Key)
       .Validate(
-        c => c.Settings?.Policies?.All(
-          x => AuthPolicies.Any(d => d == x.Key)
-        ) ?? true,
-        "Auth.Settings.Policies.Key (Config File) must be in AuthPolicies (Class)");
+        c => c.Settings?.Policies?.All(x => AuthPolicies.Any(d => d == x.Key)) ?? true,
+        "Auth.Settings.Policies.Key (Config File) must be in AuthPolicies (Class)"
+      );
     return services;
   }
 }

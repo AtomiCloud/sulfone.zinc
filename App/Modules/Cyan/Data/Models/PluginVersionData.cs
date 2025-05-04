@@ -20,5 +20,4 @@ public record PluginVersionData
   public PluginData Plugin { get; set; } = null!;
 
   public IEnumerable<TemplatePluginVersionData> Templates { get; set; } = null!;
-
 };

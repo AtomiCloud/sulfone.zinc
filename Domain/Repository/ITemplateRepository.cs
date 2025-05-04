@@ -11,7 +11,11 @@ public interface ITemplateRepository
 
   Task<Result<Template?>> Get(string username, string name);
 
-  Task<Result<TemplatePrincipal>> Create(string userId, TemplateRecord record, TemplateMetadata metadata);
+  Task<Result<TemplatePrincipal>> Create(
+    string userId,
+    TemplateRecord record,
+    TemplateMetadata metadata
+  );
 
   Task<Result<TemplatePrincipal?>> Update(string userId, Guid id, TemplateMetadata metadata);
 
@@ -23,27 +27,52 @@ public interface ITemplateRepository
 
   Task<Result<uint?>> IncrementDownload(string username, string name);
 
-  Task<Result<IEnumerable<TemplateVersionPrincipal>>> SearchVersion(string userId, string name, TemplateVersionSearch version);
+  Task<Result<IEnumerable<TemplateVersionPrincipal>>> SearchVersion(
+    string userId,
+    string name,
+    TemplateVersionSearch version
+  );
 
-  Task<Result<IEnumerable<TemplateVersionPrincipal>>> SearchVersion(string userId, Guid id, TemplateVersionSearch version);
+  Task<Result<IEnumerable<TemplateVersionPrincipal>>> SearchVersion(
+    string userId,
+    Guid id,
+    TemplateVersionSearch version
+  );
 
   Task<Result<TemplateVersion?>> GetVersion(string userId, string name, ulong version);
 
   Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version);
   Task<Result<TemplateVersion?>> GetVersion(string username, string name);
 
-  Task<Result<TemplateVersionPrincipal?>> CreateVersion(string userId, string name, TemplateVersionRecord record,
-    TemplateVersionProperty property, IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins);
+  Task<Result<TemplateVersionPrincipal?>> CreateVersion(
+    string userId,
+    string name,
+    TemplateVersionRecord record,
+    TemplateVersionProperty property,
+    IEnumerable<Guid> processors,
+    IEnumerable<Guid> plugins
+  );
 
-  Task<Result<TemplateVersionPrincipal?>> CreateVersion(string userId, Guid id, TemplateVersionRecord record,
-    TemplateVersionProperty property, IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins);
+  Task<Result<TemplateVersionPrincipal?>> CreateVersion(
+    string userId,
+    Guid id,
+    TemplateVersionRecord record,
+    TemplateVersionProperty property,
+    IEnumerable<Guid> processors,
+    IEnumerable<Guid> plugins
+  );
 
-  Task<Result<TemplateVersionPrincipal?>> UpdateVersion(string userId, Guid id, ulong version,
-    TemplateVersionRecord record);
+  Task<Result<TemplateVersionPrincipal?>> UpdateVersion(
+    string userId,
+    Guid id,
+    ulong version,
+    TemplateVersionRecord record
+  );
 
-  Task<Result<TemplateVersionPrincipal?>> UpdateVersion(string userId, string name, ulong version,
-    TemplateVersionRecord record);
-
+  Task<Result<TemplateVersionPrincipal?>> UpdateVersion(
+    string userId,
+    string name,
+    ulong version,
+    TemplateVersionRecord record
+  );
 }

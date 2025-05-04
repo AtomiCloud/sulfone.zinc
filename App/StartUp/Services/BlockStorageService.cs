@@ -6,12 +6,13 @@ namespace App.StartUp.Services;
 
 public static class BlockStorageService
 {
-  public static IServiceCollection AddBlockStorage(this IServiceCollection services,
-    Dictionary<string, BlockStorageOption> o)
+  public static IServiceCollection AddBlockStorage(
+    this IServiceCollection services,
+    Dictionary<string, BlockStorageOption> o
+  )
   {
     var s = new BlockStorageFactory();
-    services.AddSingleton<IBlockStorageFactory>((sp) => s)
-      .AutoTrace<IBlockStorageFactory>();
+    services.AddSingleton<IBlockStorageFactory>((sp) => s).AutoTrace<IBlockStorageFactory>();
     foreach (var (k, v) in o)
     {
       var mc = new MinioClient()

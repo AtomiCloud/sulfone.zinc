@@ -9,8 +9,8 @@ namespace App.StartUp.Database;
 public class DbMigratorHostedService(
   DatabaseMigrator databaseMigrator,
   ILogger<DbMigratorHostedService> logger,
-  IHostApplicationLifetime lifetime)
-  : IHostedService
+  IHostApplicationLifetime lifetime
+) : IHostedService
 {
   public async Task StartAsync(CancellationToken cancellationToken)
   {

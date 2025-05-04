@@ -9,7 +9,6 @@ public record PluginVersionSearch
   public int Skip { get; init; }
 }
 
-
 public record PluginVersion
 {
   public required PluginVersionPrincipal Principal { get; init; }

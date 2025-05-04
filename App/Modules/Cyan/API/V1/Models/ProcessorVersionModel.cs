@@ -3,7 +3,10 @@ namespace App.Modules.Cyan.API.V1.Models;
 public record SearchProcessorVersionQuery(string? Search, int? Limit, int? Skip);
 
 public record CreateProcessorVersionReq(
-  string Description, string DockerReference, string DockerTag);
+  string Description,
+  string DockerReference,
+  string DockerTag
+);
 
 public record UpdateProcessorVersionReq(string Description);
 
@@ -15,16 +18,21 @@ public record PushProcessorReq(
   string[] Tags,
   string Description,
   string Readme,
-
   string VersionDescription,
   string DockerReference,
   string DockerTag
 );
 
 public record ProcessorVersionPrincipalResp(
-  Guid Id, ulong Version, DateTime CreatedAt,
-  string Description, string DockerReference, string DockerTag);
+  Guid Id,
+  ulong Version,
+  DateTime CreatedAt,
+  string Description,
+  string DockerReference,
+  string DockerTag
+);
 
 public record ProcessorVersionResp(
   ProcessorVersionPrincipalResp Principal,
-  ProcessorPrincipalResp Processor);
+  ProcessorPrincipalResp Processor
+);

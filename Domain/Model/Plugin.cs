@@ -11,7 +11,6 @@ public record PluginSearch
   public int Skip { get; init; }
 }
 
-
 public record Plugin
 {
   public required PluginPrincipal Principal { get; init; }

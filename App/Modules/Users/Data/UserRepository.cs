@@ -22,16 +22,12 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
         query = query.Where(x => EF.Functions.ILike(x.Username, $"%{search.Username}%"));
       if (!string.IsNullOrWhiteSpace(search.Id))
         query = query.Where(x => EF.Functions.ILike(x.Id.ToString(), $"%{search.Id}%"));
-      var result = await query.Skip(search.Skip).Take(search.Limit)
-        .ToArrayAsync();
-      return result
-        .Select(x => x.ToPrincipal())
-        .ToResult();
+      var result = await query.Skip(search.Skip).Take(search.Limit).ToArrayAsync();
+      return result.Select(x => x.ToPrincipal()).ToResult();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed search for Athlete with Search: {@Search}", search);
+      logger.LogError(e, "Failed search for Athlete with Search: {@Search}", search);
       return e;
     }
   }
@@ -41,16 +37,12 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
     try
     {
       logger.LogInformation("Retrieving User with Id: {Id}", id);
-      var user = await db.Users
-        .Where(x => x.Id == id)
-        .Include(x => x.Tokens)
-        .FirstOrDefaultAsync();
+      var user = await db.Users.Where(x => x.Id == id).Include(x => x.Tokens).FirstOrDefaultAsync();
       return user?.ToDomain();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed retrieving User with Id: {Id}", id);
+      logger.LogError(e, "Failed retrieving User with Id: {Id}", id);
       return e;
     }
   }
@@ -60,16 +52,15 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
     try
     {
       logger.LogInformation("Retrieving User by Username: {Username}", username);
-      var user = await db.Users
-        .Where(x => x.Username == username)
+      var user = await db
+        .Users.Where(x => x.Username == username)
         .Include(x => x.Tokens)
         .FirstOrDefaultAsync();
       return user?.ToDomain();
     }
     catch (Exception e)
     {
-      logger
-        .LogError(e, "Failed retrieving User by Username: {Username}", username);
+      logger.LogError(e, "Failed retrieving User by Username: {Username}", username);
       return e;
     }
   }
@@ -97,14 +88,26 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
     }
     catch (UniqueConstraintException e)
     {
-      logger.LogError(e,
-        "Failed to create User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", id,
-        record.ToJson());
-      return new AlreadyExistException("Failed to create User due to conflicting with existing record", e, typeof(UserPrincipal));
+      logger.LogError(
+        e,
+        "Failed to create User due to conflicting with existing record for JWT sub '{Sub}': {@Record}",
+        id,
+        record.ToJson()
+      );
+      return new AlreadyExistException(
+        "Failed to create User due to conflicting with existing record",
+        e,
+        typeof(UserPrincipal)
+      );
     }
     catch (Exception e)
     {
-      logger.LogError(e, "Failed to create User for JWT sub '{Sub}': {@Record}", id, record.ToJson());
+      logger.LogError(
+        e,
+        "Failed to create User for JWT sub '{Sub}': {@Record}",
+        id,
+        record.ToJson()
+      );
       return e;
     }
   }
@@ -113,10 +116,9 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
   {
     try
     {
-      var v1 = await db.Users
-        .Where(x => x.Id == id)
-        .FirstOrDefaultAsync();
-      if (v1 == null) return (UserPrincipal?)null;
+      var v1 = await db.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+      if (v1 == null)
+        return (UserPrincipal?)null;
 
       var v3 = v2.ToData() with { Id = id };
       var updated = db.Users.Update(v3);
@@ -125,10 +127,17 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
     }
     catch (UniqueConstraintException e)
     {
-      logger.LogError(e,
-        "Failed to update User due to conflicting with existing record for JWT sub '{Sub}': {@Record}", id,
-        v2.ToJson());
-      return new AlreadyExistException("Failed to update User due to conflicting with existing record", e, typeof(UserPrincipal));
+      logger.LogError(
+        e,
+        "Failed to update User due to conflicting with existing record for JWT sub '{Sub}': {@Record}",
+        id,
+        v2.ToJson()
+      );
+      return new AlreadyExistException(
+        "Failed to update User due to conflicting with existing record",
+        e,
+        typeof(UserPrincipal)
+      );
     }
     catch (Exception e)
     {
@@ -141,10 +150,9 @@ public class UserRepository(MainDbContext db, ILogger<UserRepository> logger) : 
   {
     try
     {
-      var a = await db.Users
-        .Where(x => x.Id == id)
-        .FirstOrDefaultAsync();
-      if (a == null) return (Unit?)null;
+      var a = await db.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+      if (a == null)
+        return (Unit?)null;
 
       db.Users.Remove(a);
       await db.SaveChangesAsync();

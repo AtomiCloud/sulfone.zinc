@@ -22,7 +22,6 @@ public class AtomiControllerBase : ControllerBase
     return this.StatusCode((int)code);
   }
 
-
   // Error Mapping happens here
   private ActionResult MapException(Exception e)
   {
@@ -31,17 +30,34 @@ public class AtomiControllerBase : ControllerBase
       DomainProblemException d => d.Problem switch
       {
         EntityNotFound => this.Error(HttpStatusCode.NotFound, d.Problem),
-        UnknownFileType unknownFileType => this.Error(HttpStatusCode.NotAcceptable, unknownFileType),
+        UnknownFileType unknownFileType => this.Error(
+          HttpStatusCode.NotAcceptable,
+          unknownFileType
+        ),
         ValidationError validationError => this.Error(HttpStatusCode.BadRequest, validationError),
-        Unauthorized unauthorizedError => this.Error(HttpStatusCode.Unauthorized, unauthorizedError),
+        Unauthorized unauthorizedError => this.Error(
+          HttpStatusCode.Unauthorized,
+          unauthorizedError
+        ),
         EntityConflict entityConflict => this.Error(HttpStatusCode.Conflict, entityConflict),
-        MultipleEntityNotFound multipleEntityNotFound => this.Error(HttpStatusCode.NotFound, multipleEntityNotFound),
-        LikeConflictError likeConflictError => this.Error(HttpStatusCode.Conflict, likeConflictError),
-        LikeRaceConditionError likeRaceConditionError => this.Error(HttpStatusCode.Conflict, likeRaceConditionError),
+        MultipleEntityNotFound multipleEntityNotFound => this.Error(
+          HttpStatusCode.NotFound,
+          multipleEntityNotFound
+        ),
+        LikeConflictError likeConflictError => this.Error(
+          HttpStatusCode.Conflict,
+          likeConflictError
+        ),
+        LikeRaceConditionError likeRaceConditionError => this.Error(
+          HttpStatusCode.Conflict,
+          likeRaceConditionError
+        ),
         _ => this.Error(HttpStatusCode.BadRequest, d.Problem),
       },
-      AlreadyExistException aee => this.Error(HttpStatusCode.Conflict,
-        new EntityConflict(aee.Message, aee.t)),
+      AlreadyExistException aee => this.Error(
+        HttpStatusCode.Conflict,
+        new EntityConflict(aee.Message, aee.t)
+      ),
       _ => throw new AggregateException("Unhandled Exception", e),
     };
   }
@@ -65,7 +81,8 @@ public class AtomiControllerBase : ControllerBase
 
   protected ActionResult ReturnUnitResult(Result<Unit> ent)
   {
-    if (ent.IsSuccess()) return this.NoContent();
+    if (ent.IsSuccess())
+      return this.NoContent();
     var e = ent.FailureOrDefault();
     return this.MapException(e);
   }

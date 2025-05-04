@@ -24,12 +24,21 @@ public interface IPluginRepository
 
   Task<Result<uint?>> IncrementDownload(string username, string name);
 
-  Task<Result<IEnumerable<PluginVersionPrincipal>>> SearchVersion(string username, string name,
-    PluginVersionSearch version);
+  Task<Result<IEnumerable<PluginVersionPrincipal>>> SearchVersion(
+    string username,
+    string name,
+    PluginVersionSearch version
+  );
 
-  Task<Result<IEnumerable<PluginVersionPrincipal>>> SearchVersion(string userId, Guid id, PluginVersionSearch version);
+  Task<Result<IEnumerable<PluginVersionPrincipal>>> SearchVersion(
+    string userId,
+    Guid id,
+    PluginVersionSearch version
+  );
 
-  Task<Result<IEnumerable<PluginVersionPrincipal>>> GetAllVersion(IEnumerable<PluginVersionRef> references);
+  Task<Result<IEnumerable<PluginVersionPrincipal>>> GetAllVersion(
+    IEnumerable<PluginVersionRef> references
+  );
 
   Task<Result<PluginVersion?>> GetVersion(string username, string name, ulong version);
 
@@ -37,15 +46,31 @@ public interface IPluginRepository
 
   Task<Result<PluginVersion?>> GetVersion(string userId, Guid id, ulong version);
 
-  Task<Result<PluginVersionPrincipal?>> CreateVersion(string username, string name, PluginVersionRecord record,
-    PluginVersionProperty property);
+  Task<Result<PluginVersionPrincipal?>> CreateVersion(
+    string username,
+    string name,
+    PluginVersionRecord record,
+    PluginVersionProperty property
+  );
 
-  Task<Result<PluginVersionPrincipal?>> CreateVersion(string userId, Guid id, PluginVersionRecord record,
-    PluginVersionProperty property);
+  Task<Result<PluginVersionPrincipal?>> CreateVersion(
+    string userId,
+    Guid id,
+    PluginVersionRecord record,
+    PluginVersionProperty property
+  );
 
-  Task<Result<PluginVersionPrincipal?>> UpdateVersion(string username, string name, ulong version,
-    PluginVersionRecord record);
+  Task<Result<PluginVersionPrincipal?>> UpdateVersion(
+    string username,
+    string name,
+    ulong version,
+    PluginVersionRecord record
+  );
 
-  Task<Result<PluginVersionPrincipal?>>
-    UpdateVersion(string userId, Guid id, ulong version, PluginVersionRecord record);
+  Task<Result<PluginVersionPrincipal?>> UpdateVersion(
+    string userId,
+    Guid id,
+    ulong version,
+    PluginVersionRecord record
+  );
 }

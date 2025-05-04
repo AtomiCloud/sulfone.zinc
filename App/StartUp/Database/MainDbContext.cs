@@ -10,8 +10,7 @@ using NpgsqlTypes;
 
 namespace App.StartUp.Database;
 
-public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> options)
-  : DbContext
+public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> options) : DbContext
 {
   public const string Key = "MAIN";
   public DbSet<UserData> Users { get; set; } = null!;
@@ -46,17 +45,11 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
     var user = modelBuilder.Entity<UserData>();
     user.HasIndex(x => x.Username).IsUnique();
 
-    user.HasMany<TokenData>(x => x.Tokens)
-      .WithOne(x => x.User)
-      .HasForeignKey(x => x.UserId);
+    user.HasMany<TokenData>(x => x.Tokens).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 
-    user.HasMany<TemplateData>(x => x.Templates)
-      .WithOne(x => x.User)
-      .HasForeignKey(x => x.UserId);
+    user.HasMany<TemplateData>(x => x.Templates).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 
-    user.HasMany<PluginData>(x => x.Plugins)
-      .WithOne(x => x.User)
-      .HasForeignKey(x => x.UserId);
+    user.HasMany<PluginData>(x => x.Plugins).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 
     user.HasMany<ProcessorData>(x => x.Processors)
       .WithOne(x => x.User)
@@ -75,23 +68,16 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasForeignKey(x => x.UserId);
 
     var templateLikes = modelBuilder.Entity<TemplateLikeData>();
-    templateLikes
-      .HasIndex(x => new { x.UserId, x.TemplateId })
-      .IsUnique();
+    templateLikes.HasIndex(x => new { x.UserId, x.TemplateId }).IsUnique();
 
     var pluginLikes = modelBuilder.Entity<PluginLikeData>();
-    pluginLikes
-      .HasIndex(x => new { x.UserId, x.PluginId })
-      .IsUnique();
+    pluginLikes.HasIndex(x => new { x.UserId, x.PluginId }).IsUnique();
 
     var processorLikes = modelBuilder.Entity<ProcessorLikeData>();
-    processorLikes
-      .HasIndex(x => new { x.UserId, x.ProcessorId })
-      .IsUnique();
+    processorLikes.HasIndex(x => new { x.UserId, x.ProcessorId }).IsUnique();
 
     var token = modelBuilder.Entity<TokenData>();
     token.HasIndex(x => x.ApiToken).IsUnique();
-
 
     var template = modelBuilder.Entity<TemplateData>();
     template.HasIndex(x => new { x.UserId, x.Name }).IsUnique();
@@ -100,15 +86,18 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasGeneratedTsVectorColumn(
         p => p.SearchVector,
         "english",
-        p => new { p.Name, p.Description })
+        p => new { p.Name, p.Description }
+      )
       .HasIndex(p => p.SearchVector)
       .HasMethod("GIN");
 
-    template.HasMany<TemplateVersionData>(x => x.Versions)
+    template
+      .HasMany<TemplateVersionData>(x => x.Versions)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
 
-    template.HasMany<TemplateLikeData>(x => x.Likes)
+    template
+      .HasMany<TemplateLikeData>(x => x.Likes)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
 
@@ -116,14 +105,15 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
 
     templateVersion.HasIndex(x => new { x.Id, x.Version }).IsUnique();
 
-    templateVersion.HasMany<TemplateProcessorVersionData>(x => x.Processors)
+    templateVersion
+      .HasMany<TemplateProcessorVersionData>(x => x.Processors)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
 
-    templateVersion.HasMany<TemplatePluginVersionData>(x => x.Plugins)
+    templateVersion
+      .HasMany<TemplatePluginVersionData>(x => x.Plugins)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
-
 
     var plugin = modelBuilder.Entity<PluginData>();
     plugin.HasIndex(x => new { x.UserId, x.Name }).IsUnique();
@@ -132,15 +122,18 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasGeneratedTsVectorColumn(
         p => p.SearchVector,
         "english",
-        p => new { p.Name, p.Description })
+        p => new { p.Name, p.Description }
+      )
       .HasIndex(p => p.SearchVector)
       .HasMethod("GIN");
 
-    plugin.HasMany<PluginVersionData>(x => x.Versions)
+    plugin
+      .HasMany<PluginVersionData>(x => x.Versions)
       .WithOne(x => x.Plugin)
       .HasForeignKey(x => x.PluginId);
 
-    plugin.HasMany<PluginLikeData>(x => x.Likes)
+    plugin
+      .HasMany<PluginLikeData>(x => x.Likes)
       .WithOne(x => x.Plugin)
       .HasForeignKey(x => x.PluginId);
 
@@ -155,15 +148,18 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasGeneratedTsVectorColumn(
         p => p.SearchVector,
         "english",
-        p => new { p.Name, p.Description })
+        p => new { p.Name, p.Description }
+      )
       .HasIndex(p => p.SearchVector)
       .HasMethod("GIN");
 
-    processor.HasMany<ProcessorVersionData>(x => x.Versions)
+    processor
+      .HasMany<ProcessorVersionData>(x => x.Versions)
       .WithOne(x => x.Processor)
       .HasForeignKey(x => x.ProcessorId);
 
-    processor.HasMany<ProcessorLikeData>(x => x.Likes)
+    processor
+      .HasMany<ProcessorLikeData>(x => x.Likes)
       .WithOne(x => x.Processor)
       .HasForeignKey(x => x.ProcessorId);
 

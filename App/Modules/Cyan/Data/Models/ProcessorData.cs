@@ -33,5 +33,4 @@ public record ProcessorData
   public IEnumerable<ProcessorVersionData> Versions { get; set; } = null!;
 
   public IEnumerable<ProcessorLikeData> Likes { get; set; } = null!;
-
 }

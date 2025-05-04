@@ -18,7 +18,10 @@ public static class PluginMapper
     };
 
   public static PluginData HydrateData(this PluginData data, PluginRecord record) =>
-    data with { Name = record.Name };
+    data with
+    {
+      Name = record.Name,
+    };
 
   public static PluginMetadata ToMetadata(this PluginData data) =>
     new()
@@ -31,11 +34,16 @@ public static class PluginMapper
       Readme = data.Readme,
     };
 
-  public static PluginRecord ToRecord(this PluginData data) =>
-    new() { Name = data.Name };
+  public static PluginRecord ToRecord(this PluginData data) => new() { Name = data.Name };
 
   public static PluginPrincipal ToPrincipal(this PluginData data) =>
-    new() { Id = data.Id, Metadata = data.ToMetadata(), Record = data.ToRecord(), UserId = data.UserId };
+    new()
+    {
+      Id = data.Id,
+      Metadata = data.ToMetadata(),
+      Record = data.ToRecord(),
+      UserId = data.UserId,
+    };
 
   public static Plugin ToDomain(this PluginData data, PluginInfo info) =>
     new()
@@ -43,23 +51,27 @@ public static class PluginMapper
       Principal = data.ToPrincipal(),
       User = data.User.ToPrincipal(),
       Versions = data.Versions.Select(x => x.ToPrincipal()).ToList(),
-      Info = info
+      Info = info,
     };
 }
 
 public static class PluginVersionMapper
 {
-  public static PluginVersionData HydrateData(this PluginVersionData data, PluginVersionRecord record) =>
-    data with { Description = record.Description, };
+  public static PluginVersionData HydrateData(
+    this PluginVersionData data,
+    PluginVersionRecord record
+  ) => data with { Description = record.Description };
 
-  public static PluginVersionData HydrateData(this PluginVersionData data, PluginVersionProperty record) =>
-    data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag, };
+  public static PluginVersionData HydrateData(
+    this PluginVersionData data,
+    PluginVersionProperty record
+  ) => data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag };
 
   public static PluginVersionProperty ToProperty(this PluginVersionData data) =>
-    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag, };
+    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag };
 
   public static PluginVersionRecord ToRecord(this PluginVersionData data) =>
-    new() { Description = data.Description, };
+    new() { Description = data.Description };
 
   public static PluginVersionPrincipal ToPrincipal(this PluginVersionData data) =>
     new()
@@ -72,5 +84,5 @@ public static class PluginVersionMapper
     };
 
   public static PluginVersion ToDomain(this PluginVersionData data) =>
-    new() { Principal = data.ToPrincipal(), PluginPrincipal = data.Plugin.ToPrincipal(), };
+    new() { Principal = data.ToPrincipal(), PluginPrincipal = data.Plugin.ToPrincipal() };
 }

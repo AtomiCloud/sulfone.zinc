@@ -11,48 +11,56 @@ namespace App.Migrations
     protected override void Up(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.RenameColumn(
-          name: "TemplateDockerSha",
-          table: "TemplateVersions",
-          newName: "TemplateDockerTag");
+        name: "TemplateDockerSha",
+        table: "TemplateVersions",
+        newName: "TemplateDockerTag"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "BlobDockerSha",
-          table: "TemplateVersions",
-          newName: "BlobDockerTag");
+        name: "BlobDockerSha",
+        table: "TemplateVersions",
+        newName: "BlobDockerTag"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "DockerSha",
-          table: "ProcessorVersions",
-          newName: "DockerTag");
+        name: "DockerSha",
+        table: "ProcessorVersions",
+        newName: "DockerTag"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "DockerSha",
-          table: "PluginVersions",
-          newName: "DockerTag");
+        name: "DockerSha",
+        table: "PluginVersions",
+        newName: "DockerTag"
+      );
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.RenameColumn(
-          name: "TemplateDockerTag",
-          table: "TemplateVersions",
-          newName: "TemplateDockerSha");
+        name: "TemplateDockerTag",
+        table: "TemplateVersions",
+        newName: "TemplateDockerSha"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "BlobDockerTag",
-          table: "TemplateVersions",
-          newName: "BlobDockerSha");
+        name: "BlobDockerTag",
+        table: "TemplateVersions",
+        newName: "BlobDockerSha"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "DockerTag",
-          table: "ProcessorVersions",
-          newName: "DockerSha");
+        name: "DockerTag",
+        table: "ProcessorVersions",
+        newName: "DockerSha"
+      );
 
       migrationBuilder.RenameColumn(
-          name: "DockerTag",
-          table: "PluginVersions",
-          newName: "DockerSha");
+        name: "DockerTag",
+        table: "PluginVersions",
+        newName: "DockerSha"
+      );
     }
   }
 }

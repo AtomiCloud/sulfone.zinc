@@ -15,9 +15,9 @@ public record Template
   public required TemplatePrincipal Principal { get; init; }
   public required UserPrincipal User { get; init; }
   public required IEnumerable<TemplateVersionPrincipal> Versions { get; init; }
+
   // Telemetry, non-user controlled
   public required TemplateInfo Info { get; init; }
-
 }
 
 public record TemplatePrincipal
@@ -25,6 +25,7 @@ public record TemplatePrincipal
   public required Guid Id { get; init; }
 
   public required string UserId { get; init; }
+
   // User Controlled, updatable, metadata
   public required TemplateMetadata Metadata { get; init; }
 

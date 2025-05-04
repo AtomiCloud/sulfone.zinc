@@ -24,6 +24,7 @@ public record PluginData
   public string Readme { get; set; } = string.Empty;
 
   public NpgsqlTsVector SearchVector { get; set; } = null!;
+
   // Foreign Keys
   public string UserId { get; set; } = string.Empty;
 

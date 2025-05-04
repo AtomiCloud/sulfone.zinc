@@ -18,7 +18,10 @@ public static class ProcessorMapper
     };
 
   public static ProcessorData HydrateData(this ProcessorData data, ProcessorRecord record) =>
-    data with { Name = record.Name };
+    data with
+    {
+      Name = record.Name,
+    };
 
   public static ProcessorMetadata ToMetadata(this ProcessorData data) =>
     new()
@@ -31,8 +34,7 @@ public static class ProcessorMapper
       Readme = data.Readme,
     };
 
-  public static ProcessorRecord ToRecord(this ProcessorData data) =>
-    new() { Name = data.Name };
+  public static ProcessorRecord ToRecord(this ProcessorData data) => new() { Name = data.Name };
 
   public static ProcessorPrincipal ToPrincipal(this ProcessorData data) =>
     new()
@@ -55,17 +57,21 @@ public static class ProcessorMapper
 
 public static class ProcessorVersionMapper
 {
-  public static ProcessorVersionData HydrateData(this ProcessorVersionData data, ProcessorVersionRecord record) =>
-    data with { Description = record.Description, };
+  public static ProcessorVersionData HydrateData(
+    this ProcessorVersionData data,
+    ProcessorVersionRecord record
+  ) => data with { Description = record.Description };
 
-  public static ProcessorVersionData HydrateData(this ProcessorVersionData data, ProcessorVersionProperty record) =>
-    data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag, };
+  public static ProcessorVersionData HydrateData(
+    this ProcessorVersionData data,
+    ProcessorVersionProperty record
+  ) => data with { DockerReference = record.DockerReference, DockerTag = record.DockerTag };
 
   public static ProcessorVersionProperty ToProperty(this ProcessorVersionData data) =>
-    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag, };
+    new() { DockerReference = data.DockerReference, DockerTag = data.DockerTag };
 
   public static ProcessorVersionRecord ToRecord(this ProcessorVersionData data) =>
-    new() { Description = data.Description, };
+    new() { Description = data.Description };
 
   public static ProcessorVersionPrincipal ToPrincipal(this ProcessorVersionData data) =>
     new()
@@ -78,5 +84,5 @@ public static class ProcessorVersionMapper
     };
 
   public static ProcessorVersion ToDomain(this ProcessorVersionData data) =>
-    new() { Principal = data.ToPrincipal(), ProcessorPrincipal = data.Processor.ToPrincipal(), };
+    new() { Principal = data.ToPrincipal(), ProcessorPrincipal = data.Processor.ToPrincipal() };
 }

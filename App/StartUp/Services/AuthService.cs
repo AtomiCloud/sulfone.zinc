@@ -20,11 +20,14 @@ public static class AuthService
 
   public static IServiceCollection AddAuthService(this IServiceCollection services, AuthOption o)
   {
-    if (o.Settings is null) throw new ApplicationException("Auth is enabled but Domain or Audience is null");
-    services.AddSingleton<IAuthorizationHandler, HasAnyHandler>()
+    if (o.Settings is null)
+      throw new ApplicationException("Auth is enabled but Domain or Audience is null");
+    services
+      .AddSingleton<IAuthorizationHandler, HasAnyHandler>()
       .AutoTrace<IAuthorizationHandler>();
 
-    services.AddSingleton<IAuthorizationHandler, HasAllHandler>()
+    services
+      .AddSingleton<IAuthorizationHandler, HasAllHandler>()
       .AutoTrace<IAuthorizationHandler>();
 
     var s = o.Settings!;
@@ -54,27 +57,33 @@ public static class AuthService
         }
         else
         {
-          options.TokenValidationParameters =
-            new TokenValidationParameters { NameClaimType = ClaimTypes.NameIdentifier };
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            NameClaimType = ClaimTypes.NameIdentifier,
+          };
         }
       })
-      .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme,
-        _ =>
+      .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+        ApiKeyAuthenticationOptions.DefaultScheme,
+        _ => { }
+      )
+      .AddPolicyScheme(
+        "MultiAuthSchemes",
+        JwtBearerDefaults.AuthenticationScheme,
+        o =>
         {
-        })
-      .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, o =>
-      {
-        o.ForwardDefaultSelector = context =>
-        {
-          string authorization = context.Request.Headers[HeaderNames.Authorization]!;
-          if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+          o.ForwardDefaultSelector = context =>
           {
-            return JwtBearerDefaults.AuthenticationScheme;
-          }
+            string authorization = context.Request.Headers[HeaderNames.Authorization]!;
+            if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+            {
+              return JwtBearerDefaults.AuthenticationScheme;
+            }
 
-          return ApiKeyAuthenticationOptions.DefaultScheme;
-        };
-      });
+            return ApiKeyAuthenticationOptions.DefaultScheme;
+          };
+        }
+      );
 
     var p = s.Policies ?? new Dictionary<string, AuthPolicyOption>();
 
@@ -82,20 +91,23 @@ public static class AuthService
     {
       foreach (var (k, v) in p)
       {
-        opt.AddPolicy(k, pb =>
-        {
-          switch (v)
+        opt.AddPolicy(
+          k,
+          pb =>
           {
-            case { Type: "Any" }:
-              pb.Requirements.AddAnyScope(s.Issuer, v.Field, v.Target);
-              break;
-            case { Type: "All" }:
-              pb.Requirements.AddAllScope(s.Issuer, v.Field, v.Target);
-              break;
-            default:
-              throw new ApplicationException($"Auth Policy Type is not supported: {v.Type}");
+            switch (v)
+            {
+              case { Type: "Any" }:
+                pb.Requirements.AddAnyScope(s.Issuer, v.Field, v.Target);
+                break;
+              case { Type: "All" }:
+                pb.Requirements.AddAllScope(s.Issuer, v.Field, v.Target);
+                break;
+              default:
+                throw new ApplicationException($"Auth Policy Type is not supported: {v.Type}");
+            }
           }
-        });
+        );
       }
     });
 

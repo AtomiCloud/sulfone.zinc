@@ -6,10 +6,10 @@ namespace App.Modules.Users.API.V1;
 public static class TokenMapper
 {
   public static TokenRecord ToRecord(this CreateTokenReq req) =>
-    new() { Name = req.Name, Revoked = false, };
+    new() { Name = req.Name, Revoked = false };
 
   public static TokenRecord ToRecord(this UpdateTokenReq req) =>
-    new() { Name = req.Name, Revoked = false, };
+    new() { Name = req.Name, Revoked = false };
 
   public static TokenPrincipalResp ToResp(this TokenPrincipal token) =>
     new(token.Id, token.Record.Name);

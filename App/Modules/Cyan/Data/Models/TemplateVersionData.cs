@@ -26,5 +26,4 @@ public record TemplateVersionData
   public IEnumerable<TemplateProcessorVersionData> Processors { get; set; } = null!;
 
   public IEnumerable<TemplatePluginVersionData> Plugins { get; set; } = null!;
-
 }

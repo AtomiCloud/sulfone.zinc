@@ -17,24 +17,14 @@ public class CreateTemplateReqValidator : AbstractValidator<CreateTemplateReq>
 {
   public CreateTemplateReqValidator()
   {
-    this.RuleFor(x => x.Name)
-      .NotNull()
-      .UsernameValid();
-    this.RuleFor(x => x.Project)
-      .UrlValid();
-    this.RuleFor(x => x.Source)
-      .UrlValid();
-    this.RuleFor(x => x.Email)
-      .EmailAddress();
-    this.RuleForEach(x => x.Tags)
-      .UsernameValid()
-      .NotNull();
-    this.RuleFor(x => x.Tags)
-      .NotNull();
-    this.RuleFor(x => x.Description)
-      .DescriptionValid();
-    this.RuleFor(x => x.Readme)
-      .NotNull();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+    this.RuleFor(x => x.Project).UrlValid();
+    this.RuleFor(x => x.Source).UrlValid();
+    this.RuleFor(x => x.Email).EmailAddress();
+    this.RuleForEach(x => x.Tags).UsernameValid().NotNull();
+    this.RuleFor(x => x.Tags).NotNull();
+    this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.Readme).NotNull();
   }
 }
 
@@ -42,20 +32,12 @@ public class UpdateTemplateReqValidator : AbstractValidator<UpdateTemplateReq>
 {
   public UpdateTemplateReqValidator()
   {
-    this.RuleFor(x => x.Project)
-      .UrlValid();
-    this.RuleFor(x => x.Source)
-      .UrlValid();
-    this.RuleFor(x => x.Email)
-      .EmailAddress();
-    this.RuleForEach(x => x.Tags)
-      .UsernameValid()
-      .NotNull();
-    this.RuleFor(x => x.Tags)
-      .NotNull();
-    this.RuleFor(x => x.Description)
-      .DescriptionValid();
-    this.RuleFor(x => x.Readme)
-      .NotNull();
+    this.RuleFor(x => x.Project).UrlValid();
+    this.RuleFor(x => x.Source).UrlValid();
+    this.RuleFor(x => x.Email).EmailAddress();
+    this.RuleForEach(x => x.Tags).UsernameValid().NotNull();
+    this.RuleFor(x => x.Tags).NotNull();
+    this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.Readme).NotNull();
   }
 }

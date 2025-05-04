@@ -17,16 +17,11 @@ public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplat
 {
   public CreateTemplateVersionReqValidator()
   {
-    this.RuleFor(x => x.Description)
-      .DescriptionValid();
-    this.RuleFor(x => x.BlobDockerReference)
-      .DockerReferenceValid();
-    this.RuleFor(x => x.BlobDockerTag)
-      .TagValid();
-    this.RuleFor(x => x.TemplateDockerReference)
-      .DockerReferenceValid();
-    this.RuleFor(x => x.TemplateDockerTag)
-      .TagValid();
+    this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.BlobDockerReference).DockerReferenceValid();
+    this.RuleFor(x => x.BlobDockerTag).TagValid();
+    this.RuleFor(x => x.TemplateDockerReference).DockerReferenceValid();
+    this.RuleFor(x => x.TemplateDockerTag).TagValid();
   }
 }
 
@@ -34,8 +29,7 @@ public class UpdateTemplateVersionReqValidator : AbstractValidator<UpdateTemplat
 {
   public UpdateTemplateVersionReqValidator()
   {
-    this.RuleFor(x => x.Description)
-      .DescriptionValid();
+    this.RuleFor(x => x.Description).DescriptionValid();
   }
 }
 
@@ -43,33 +37,18 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
 {
   public PushTemplateReqValidator()
   {
-    this.RuleFor(x => x.Name)
-      .NotNull()
-      .UsernameValid();
-    this.RuleFor(x => x.Project)
-      .UrlValid();
-    this.RuleFor(x => x.Source)
-      .UrlValid();
-    this.RuleFor(x => x.Email)
-      .EmailAddress();
-    this.RuleForEach(x => x.Tags)
-      .UsernameValid()
-      .NotNull();
-    this.RuleFor(x => x.Tags)
-      .NotNull();
-    this.RuleFor(x => x.Description)
-      .DescriptionValid();
-    this.RuleFor(x => x.Readme)
-      .NotNull();
-    this.RuleFor(x => x.VersionDescription)
-      .DescriptionValid();
-    this.RuleFor(x => x.BlobDockerReference)
-      .DockerReferenceValid();
-    this.RuleFor(x => x.BlobDockerTag)
-      .TagValid();
-    this.RuleFor(x => x.TemplateDockerReference)
-      .DockerReferenceValid();
-    this.RuleFor(x => x.TemplateDockerTag)
-      .TagValid();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+    this.RuleFor(x => x.Project).UrlValid();
+    this.RuleFor(x => x.Source).UrlValid();
+    this.RuleFor(x => x.Email).EmailAddress();
+    this.RuleForEach(x => x.Tags).UsernameValid().NotNull();
+    this.RuleFor(x => x.Tags).NotNull();
+    this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.Readme).NotNull();
+    this.RuleFor(x => x.VersionDescription).DescriptionValid();
+    this.RuleFor(x => x.BlobDockerReference).DockerReferenceValid();
+    this.RuleFor(x => x.BlobDockerTag).TagValid();
+    this.RuleFor(x => x.TemplateDockerReference).DockerReferenceValid();
+    this.RuleFor(x => x.TemplateDockerTag).TagValid();
   }
 }

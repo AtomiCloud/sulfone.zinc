@@ -5,7 +5,6 @@ namespace Domain.Service;
 
 public interface IUserService
 {
-
   Task<Result<IEnumerable<UserPrincipal>>> Search(UserSearch search);
   Task<Result<User?>> GetById(string id);
   Task<Result<User?>> GetByUsername(string username);
