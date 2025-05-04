@@ -50,5 +50,17 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
     this.RuleFor(x => x.BlobDockerTag).TagValid();
     this.RuleFor(x => x.TemplateDockerReference).DockerReferenceValid();
     this.RuleFor(x => x.TemplateDockerTag).TagValid();
+
+    this.RuleForEach(x => x.Plugins)
+      .Must(p => p.Version != 0)
+      .WithMessage(
+        "Plugin reference '{PropertyValue}' has version 0, which is not allowed. Use null for latest version or specify a concrete version."
+      );
+
+    this.RuleForEach(x => x.Processors)
+      .Must(p => p.Version != 0)
+      .WithMessage(
+        "Processor reference '{PropertyValue}' has version 0, which is not allowed. Use null for latest version or specify a concrete version."
+      );
   }
 }

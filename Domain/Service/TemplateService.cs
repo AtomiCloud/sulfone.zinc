@@ -242,30 +242,6 @@ public class TemplateService(
     IEnumerable<PluginVersionRef> plugins
   )
   {
-    foreach (var proc in processors)
-    {
-      if (proc.Version == 0)
-      {
-        return Result<TemplateVersionPrincipal?>.Failure(
-          new Exception(
-            $"Processor reference {proc.Username}/{proc.Name} has version 0, which is not allowed. Use null for latest version or specify a concrete version."
-          )
-        );
-      }
-    }
-
-    foreach (var plug in plugins)
-    {
-      if (plug.Version == 0)
-      {
-        return Result<TemplateVersionPrincipal?>.Failure(
-          new Exception(
-            $"Plugin reference {plug.Username}/{plug.Name} has version 0, which is not allowed. Use null for latest version or specify a concrete version."
-          )
-        );
-      }
-    }
-
     return await repo.Get(username, pRecord.Name)
       .ThenAwait(async p =>
       {
