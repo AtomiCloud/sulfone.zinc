@@ -122,6 +122,9 @@ public static class TemplateVersionMapper
   public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
+  public static TemplateVersionRef ToDomain(this TemplateReferenceReq req) =>
+    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+
   public static TemplateVersionPrincipalResp ToResp(this TemplateVersionPrincipal principal) =>
     new(
       principal.Id,
@@ -139,6 +142,7 @@ public static class TemplateVersionMapper
       version.Principal.ToResp(),
       version.TemplatePrincipal.ToResp(),
       version.Plugins.Select(x => x.ToResp()),
-      version.Processors.Select(x => x.ToResp())
+      version.Processors.Select(x => x.ToResp()),
+      version.Templates.Select(x => x.ToResp())
     );
 }

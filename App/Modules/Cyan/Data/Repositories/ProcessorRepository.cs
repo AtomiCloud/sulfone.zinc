@@ -11,7 +11,6 @@ using EntityFramework.Exceptions.Common;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NpgsqlTypes;
 
 namespace App.Modules.Cyan.Data.Repositories;
 

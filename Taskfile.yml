@@ -16,6 +16,18 @@ tasks:
       LANDSCAPE: lapras
     cmds:
       - dotnet ef migrations --project ./App add {{.CLI_ARGS}}
+  migration:remove:
+    desc: Removes a migration
+    env:
+      LANDSCAPE: lapras
+    cmds:
+      - dotnet ef migrations --project ./App remove {{.CLI_ARGS}}
+  migration:list:
+    desc: Lists migrations
+    env:
+      LANDSCAPE: lapras
+    cmds:
+      - dotnet ef migrations --project ./App list
   setup:
     desc: Setups dotnet
     cmds:

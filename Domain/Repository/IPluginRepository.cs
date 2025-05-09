@@ -1,4 +1,3 @@
-using System.Collections;
 using CSharp_Result;
 using Domain.Model;
 

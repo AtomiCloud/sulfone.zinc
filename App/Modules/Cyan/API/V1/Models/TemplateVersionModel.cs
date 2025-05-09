@@ -9,7 +9,8 @@ public record CreateTemplateVersionReq(
   string TemplateDockerReference,
   string TemplateDockerTag,
   PluginReferenceReq[] Plugins,
-  ProcessorReferenceReq[] Processors
+  ProcessorReferenceReq[] Processors,
+  TemplateReferenceReq[] Templates
 );
 
 public record PushTemplateReq(
@@ -26,12 +27,15 @@ public record PushTemplateReq(
   string TemplateDockerReference,
   string TemplateDockerTag,
   PluginReferenceReq[] Plugins,
-  ProcessorReferenceReq[] Processors
+  ProcessorReferenceReq[] Processors,
+  TemplateReferenceReq[] Templates
 );
 
 public record PluginReferenceReq(string Username, string Name, uint Version);
 
 public record ProcessorReferenceReq(string Username, string Name, uint Version);
+
+public record TemplateReferenceReq(string Username, string Name, uint Version);
 
 public record UpdateTemplateVersionReq(string Description);
 
@@ -50,5 +54,6 @@ public record TemplateVersionResp(
   TemplateVersionPrincipalResp Principal,
   TemplatePrincipalResp Template,
   IEnumerable<PluginVersionPrincipalResp> Plugins,
-  IEnumerable<ProcessorVersionPrincipalResp> Processors
+  IEnumerable<ProcessorVersionPrincipalResp> Processors,
+  IEnumerable<TemplateVersionPrincipalResp> Templates
 );

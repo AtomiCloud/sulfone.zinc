@@ -158,20 +158,22 @@ public class TemplateService(
     TemplateVersionRecord record,
     TemplateVersionProperty property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   )
   {
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
-
+    var templateResults = await repo.GetAllVersion(templates);
     var a =
       from plugin in pluginResults
       from processor in processorResults
-      select (plugin.Select(x => x.Id), processor.Select(x => x.Id));
+      from template in templateResults
+      select (plugin.Select(x => x.Id), processor.Select(x => x.Id), template.Select(x => x.Id));
     return await Task.FromResult(a)
       .ThenAwait(refs =>
       {
-        var (pl, pr) = refs;
+        var (pl, pr, t) = refs;
         logger.LogInformation(
           "Creating Template Version '{Name}' for '{UserId}', Processors: {@Processors}",
           name,
@@ -184,7 +186,7 @@ public class TemplateService(
           userId,
           pl
         );
-        return repo.CreateVersion(userId, name, record, property, pr, pl);
+        return repo.CreateVersion(userId, name, record, property, pr, pl, t);
       });
   }
 
@@ -194,21 +196,23 @@ public class TemplateService(
     TemplateVersionRecord record,
     TemplateVersionProperty property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   )
   {
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
-
+    var templateResults = await repo.GetAllVersion(templates);
     var a =
       from plugin in pluginResults
       from processor in processorResults
-      select (plugin.Select(x => x.Id), processor.Select(x => x.Id));
+      from template in templateResults
+      select (plugin.Select(x => x.Id), processor.Select(x => x.Id), template.Select(x => x.Id));
     return await Task.FromResult(a)
       .ThenAwait(refs =>
       {
-        var (pr, pl) = refs;
-        return repo.CreateVersion(userId, id, record, property, pr, pl);
+        var (pr, pl, t) = refs;
+        return repo.CreateVersion(userId, id, record, property, pr, pl, t);
       });
   }
 
@@ -239,7 +243,8 @@ public class TemplateService(
     TemplateVersionRecord record,
     TemplateVersionProperty property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   )
   {
     return await repo.Get(username, pRecord.Name)
@@ -251,7 +256,7 @@ public class TemplateService(
           .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata));
       })
       .ThenAwait(x =>
-        this.CreateVersion(username, pRecord.Name, record, property, processors, plugins)
+        this.CreateVersion(username, pRecord.Name, record, property, processors, plugins, templates)
       );
   }
 }

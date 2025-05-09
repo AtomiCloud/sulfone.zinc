@@ -13,6 +13,7 @@ let
           infrautils
           atomiutils
           infralint
+          openapi_to_postmanv2
           pls
           sg;
       }

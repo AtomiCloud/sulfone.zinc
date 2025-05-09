@@ -1,4 +1,3 @@
-using App.Modules.Cyan.Data;
 using App.Modules.Cyan.Data.Models;
 using App.Modules.Users.Data;
 using App.StartUp.Options;
@@ -6,7 +5,6 @@ using App.StartUp.Services;
 using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NpgsqlTypes;
 
 namespace App.StartUp.Database;
 
@@ -20,6 +18,8 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
   public DbSet<TemplateVersionData> TemplateVersions { get; set; } = null!;
   public DbSet<TemplateProcessorVersionData> TemplateProcessorVersions { get; set; } = null!;
   public DbSet<TemplatePluginVersionData> TemplatePluginVersions { get; set; } = null!;
+
+  public DbSet<TemplateTemplateVersionData> TemplateTemplateVersions { get; set; } = null!;
 
   public DbSet<PluginData> Plugins { get; set; } = null!;
   public DbSet<PluginVersionData> PluginVersions { get; set; } = null!;
@@ -112,6 +112,16 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
 
     templateVersion
       .HasMany<TemplatePluginVersionData>(x => x.Plugins)
+      .WithOne(x => x.Template)
+      .HasForeignKey(x => x.TemplateId);
+
+    templateVersion
+      .HasMany<TemplateTemplateVersionData>(x => x.Templates)
+      .WithOne(x => x.TemplateRef)
+      .HasForeignKey(x => x.TemplateRefId);
+
+    templateVersion
+      .HasMany<TemplateTemplateVersionData>(x => x.TemplateRefs)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
 

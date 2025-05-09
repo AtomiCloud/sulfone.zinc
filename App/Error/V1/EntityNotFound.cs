@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
-using App.Modules.Common;
 
 namespace App.Error.V1;
 

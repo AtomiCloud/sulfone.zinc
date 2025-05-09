@@ -1,4 +1,3 @@
-using App.StartUp.Options;
 using App.StartUp.Options.Metrics;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;

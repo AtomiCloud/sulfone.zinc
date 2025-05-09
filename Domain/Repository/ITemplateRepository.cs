@@ -39,6 +39,10 @@ public interface ITemplateRepository
     TemplateVersionSearch version
   );
 
+  Task<Result<IEnumerable<TemplateVersionPrincipal>>> GetAllVersion(
+    IEnumerable<TemplateVersionRef> references
+  );
+
   Task<Result<TemplateVersion?>> GetVersion(string userId, string name, ulong version);
 
   Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version);
@@ -50,7 +54,8 @@ public interface ITemplateRepository
     TemplateVersionRecord record,
     TemplateVersionProperty property,
     IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins
+    IEnumerable<Guid> plugins,
+    IEnumerable<Guid> templates
   );
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
@@ -59,7 +64,8 @@ public interface ITemplateRepository
     TemplateVersionRecord record,
     TemplateVersionProperty property,
     IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins
+    IEnumerable<Guid> plugins,
+    IEnumerable<Guid> templates
   );
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(

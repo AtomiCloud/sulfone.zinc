@@ -1,7 +1,6 @@
 using App.StartUp.Database;
 using App.Utility;
 using CSharp_Result;
-using Domain;
 using Domain.Error;
 using Domain.Model;
 using Domain.Repository;

@@ -1,6 +1,5 @@
 using App.StartUp.Options;
 using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.Extensions.Options;
 
 namespace App.StartUp.Services;
 
