@@ -1,3 +1,19 @@
+## [2.0.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.1...v2.0.0) (2025-05-10)
+
+
+### New Features
+
+* **breaking:** allow templates to be empty ([0d26734](https://github.com/AtomiCloud/sulfone.zinc/commit/0d26734334d3bf8d26c7f65ce3b7fc232916438a))
+* template can store references to other templates ([80d025b](https://github.com/AtomiCloud/sulfone.zinc/commit/80d025b8e588f34089ad80c75544a3b48865394d))
+
+
+### Bug Fixes
+
+* ensure nix shell is used for pushing helm ([c781921](https://github.com/AtomiCloud/sulfone.zinc/commit/c781921806263d3f26b73d37b0e64c169a43ed0c))
+* incorrect labels to call ns runners ([c58c096](https://github.com/AtomiCloud/sulfone.zinc/commit/c58c0966587b040c25ed91c3e61799836c728a64))
+* upgrade CI/CD ([3975cbd](https://github.com/AtomiCloud/sulfone.zinc/commit/3975cbd6393ffa011ae6501ab4dff559fe1c7114))
+* upgrade setup-nix to v2 ([4b6be7a](https://github.com/AtomiCloud/sulfone.zinc/commit/4b6be7a0c25b2233bdd8a4d9350f9ce6a6056721))
+
 ## [1.18.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.0...v1.18.1) (2025-05-04)
 
 
