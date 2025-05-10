@@ -586,6 +586,25 @@ public class PluginRepository(MainDbContext db, ILogger<PluginRepository> logger
     }
   }
 
+  public async Task<Result<PluginVersion?>> GetVersionById(Guid versionId)
+  {
+    try
+    {
+      logger.LogInformation("Getting plugin version with Id '{VersionId}'", versionId);
+      var version = await db
+        .PluginVersions.Where(x => x.Id == versionId)
+        .Include(x => x.Plugin)
+        .FirstOrDefaultAsync();
+
+      return version?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      logger.LogError(e, "Failed getting plugin version with Id '{VersionId}'", versionId);
+      return e;
+    }
+  }
+
   public async Task<Result<PluginVersionPrincipal?>> CreateVersion(
     string username,
     string name,

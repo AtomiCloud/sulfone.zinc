@@ -400,4 +400,18 @@ public class TemplateController(
       new EntityNotFound("Template not found", typeof(TemplatePrincipal), $"{username}/{req.Name}")
     );
   }
+
+  [HttpGet("versions/{versionId:guid}")]
+  public async Task<ActionResult<TemplateVersionResp>> GetVersionById(Guid versionId)
+  {
+    var template = await service.GetVersionById(versionId).Then(x => x?.ToResp(), Errors.MapAll);
+    return this.ReturnNullableResult(
+      template,
+      new EntityNotFound(
+        "Template version not found",
+        typeof(TemplateVersion),
+        versionId.ToString()
+      )
+    );
+  }
 }

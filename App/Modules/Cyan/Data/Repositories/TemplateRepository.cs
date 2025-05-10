@@ -550,6 +550,30 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     }
   }
 
+  public async Task<Result<TemplateVersion?>> GetVersionById(Guid versionId)
+  {
+    try
+    {
+      logger.LogInformation("Getting template version with Id '{VersionId}'", versionId);
+      var version = await db
+        .TemplateVersions.Where(x => x.Id == versionId)
+        .Include(x => x.Template)
+        .Include(x => x.Processors)
+        .ThenInclude(x => x.Processor)
+        .Include(x => x.Plugins)
+        .ThenInclude(x => x.Plugin)
+        .Include(x => x.TemplateRefs)
+        .ThenInclude(x => x.TemplateRef)
+        .FirstOrDefaultAsync();
+      return version?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      logger.LogError(e, "Failed getting template version with Id '{VersionId}'", versionId);
+      return e;
+    }
+  }
+
   public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
     string username,
     string name,

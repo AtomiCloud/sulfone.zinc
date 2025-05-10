@@ -51,6 +51,8 @@ public interface IProcessorService
   Task<Result<ProcessorVersion?>> GetVersion(string username, string name, bool bumpDownload);
   Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version);
 
+  Task<Result<ProcessorVersion?>> GetVersionById(Guid versionId);
+
   Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
     string username,
     string name,
