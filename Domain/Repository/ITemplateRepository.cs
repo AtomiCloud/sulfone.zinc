@@ -52,7 +52,7 @@ public interface ITemplateRepository
     string userId,
     string name,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates
@@ -62,7 +62,7 @@ public interface ITemplateRepository
     string userId,
     Guid id,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates

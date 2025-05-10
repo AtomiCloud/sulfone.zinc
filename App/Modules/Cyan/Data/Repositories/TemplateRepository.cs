@@ -554,7 +554,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     string username,
     string name,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates
@@ -568,7 +568,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         username,
         name,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
 
       var template = await db
@@ -675,7 +675,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         username,
         name,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
       return e;
     }
@@ -685,7 +685,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     string userId,
     Guid id,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates
@@ -699,7 +699,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         userId,
         id,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
 
       var template = await db
@@ -765,7 +765,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         userId,
         id,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
       return e;
     }

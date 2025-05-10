@@ -64,24 +64,31 @@ public static class TemplateVersionMapper
 
   public static TemplateVersionData HydrateData(
     this TemplateVersionData data,
-    TemplateVersionProperty record
+    TemplateVersionProperty? record
   ) =>
-    data with
-    {
-      BlobDockerReference = record.BlobDockerReference,
-      BlobDockerTag = record.BlobDockerTag,
-      TemplateDockerReference = record.TemplateDockerReference,
-      TemplateDockerTag = record.TemplateDockerTag,
-    };
+    record == null
+      ? data with
+      {
+        Empty = true,
+      }
+      : data with
+      {
+        BlobDockerReference = record.BlobDockerReference,
+        BlobDockerTag = record.BlobDockerTag,
+        TemplateDockerReference = record.TemplateDockerReference,
+        TemplateDockerTag = record.TemplateDockerTag,
+      };
 
-  public static TemplateVersionProperty ToProperty(this TemplateVersionData data) =>
-    new()
-    {
-      BlobDockerReference = data.BlobDockerReference,
-      BlobDockerTag = data.BlobDockerTag,
-      TemplateDockerReference = data.TemplateDockerReference,
-      TemplateDockerTag = data.TemplateDockerTag,
-    };
+  public static TemplateVersionProperty? ToProperty(this TemplateVersionData data) =>
+    data.Empty
+      ? null
+      : new()
+      {
+        BlobDockerReference = data.BlobDockerReference,
+        BlobDockerTag = data.BlobDockerTag,
+        TemplateDockerReference = data.TemplateDockerReference,
+        TemplateDockerTag = data.TemplateDockerTag,
+      };
 
   public static TemplateVersionRecord ToRecord(this TemplateVersionData data) =>
     new() { Description = data.Description };

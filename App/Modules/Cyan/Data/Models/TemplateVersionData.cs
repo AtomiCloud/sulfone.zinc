@@ -10,6 +10,8 @@ public record TemplateVersionData
 
   public string Description { get; set; } = string.Empty;
 
+  public bool Empty { get; set; } = false;
+
   public string BlobDockerReference { get; set; } = string.Empty;
 
   public string BlobDockerTag { get; set; } = string.Empty;

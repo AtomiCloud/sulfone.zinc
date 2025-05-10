@@ -8,7 +8,6 @@ with packages;
   dev = [
     pls
     git
-    openapi_to_postmanv2
   ];
 
   infra = [

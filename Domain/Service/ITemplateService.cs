@@ -52,7 +52,7 @@ public interface ITemplateService
     string username,
     string name,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates
@@ -62,7 +62,7 @@ public interface ITemplateService
     string userId,
     Guid id,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates
@@ -87,7 +87,7 @@ public interface ITemplateService
     TemplateRecord pRecord,
     TemplateMetadata metadata,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates

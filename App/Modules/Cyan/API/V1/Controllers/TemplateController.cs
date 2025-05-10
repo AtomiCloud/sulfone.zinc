@@ -267,7 +267,7 @@ public class TemplateController(
                 username,
                 templateName,
                 c.ToRecord(),
-                c.ToProperty(),
+                c.Properties?.ToProperty(),
                 c.Processors.Select(p => p.ToDomain()),
                 c.Plugins.Select(p => p.ToDomain()),
                 c.Templates.Select(t => t.ToDomain())
@@ -313,7 +313,7 @@ public class TemplateController(
           userId,
           templateId,
           c.ToRecord(),
-          c.ToProperty(),
+          c.Properties?.ToProperty(),
           c.Processors.Select(p => p.ToDomain()),
           c.Plugins.Select(p => p.ToDomain()),
           c.Templates.Select(t => t.ToDomain())

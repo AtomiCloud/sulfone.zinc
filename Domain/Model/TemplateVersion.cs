@@ -34,7 +34,7 @@ public record TemplateVersionPrincipal
 
   public required TemplateVersionRecord Record { get; init; }
 
-  public required TemplateVersionProperty Property { get; init; }
+  public required TemplateVersionProperty? Property { get; init; }
 }
 
 public record TemplateVersionRecord

@@ -7,6 +7,7 @@ pre-commit-lib.run {
     # formatter
     treefmt = {
       enable = true;
+      package = formatter;
       excludes = [
         "infra/.*chart.*/templates/.*(yaml|yml)"
         "infra/.*chart.*/.*(MD|md)"
@@ -121,6 +122,4 @@ pre-commit-lib.run {
     };
 
   };
-
-  settings.treefmt.package = formatter;
 }
