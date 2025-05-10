@@ -53,6 +53,8 @@ public interface IProcessorRepository
 
   Task<Result<ProcessorVersion?>> GetVersion(string userId, Guid id, ulong version);
 
+  Task<Result<ProcessorVersion?>> GetVersionById(Guid versionId);
+
   Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
     string userId,
     string name,

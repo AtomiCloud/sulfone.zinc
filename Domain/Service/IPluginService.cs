@@ -43,6 +43,8 @@ public interface IPluginService
 
   Task<Result<PluginVersion?>> GetVersion(string userId, Guid id, ulong version);
 
+  Task<Result<PluginVersion?>> GetVersionById(Guid versionId);
+
   Task<Result<PluginVersionPrincipal?>> CreateVersion(
     string username,
     string name,

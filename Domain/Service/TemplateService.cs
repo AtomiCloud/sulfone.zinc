@@ -152,6 +152,11 @@ public class TemplateService(
     return repo.GetVersion(userId, id, version);
   }
 
+  public Task<Result<TemplateVersion?>> GetVersionById(Guid versionId)
+  {
+    return repo.GetVersionById(versionId);
+  }
+
   public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
     string userId,
     string name,

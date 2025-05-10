@@ -353,4 +353,14 @@ public class PluginController(
       new EntityNotFound("Plugin not found", typeof(PluginPrincipal), $"{username}/{req.Name}")
     );
   }
+
+  [HttpGet("versions/{versionId:guid}")]
+  public async Task<ActionResult<PluginVersionResp>> GetVersionById(Guid versionId)
+  {
+    var plugin = await service.GetVersionById(versionId).Then(x => x?.ToResp(), Errors.MapNone);
+    return this.ReturnNullableResult(
+      plugin,
+      new EntityNotFound("Plugin version not found", typeof(PluginVersion), versionId.ToString())
+    );
+  }
 }

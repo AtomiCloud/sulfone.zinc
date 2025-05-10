@@ -152,6 +152,11 @@ public class ProcessorService(
     return repo.GetVersion(userId, id, version);
   }
 
+  public Task<Result<ProcessorVersion?>> GetVersionById(Guid versionId)
+  {
+    return repo.GetVersionById(versionId);
+  }
+
   public Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
     string username,
     string name,

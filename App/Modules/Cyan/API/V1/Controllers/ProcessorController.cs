@@ -389,4 +389,18 @@ public class ProcessorController(
       )
     );
   }
+
+  [HttpGet("versions/{versionId:guid}")]
+  public async Task<ActionResult<ProcessorVersionResp>> GetVersionById(Guid versionId)
+  {
+    var processor = await service.GetVersionById(versionId).Then(x => x?.ToResp(), Errors.MapNone);
+    return this.ReturnNullableResult(
+      processor,
+      new EntityNotFound(
+        "Processor version not found",
+        typeof(ProcessorVersion),
+        versionId.ToString()
+      )
+    );
+  }
 }

@@ -48,6 +48,8 @@ public interface ITemplateService
 
   Task<Result<TemplateVersion?>> GetVersion(string userId, Guid id, ulong version);
 
+  Task<Result<TemplateVersion?>> GetVersionById(Guid versionId);
+
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
     string username,
     string name,

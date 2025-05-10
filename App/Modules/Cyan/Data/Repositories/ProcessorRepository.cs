@@ -614,6 +614,25 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
     }
   }
 
+  public async Task<Result<ProcessorVersion?>> GetVersionById(Guid versionId)
+  {
+    try
+    {
+      logger.LogInformation("Getting processor version with Id '{VersionId}'", versionId);
+      var version = await db
+        .ProcessorVersions.Where(x => x.Id == versionId)
+        .Include(x => x.Processor)
+        .FirstOrDefaultAsync();
+
+      return version?.ToDomain();
+    }
+    catch (Exception e)
+    {
+      logger.LogError(e, "Failed getting processor version with Id '{VersionId}'", versionId);
+      return e;
+    }
+  }
+
   public async Task<Result<ProcessorVersionPrincipal?>> CreateVersion(
     string username,
     string name,

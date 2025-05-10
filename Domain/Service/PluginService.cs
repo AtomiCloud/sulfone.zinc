@@ -146,6 +146,11 @@ public class PluginService(
     return repo.GetVersion(userId, id, version);
   }
 
+  public Task<Result<PluginVersion?>> GetVersionById(Guid versionId)
+  {
+    return repo.GetVersionById(versionId);
+  }
+
   public Task<Result<PluginVersionPrincipal?>> CreateVersion(
     string userId,
     string name,
