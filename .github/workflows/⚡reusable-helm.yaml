@@ -33,7 +33,7 @@ jobs:
 
       # Action
       - name: Build and Push Helm
-        run: ./scripts/ci/helm.sh ${{ inputs.chart_path }} ${{ inputs.version }}
+        run: nix develop .#ci -c ./scripts/ci/helm.sh "${{ inputs.chart_path }}" "${{ inputs.version }}"
         env:
           # registry
           DOMAIN: ghcr.io
