@@ -1,8 +1,5 @@
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using App.Modules.Common;
-using NJsonSchema.Annotations;
 
 namespace App.Error.V1;
 

@@ -1,7 +1,6 @@
 using App.Modules.Cyan.Data.Repositories;
 using App.Modules.Users.Data;
 using App.StartUp.Services;
-using App.Utility;
 using Domain.Repository;
 using Domain.Service;
 

@@ -18,6 +18,16 @@ public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplat
   public CreateTemplateVersionReqValidator()
   {
     this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.Properties!)
+      .SetValidator(new TemplatePropertyReqValidator())
+      .Unless(x => x.Properties == null);
+  }
+}
+
+public class TemplatePropertyReqValidator : AbstractValidator<TemplatePropertyReq>
+{
+  public TemplatePropertyReqValidator()
+  {
     this.RuleFor(x => x.BlobDockerReference).DockerReferenceValid();
     this.RuleFor(x => x.BlobDockerTag).TagValid();
     this.RuleFor(x => x.TemplateDockerReference).DockerReferenceValid();
@@ -46,9 +56,8 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
     this.RuleFor(x => x.Description).DescriptionValid();
     this.RuleFor(x => x.Readme).NotNull();
     this.RuleFor(x => x.VersionDescription).DescriptionValid();
-    this.RuleFor(x => x.BlobDockerReference).DockerReferenceValid();
-    this.RuleFor(x => x.BlobDockerTag).TagValid();
-    this.RuleFor(x => x.TemplateDockerReference).DockerReferenceValid();
-    this.RuleFor(x => x.TemplateDockerTag).TagValid();
+    this.RuleFor(x => x.Properties!)
+      .SetValidator(new TemplatePropertyReqValidator())
+      .Unless(x => x.Properties == null);
   }
 }

@@ -1,4 +1,3 @@
-using Domain;
 using Domain.Model;
 
 namespace App.Modules.Users.API.V1;

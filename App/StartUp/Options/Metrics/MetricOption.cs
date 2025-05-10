@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace App.StartUp.Options.Metrics;
 
 public class MetricOption

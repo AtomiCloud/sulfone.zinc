@@ -267,9 +267,10 @@ public class TemplateController(
                 username,
                 templateName,
                 c.ToRecord(),
-                c.ToProperty(),
+                c.Properties?.ToProperty(),
                 c.Processors.Select(p => p.ToDomain()),
-                c.Plugins.Select(p => p.ToDomain())
+                c.Plugins.Select(p => p.ToDomain()),
+                c.Templates.Select(t => t.ToDomain())
               )
             )
             .Then(c => c?.ToResp(), Errors.MapAll);
@@ -312,9 +313,10 @@ public class TemplateController(
           userId,
           templateId,
           c.ToRecord(),
-          c.ToProperty(),
+          c.Properties?.ToProperty(),
           c.Processors.Select(p => p.ToDomain()),
-          c.Plugins.Select(p => p.ToDomain())
+          c.Plugins.Select(p => p.ToDomain()),
+          c.Templates.Select(t => t.ToDomain())
         )
       )
       .Then(x => x?.ToResp(), Errors.MapAll);
@@ -381,7 +383,8 @@ public class TemplateController(
                 vRecord,
                 vProperty,
                 req.Processors.Select(p => p.ToDomain()),
-                req.Plugins.Select(p => p.ToDomain())
+                req.Plugins.Select(p => p.ToDomain()),
+                req.Templates.Select(t => t.ToDomain())
               );
             })
             .Then(c => c?.ToResp(), Errors.MapAll);

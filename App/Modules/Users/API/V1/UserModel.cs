@@ -1,5 +1,3 @@
-using Domain.Model;
-
 namespace App.Modules.Users.API.V1;
 
 public record CreateUserReq(string Username);

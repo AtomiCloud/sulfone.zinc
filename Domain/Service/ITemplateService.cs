@@ -52,18 +52,20 @@ public interface ITemplateService
     string username,
     string name,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   );
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
     string userId,
     Guid id,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   );
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(
@@ -85,8 +87,9 @@ public interface ITemplateService
     TemplateRecord pRecord,
     TemplateMetadata metadata,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
-    IEnumerable<PluginVersionRef> plugins
+    IEnumerable<PluginVersionRef> plugins,
+    IEnumerable<TemplateVersionRef> templates
   );
 }

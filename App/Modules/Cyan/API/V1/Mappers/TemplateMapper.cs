@@ -10,7 +10,7 @@ public static class TemplateMapper
     TemplateRecord,
     TemplateMetadata,
     TemplateVersionRecord,
-    TemplateVersionProperty
+    TemplateVersionProperty?
   ) ToDomain(this PushTemplateReq req) =>
     (
       new TemplateRecord { Name = req.Name },
@@ -24,13 +24,7 @@ public static class TemplateMapper
         Readme = req.Readme,
       },
       new TemplateVersionRecord { Description = req.Description },
-      new TemplateVersionProperty
-      {
-        BlobDockerReference = req.BlobDockerReference,
-        BlobDockerTag = req.BlobDockerTag,
-        TemplateDockerReference = req.TemplateDockerReference,
-        TemplateDockerTag = req.TemplateDockerTag,
-      }
+      req.Properties?.ToProperty()
     );
 
   public static (TemplateRecord, TemplateMetadata) ToDomain(this CreateTemplateReq req) =>
@@ -96,7 +90,7 @@ public static class TemplateVersionMapper
   public static TemplateVersionRecord ToRecord(this CreateTemplateVersionReq req) =>
     new() { Description = req.Description };
 
-  public static TemplateVersionProperty ToProperty(this CreateTemplateVersionReq req) =>
+  public static TemplateVersionProperty ToProperty(this TemplatePropertyReq req) =>
     new()
     {
       BlobDockerReference = req.BlobDockerReference,
@@ -122,16 +116,26 @@ public static class TemplateVersionMapper
   public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
+  public static TemplateVersionRef ToDomain(this TemplateReferenceReq req) =>
+    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+
+  // Response
+
+  public static TemplatePropertyResp ToResp(this TemplateVersionProperty property) =>
+    new(
+      property.BlobDockerReference,
+      property.BlobDockerTag,
+      property.TemplateDockerReference,
+      property.TemplateDockerTag
+    );
+
   public static TemplateVersionPrincipalResp ToResp(this TemplateVersionPrincipal principal) =>
     new(
       principal.Id,
       principal.Version,
       principal.CreatedAt,
       principal.Record.Description,
-      principal.Property.BlobDockerReference,
-      principal.Property.BlobDockerTag,
-      principal.Property.TemplateDockerReference,
-      principal.Property.TemplateDockerTag
+      principal.Property?.ToResp()
     );
 
   public static TemplateVersionResp ToResp(this TemplateVersion version) =>
@@ -139,6 +143,7 @@ public static class TemplateVersionMapper
       version.Principal.ToResp(),
       version.TemplatePrincipal.ToResp(),
       version.Plugins.Select(x => x.ToResp()),
-      version.Processors.Select(x => x.ToResp())
+      version.Processors.Select(x => x.ToResp()),
+      version.Templates.Select(x => x.ToResp())
     );
 }

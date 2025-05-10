@@ -64,24 +64,31 @@ public static class TemplateVersionMapper
 
   public static TemplateVersionData HydrateData(
     this TemplateVersionData data,
-    TemplateVersionProperty record
+    TemplateVersionProperty? record
   ) =>
-    data with
-    {
-      BlobDockerReference = record.BlobDockerReference,
-      BlobDockerTag = record.BlobDockerTag,
-      TemplateDockerReference = record.TemplateDockerReference,
-      TemplateDockerTag = record.TemplateDockerTag,
-    };
+    record == null
+      ? data with
+      {
+        Empty = true,
+      }
+      : data with
+      {
+        BlobDockerReference = record.BlobDockerReference,
+        BlobDockerTag = record.BlobDockerTag,
+        TemplateDockerReference = record.TemplateDockerReference,
+        TemplateDockerTag = record.TemplateDockerTag,
+      };
 
-  public static TemplateVersionProperty ToProperty(this TemplateVersionData data) =>
-    new()
-    {
-      BlobDockerReference = data.BlobDockerReference,
-      BlobDockerTag = data.BlobDockerTag,
-      TemplateDockerReference = data.TemplateDockerReference,
-      TemplateDockerTag = data.TemplateDockerTag,
-    };
+  public static TemplateVersionProperty? ToProperty(this TemplateVersionData data) =>
+    data.Empty
+      ? null
+      : new()
+      {
+        BlobDockerReference = data.BlobDockerReference,
+        BlobDockerTag = data.BlobDockerTag,
+        TemplateDockerReference = data.TemplateDockerReference,
+        TemplateDockerTag = data.TemplateDockerTag,
+      };
 
   public static TemplateVersionRecord ToRecord(this TemplateVersionData data) =>
     new() { Description = data.Description };
@@ -103,5 +110,6 @@ public static class TemplateVersionMapper
       TemplatePrincipal = data.Template.ToPrincipal(),
       Plugins = data.Plugins.Select(x => x.Plugin.ToPrincipal()).ToList(),
       Processors = data.Processors.Select(x => x.Processor.ToPrincipal()).ToList(),
+      Templates = data.TemplateRefs.Select(x => x.TemplateRef.ToPrincipal()).ToList(),
     };
 }

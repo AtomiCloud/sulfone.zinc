@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using App.Error.V1;
 using App.Modules.Cyan.Data.Mappers;
 using App.Modules.Cyan.Data.Models;
@@ -9,8 +8,9 @@ using Domain.Error;
 using Domain.Model;
 using Domain.Repository;
 using EntityFramework.Exceptions.Common;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using NpgsqlTypes;
+using Microsoft.IdentityModel.Tokens;
 
 namespace App.Modules.Cyan.Data.Repositories;
 
@@ -461,6 +461,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .ThenInclude(x => x.Plugin)
         .Include(x => x.Processors)
         .ThenInclude(x => x.Processor)
+        .Include(x => x.TemplateRefs)
+        .ThenInclude(x => x.TemplateRef)
         .Where(x =>
           x.Template.User.Username == username && x.Template.Name == name && x.Version == version
         )
@@ -494,6 +496,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .TemplateVersions.Include(x => x.Template)
         .Include(x => x.Plugins)
         .Include(x => x.Processors)
+        .Include(x => x.TemplateRefs)
         .Where(x => x.Template.UserId == userId && x.Template.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
 
@@ -528,6 +531,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .ThenInclude(x => x.Plugin)
         .Include(x => x.Processors)
         .ThenInclude(x => x.Processor)
+        .Include(x => x.TemplateRefs)
+        .ThenInclude(x => x.TemplateRef)
         .Where(x => x.Template.User.Username == username && x.Template.Name == name)
         .OrderByDescending(x => x.Version)
         .FirstOrDefaultAsync();
@@ -549,9 +554,10 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     string username,
     string name,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins
+    IEnumerable<Guid> plugins,
+    IEnumerable<Guid> templates
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -562,7 +568,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         username,
         name,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
 
       var template = await db
@@ -597,6 +603,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         CreatedAt = DateTime.UtcNow,
         Plugins = null!,
         Processors = null!,
+        Templates = null!,
+        TemplateRefs = null!,
       };
 
       var r = db.TemplateVersions.Add(data);
@@ -619,6 +627,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         pluginLinks.ToJson()
       );
       db.TemplatePluginVersions.AddRange(pluginLinks);
+
+      // save processor links
       var processorLinks = processors.Select(x => new TemplateProcessorVersionData
       {
         ProcessorId = x,
@@ -634,6 +644,24 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         processorLinks.ToJson()
       );
       db.TemplateProcessorVersions.AddRange(processorLinks);
+
+      // save template links
+      var templateLinks = templates.Select(x => new TemplateTemplateVersionData
+      {
+        TemplateRefId = x,
+        TemplateRef = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      logger.LogInformation(
+        "Saving templates links for '{Username}/{Name}:{Version}', Templates: {@Templates}",
+        username,
+        name,
+        latest,
+        templateLinks.ToJson()
+      );
+      db.TemplateTemplateVersions.AddRange(templateLinks);
+
       await db.SaveChangesAsync();
       await transaction.CommitAsync();
       return t;
@@ -647,7 +675,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         username,
         name,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
       return e;
     }
@@ -657,9 +685,10 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     string userId,
     Guid id,
     TemplateVersionRecord record,
-    TemplateVersionProperty property,
+    TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
-    IEnumerable<Guid> plugins
+    IEnumerable<Guid> plugins,
+    IEnumerable<Guid> templates
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -670,7 +699,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         userId,
         id,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
 
       var template = await db
@@ -714,6 +743,15 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         Template = null!,
       });
       db.TemplateProcessorVersions.AddRange(processorLinks);
+      var templateLinks = templates.Select(x => new TemplateTemplateVersionData
+      {
+        TemplateRefId = x,
+        TemplateRef = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      db.TemplateTemplateVersions.AddRange(templateLinks);
+
       await db.SaveChangesAsync();
       await transaction.CommitAsync();
       return t;
@@ -727,7 +765,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         userId,
         id,
         record.ToJson(),
-        property.ToJson()
+        property?.ToJson()
       );
       return e;
     }
@@ -819,6 +857,74 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         userId,
         id,
         v2.ToJson()
+      );
+      return e;
+    }
+  }
+
+  public async Task<Result<IEnumerable<TemplateVersionPrincipal>>> GetAllVersion(
+    IEnumerable<TemplateVersionRef> references
+  )
+  {
+    var templateRefs = references as TemplateVersionRef[] ?? references.ToArray();
+    try
+    {
+      logger.LogInformation("Getting all template versions {@References}", templateRefs.ToJson());
+      if (templateRefs.IsNullOrEmpty())
+        return Array.Empty<TemplateVersionPrincipal>();
+      var query = db
+        .TemplateVersions.Include(x => x.Template)
+        .ThenInclude(x => x.User)
+        .AsQueryable();
+
+      var predicate = PredicateBuilder.New<TemplateVersionData>(true);
+
+      predicate = templateRefs.Aggregate(
+        predicate,
+        (c, r) =>
+          r.Version != null
+            ? c.Or(x =>
+              x.Template.Name == r.Name
+              && x.Template.User.Username == r.Username
+              && x.Version == r.Version
+            )
+            : c.Or(x => x.Template.Name == r.Name && x.Template.User.Username == r.Username)
+      );
+
+      var all = await query.Where(predicate).ToArrayAsync();
+      var grouped = all.GroupBy(x => new { x.Template.Name, x.Template.User.Username })
+        .Select(g => g.OrderByDescending(o => o.Version).First())
+        .ToArray();
+
+      var templates = grouped.Select(x => x.ToPrincipal()).ToArray();
+      logger.LogInformation(
+        "Template References: {@TemplateReferences}",
+        templates.Select(x => x.Id)
+      );
+
+      if (templates.Length != templateRefs.Length)
+      {
+        var found = grouped
+          .Select(x => $"{x.Template.User.Username}/{x.Template.Name}:{x.Version}")
+          .ToArray();
+        var search = templateRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
+        var notFound = search.Except(found).ToArray();
+        return new MultipleEntityNotFound(
+          "Templates not found",
+          typeof(TemplatePrincipal),
+          notFound,
+          found
+        ).ToException();
+      }
+
+      return templates;
+    }
+    catch (Exception e)
+    {
+      logger.LogError(
+        e,
+        "Failed searching template versions '{@References}'",
+        templateRefs.ToJson()
       );
       return e;
     }

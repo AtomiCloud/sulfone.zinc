@@ -1,8 +1,4 @@
 using App.StartUp.Migrator;
-using App.StartUp.Options;
-using App.StartUp.Registry;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace App.StartUp.Database;
 

@@ -18,7 +18,11 @@ public record TemplateVersion
   public required IEnumerable<PluginVersionPrincipal> Plugins { get; init; }
 
   public required IEnumerable<ProcessorVersionPrincipal> Processors { get; init; }
+
+  public required IEnumerable<TemplateVersionPrincipal> Templates { get; init; }
 }
+
+public record TemplateVersionRef(string Username, string Name, ulong? Version);
 
 public record TemplateVersionPrincipal
 {
@@ -30,7 +34,7 @@ public record TemplateVersionPrincipal
 
   public required TemplateVersionRecord Record { get; init; }
 
-  public required TemplateVersionProperty Property { get; init; }
+  public required TemplateVersionProperty? Property { get; init; }
 }
 
 public record TemplateVersionRecord
