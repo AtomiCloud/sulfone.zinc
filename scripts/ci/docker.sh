@@ -16,6 +16,8 @@
 
 [ "${LATEST_BRANCH}" = '' ] && echo "❌ 'LATEST_BRANCH' env var not set" && exit 1
 
+version="$1"
+
 set -eou pipefail
 
 onExit() {
@@ -49,25 +51,21 @@ IMAGE_VERSION="${SHA}-${BRANCH}"
 COMMIT_IMAGE_REF="${IMAGE_ID}:${IMAGE_VERSION}"
 BRANCH_IMAGE_REF="${IMAGE_ID}:${BRANCH}"
 LATEST_IMAGE_REF="${IMAGE_ID}:latest"
-
-# Generate cache references
-CACHE_COMMIT="${IMAGE_ID}/${SHA}-${BRANCH}"
-CACHE_BRANCH="${IMAGE_ID}/${BRANCH}"
-CACHE_LATEST="${IMAGE_ID}/latest"
+[ "${version}" != '' ] && SEMVER_IMAGE_REF="${IMAGE_ID}:${version}"
 
 echo "  ✅ Commit Image Ref: ${COMMIT_IMAGE_REF}"
 echo "  ✅ Branch Image Ref: ${BRANCH_IMAGE_REF}"
 echo "  ✅ Latest Image Ref: ${LATEST_IMAGE_REF}"
-echo ""
-echo "  ✅ Commit Cache: ${CACHE_COMMIT}"
-echo "  ✅ Branch Cache: ${CACHE_BRANCH}"
-echo "  ✅ Latest Cache: ${CACHE_LATEST}"
+[ "${version}" != '' ] && echo "  ✅ Semver Image Ref: ${SEMVER_IMAGE_REF}"
 
 echo "🔨 Building Dockerfile..."
 args=""
 if [ "$BRANCH" = "$LATEST_BRANCH" ]; then
   echo "🔎 Detected branch is '${LATEST_BRANCH}', push 'latest' tag!"
   args="-t ${LATEST_IMAGE_REF}"
+fi
+if [ "${version}" != '' ]; then
+  args="${args} -t ${SEMVER_IMAGE_REF}"
 fi
 
 # shellcheck disable=SC2086
