@@ -1,3 +1,10 @@
+## [2.1.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.0.0...v2.1.0) (2025-05-10)
+
+
+### New Features
+
+* **version:** endpoint to get versions by id ([65ca46e](https://github.com/AtomiCloud/sulfone.zinc/commit/65ca46eeeeb03a96b868a40bb880a3f490a1165f))
+
 ## [2.0.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.1...v2.0.0) (2025-05-10)
 
 
