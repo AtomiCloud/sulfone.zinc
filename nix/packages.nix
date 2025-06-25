@@ -1,4 +1,4 @@
-{ pkgs, pkgs-2411, atomi }:
+{ pkgs, pkgs-2505, pkgs-unstable, atomi }:
 let
 
   all = rec {
@@ -6,7 +6,7 @@ let
       with atomi;
       rec {
 
-        dotnetlint = atomi.dotnetlint.override { dotnetPackage = nix-2411.dotnet; };
+        dotnetlint = atomi.dotnetlint.override { dotnetPackage = nix-2505.dotnet; };
         helmlint = atomi.helmlint.override { helmPackage = infrautils; };
 
         inherit
@@ -17,10 +17,14 @@ let
           sg;
       }
     );
-    nix-2411 = (
-      with pkgs-2411;
+    nix-unstable = (
+      with pkgs-unstable;
+      { }
+    );
+    nix-2505 = (
+      with pkgs-2505;
       {
-        dotnet = dotnet-sdk_8;
+        dotnet = dotnet-sdk;
         inherit
           infisical
           git
@@ -34,5 +38,6 @@ let
   };
 in
 with all;
-nix-2411 //
-atomipkgs 
+nix-2505 //
+nix-unstable //
+atomipkgs

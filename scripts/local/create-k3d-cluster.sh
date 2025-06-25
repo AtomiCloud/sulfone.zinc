@@ -33,7 +33,7 @@ mkdir -p "$HOME/.kube/k3dconfigs"
 
 echo "📝 Writing to '$HOME/.kube/k3dconfigs/k3d-$input'"
 k3d kubeconfig get "$input" >"$HOME/.kube/k3dconfigs/k3d-$input"
-KUBECONFIG=$(cd ~/.kube/configs && find "$(pwd)"/* | awk 'ORS=":"')$(cd ~/.kube/k3dconfigs && find "$(pwd)"/* | awk 'ORS=":"') kubectl config view --flatten >~/.kube/config
+KUBECONFIG=$(cd ~/.kube/configs && find "$(pwd)"/* | awk 'ORS=":"')$(cd ~/.kube/k3dconfigs && find "$(pwd)"/* | awk 'ORS=":"')$(cd ~/.kube/atomiconfigs && find "$(pwd)"/* | awk 'ORS=":"') kubectl config view --flatten >~/.kube/config
 chmod 600 ~/.kube/config
 echo "✅ Generated kube config file"
 # wait for cluster to be ready
