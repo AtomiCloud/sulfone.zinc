@@ -1,3 +1,11 @@
+## [2.1.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.0...v2.1.1) (2025-06-25)
+
+
+### Bug Fixes
+
+* **default:** broken release pipeline ([#27](https://github.com/AtomiCloud/sulfone.zinc/issues/27)) ([8fdfd8c](https://github.com/AtomiCloud/sulfone.zinc/commit/8fdfd8c2e1befd1552c58850b1eb734f7c9a2f36))
+* **default:** broken release pipeline ([d28187e](https://github.com/AtomiCloud/sulfone.zinc/commit/d28187eb1810beee3a0542d94c0f0c9da9a9250e))
+
 ## [2.1.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.0.0...v2.1.0) (2025-05-10)
 
 
