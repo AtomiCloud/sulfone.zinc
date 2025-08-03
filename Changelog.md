@@ -1,3 +1,15 @@
+## [2.2.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.1...v2.2.0) (2025-08-03)
+
+
+### New Features
+
+* **eso:** upgrade upstream to v1 ([dbc48bd](https://github.com/AtomiCloud/sulfone.zinc/commit/dbc48bde96deef016b94a35962f8b1e98c860a1b))
+
+
+### Bug Fixes
+
+* **default:** missing helm lock file ([ab64ebf](https://github.com/AtomiCloud/sulfone.zinc/commit/ab64ebf3a42e80570f678bb8052ae0f291771956))
+
 ## [2.1.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.0...v2.1.1) (2025-06-25)
 
 
