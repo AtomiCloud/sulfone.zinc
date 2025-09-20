@@ -1,3 +1,11 @@
+## [2.3.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.2.0...v2.3.0) (2025-09-20)
+
+
+### New Features
+
+* **docker:** allow dots in docker tags ([#40](https://github.com/AtomiCloud/sulfone.zinc/issues/40)) ([2091544](https://github.com/AtomiCloud/sulfone.zinc/commit/209154445c73f7211e1bcf8bca867bd0b81ba8f4))
+* **docker:** allow dots in docker tags ([b5b5b27](https://github.com/AtomiCloud/sulfone.zinc/commit/b5b5b27aa88fb5b6e433baaf2b779cd663105c89))
+
 ## [2.2.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.1...v2.2.0) (2025-08-03)
 
 
