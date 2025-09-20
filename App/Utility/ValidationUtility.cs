@@ -70,9 +70,9 @@ public static class ValidationUtility
     return ruleBuilder
       .Length(1, 32)
       .WithMessage("Docker tag must be between 1 and 32 characters")
-      .Matches(@"^[a-z0-9](\-?[a-z0-9]+)*$")
+      .Matches(@"^[a-z0-9](\.?\-?[a-z0-9]+)*$")
       .WithMessage(
-        "Docker tag can only contain alphanumeric characters and dashes, and cannot star or end with dash"
+        "Docker tag can only contain alphanumeric characters, dots dashes, and cannot start or end with dash"
       );
   }
 
