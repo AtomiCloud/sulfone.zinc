@@ -31,48 +31,63 @@ App/Utility/
 
 ### AtomiControllerBase
 
-Base controller providing common functionality:
+Base controller providing common functionality using RFC 7807 Problem Details for error responses:
 
 ```csharp
 public abstract class AtomiControllerBase : ControllerBase
 {
+    // Store IDomainProblem in HttpContext for RFC 7807 serialization
+    protected ActionResult<T> Error<T>(HttpStatusCode code, IDomainProblem problem)
+    {
+        this.HttpContext.Items[Constants.ProblemContextKey] = problem;
+        return this.StatusCode((int)code);
+    }
+
+    protected ActionResult Error(HttpStatusCode code, IDomainProblem problem)
+    {
+        this.HttpContext.Items[Constants.ProblemContextKey] = problem;
+        return this.StatusCode((int)code);
+    }
+
     protected string? Sub()
     {
-        return User.FindFirst("sub")?.Value;
+        return this.HttpContext.User?.Identity?.Name;
     }
 
-    protected ActionResult ReturnResult<T>(Result<T> result)
+    protected ActionResult<T> ReturnResult<T>(Result<T> entity)
     {
-        if (result.IsOk())
+        return entity.IsSuccess()
+            ? this.Ok(entity.Get())
+            : this.MapException<T>(entity.FailureOrDefault());
+    }
+
+    protected ActionResult<T> ReturnNullableResult<T>(Result<T?> entity, EntityNotFound notFound)
+    {
+        if (entity.IsSuccess())
         {
-            return Ok(result.Get());
+            var suc = entity.Get();
+            return suc == null ? this.Error<T>(HttpStatusCode.NotFound, notFound) : this.Ok(suc);
         }
-        return MapError(result.FailureOrDefault());
+        var e = entity.FailureOrDefault();
+        return this.MapException<T>(e);
     }
 
-    protected ActionResult ReturnNullableResult<T>(
-        Result<T?> result,
-        Exception notFoundError
-    )
+    private ActionResult MapException(Exception e)
     {
-        if (result.IsOk())
+        return e switch
         {
-            var value = result.Get();
-            if (value == null)
-                return NotFound(notFoundError.Message);
-            return Ok(value);
-        }
-        return MapError(result.FailureOrDefault());
-    }
-
-    private ActionResult MapError(Exception error)
-    {
-        return error switch
-        {
-            UnauthorizedException => Unauthorized(error.Message),
-            EntityNotFound => NotFound(error.Message),
-            AlreadyExistException => Conflict(error.Message),
-            _ => StatusCode(500, error.Message)
+            DomainProblemException d => d.Problem switch
+            {
+                EntityNotFound => this.Error(HttpStatusCode.NotFound, d.Problem),
+                ValidationError validationError => this.Error(HttpStatusCode.BadRequest, validationError),
+                Unauthorized unauthorizedError => this.Error(HttpStatusCode.Unauthorized, unauthorizedError),
+                EntityConflict entityConflict => this.Error(HttpStatusCode.Conflict, entityConflict),
+                LikeConflictError likeConflictError => this.Error(HttpStatusCode.Conflict, likeConflictError),
+                LikeRaceConditionError likeRaceConditionError => this.Error(HttpStatusCode.Conflict, likeRaceConditionError),
+                _ => this.Error(HttpStatusCode.BadRequest, d.Problem),
+            },
+            AlreadyExistException aee => this.Error(HttpStatusCode.Conflict, new EntityConflict(aee.Message, aee.t)),
+            _ => throw new AggregateException("Unhandled Exception", e),
         };
     }
 }

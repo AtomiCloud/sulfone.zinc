@@ -175,19 +175,15 @@ public class TemplateInfo
 
 ## API Endpoints
 
-| Endpoint                                   | Method | Purpose                 |
-| ------------------------------------------ | ------ | ----------------------- |
-| `/api/v1/template/{username}/{name}/like`  | POST   | Like/unlike a template  |
-| `/api/v1/plugin/{username}/{name}/like`    | POST   | Like/unlike a plugin    |
-| `/api/v1/processor/{username}/{name}/like` | POST   | Like/unlike a processor |
+| Endpoint                                                | Method | Purpose                 |
+| ------------------------------------------------------- | ------ | ----------------------- |
+| `/api/v1/template/slug/{username}/{name}/like/{likerId}/{like}`  | POST   | Like/unlike a template  |
+| `/api/v1/plugin/slug/{username}/{name}/like/{likerId}/{like}`    | POST   | Like/unlike a plugin    |
+| `/api/v1/processor/slug/{username}/{name}/like/{likerId}/{like}` | POST   | Like/unlike a processor |
 
-**Request Body**:
-
-```json
-{
-  "like": true
-}
-```
+**Path Parameters**:
+- `{likerId}`: ID of the user performing the like/unlike action
+- `{like}`: `true` to like, `false` to unlike
 
 ## Related
 

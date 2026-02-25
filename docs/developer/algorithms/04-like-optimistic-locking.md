@@ -160,14 +160,28 @@ public async Task<Result<Unit?>> Like(
 ### LikeConflictError
 
 ```csharp
-public class LikeConflictError : UserError
+internal class LikeConflictError : IDomainProblem
 {
-    public LikeConflictError(string title, string target, string type, string action)
-        : base(
-            $"Failed to {action} {type}",
-            $"The {type} '{target}' is already {action}ed"
-        )
-    { }
+  public LikeConflictError(
+    string detail,
+    string resourceId,
+    string resourceType,
+    string conflictType
+  )
+  {
+    this.Detail = detail;
+    this.ResourceId = resourceId;
+    this.ResourceType = resourceType;
+    this.ConflictType = conflictType;
+  }
+
+  public string Id { get; } = "like_conflict";
+  public string Title { get; } = "Like Conflict";
+  public string Version { get; } = "v1";
+  public string Detail { get; } = string.Empty;
+  public string ResourceType { get; } = string.Empty;
+  public string ResourceId { get; } = string.Empty;
+  public string ConflictType { get; } = string.Empty;
 }
 ```
 
@@ -176,14 +190,28 @@ public class LikeConflictError : UserError
 ### LikeRaceConditionError
 
 ```csharp
-public class LikeRaceConditionError : UserError
+internal class LikeRaceConditionError : IDomainProblem
 {
-    public LikeRaceConditionError(string title, string target, string type, string action)
-        : base(
-            $"Failed to {action} {type}",
-            $"Race condition detected: {type} '{target}' state changed during operation"
-        )
-    { }
+  public LikeRaceConditionError(
+    string detail,
+    string resourceId,
+    string resourceType,
+    string conflictType
+  )
+  {
+    this.Detail = detail;
+    this.ResourceId = resourceId;
+    this.ResourceType = resourceType;
+    this.ConflictType = conflictType;
+  }
+
+  public string Id { get; } = "like_race_condition";
+  public string Title { get; } = "Like Race Condition";
+  public string Version { get; } = "v1";
+  public string Detail { get; } = string.Empty;
+  public string ResourceType { get; } = string.Empty;
+  public string ResourceId { get; } = string.Empty;
+  public string ConflictType { get; } = string.Empty;
 }
 ```
 
