@@ -128,8 +128,8 @@ public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
 | Circular reference | A→B→A                      | Not explicitly prevented              | N/A                                   |
 
 > **Note**: Self-referencing template versions and circular dependencies (A→B→A) will silently persist in the database since this algorithm only validates direct references without graph traversal. These can cause infinite loops in future graph-traversal tooling (e.g., dependency resolution at install time). Consider adding pre-CreateVersion validation to detect self-references and simple cycles before persisting.
->
-> <!-- TODO: Implement cycle detection in CreateVersion flow before adding graph-traversal consumers -->
+
+<!-- TODO: Implement cycle detection in CreateVersion flow before adding graph-traversal consumers -->
 
 ## Error Handling
 

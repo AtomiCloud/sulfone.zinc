@@ -155,6 +155,6 @@ API uses URL-based versioning: `/api/v1/`, `/api/v2/`, etc.
 
 ## Related
 
-- [Features](../features/) - Feature implementation details
-- [Modules](../modules/) - Code organization
-- [Authentication](../concepts/01-authentication.md) - Auth concepts
+- [Features](../../features/) - Feature implementation details
+- [Modules](../../modules/) - Code organization
+- [Authentication](../../concepts/01-authentication.md) - Auth concepts

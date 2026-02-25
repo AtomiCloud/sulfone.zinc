@@ -179,5 +179,5 @@ public string Generate()
 
 - [Authentication Concept](../concepts/01-authentication.md) - How tokens are used
 - [Authentication Feature](./01-authentication.md) - Token validation in auth flow
-- [User Module](../modules/02-users.md) - User and token data models
+- [User Module](../modules/03-users.md) - User and token data models
 - [User API](../surfaces/api/04-user.md) - Token endpoints
