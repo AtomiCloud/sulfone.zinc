@@ -52,7 +52,7 @@ http://localhost:5000/api/v1
 
 ## Authentication
 
-All endpoints (except health check) require authentication:
+All endpoints (except System API: `GET /`, `GET /api/v1/error-info`, `GET /api/v1/error-info/{id}`) require authentication:
 
 | Method | Header | Example |
 |--------|--------|---------|

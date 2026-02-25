@@ -113,14 +113,28 @@ The Like System uses optimistic locking to detect race conditions during unlike 
 ### LikeConflictError
 
 ```csharp
-public class LikeConflictError : UserError
+internal class LikeConflictError : IDomainProblem
 {
-    public LikeConflictError(string title, string target, string type, string action)
-        : base(
-            $"Failed to {action} {type}",
-            $"The {type} '{target}' is already {action}ed"
-        )
-    { }
+  public LikeConflictError(
+    string detail,
+    string resourceId,
+    string resourceType,
+    string conflictType
+  )
+  {
+    this.Detail = detail;
+    this.ResourceId = resourceId;
+    this.ResourceType = resourceType;
+    this.ConflictType = conflictType;
+  }
+
+  public string Id { get; } = "like_conflict";
+  public string Title { get; } = "Like Conflict";
+  public string Version { get; } = "v1";
+  public string Detail { get; } = string.Empty;
+  public string ResourceType { get; } = string.Empty;
+  public string ResourceId { get; } = string.Empty;
+  public string ConflictType { get; } = string.Empty;
 }
 ```
 
@@ -129,21 +143,34 @@ public class LikeConflictError : UserError
 ### LikeRaceConditionError
 
 <!--
-NOTE: LikeRaceConditionError extends UserError but maps to HTTP 500 Internal Server Error.
-This is intentional: while UserError typically maps to 4xx client errors, a race condition
-indicates a transient server-side conflict (concurrent modification) rather than a client
-mistake. The 500 status signals the client should retry the operation, not fix their request.
+NOTE: LikeRaceConditionError maps to HTTP 409 Conflict (not 500).
+Race conditions in the like system are handled gracefully and return a conflict status,
+signaling the client that the operation should be retried.
 -->
 
 ```csharp
-public class LikeRaceConditionError : UserError
+internal class LikeRaceConditionError : IDomainProblem
 {
-    public LikeRaceConditionError(string title, string target, string type, string action)
-        : base(
-            $"Failed to {action} {type}",
-            $"Race condition detected: {type} '{target}' state changed during operation"
-        )
-    { }
+  public LikeRaceConditionError(
+    string detail,
+    string resourceId,
+    string resourceType,
+    string conflictType
+  )
+  {
+    this.Detail = detail;
+    this.ResourceId = resourceId;
+    this.ResourceType = resourceType;
+    this.ConflictType = conflictType;
+  }
+
+  public string Id { get; } = "like_race_condition";
+  public string Title { get; } = "Like Race Condition";
+  public string Version { get; } = "v1";
+  public string Detail { get; } = string.Empty;
+  public string ResourceType { get; } = string.Empty;
+  public string ResourceId { get; } = string.Empty;
+  public string ConflictType { get; } = string.Empty;
 }
 ```
 

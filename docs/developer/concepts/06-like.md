@@ -166,6 +166,13 @@ flowchart TB
 | `/api/v1/plugin/slug/{username}/{name}/like/{likerId}/{like}`    | POST   | Like/unlike a plugin    |
 | `/api/v1/processor/slug/{username}/{name}/like/{likerId}/{like}` | POST   | Like/unlike a processor |
 
+<!--
+SECURITY NOTE: The {likerId} path parameter is caller-supplied. The service layer
+validates that the authenticated user matches the provided likerId before processing.
+This design allows for future extensibility (e.g., admin actions) while maintaining
+authorization at the service layer.
+-->
+
 **Key File**: `App/Modules/Cyan/API/V1/Controllers/TemplateController.cs`
 
 ## Related Concepts
