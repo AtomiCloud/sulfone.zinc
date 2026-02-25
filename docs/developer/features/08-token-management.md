@@ -51,14 +51,14 @@ public record TokenData
 
 ## Operations
 
-| Operation | Endpoint                                        | Purpose            |
-| --------- | ----------------------------------------------- | ------------------ |
-| Search    | `GET /api/v1/user/{id}/token`                   | List user's tokens |
-| Get       | `GET /api/v1/user/{id}/token/{tokenId}`         | Get specific token |
-| Create    | `POST /api/v1/user/{id}/token`                  | Create new token   |
-| Update    | `PUT /api/v1/user/{id}/token/{tokenId}`         | Update token name  |
-| Revoke    | `POST /api/v1/user/{id}/token/{tokenId}/revoke` | Revoke token       |
-| Delete    | `DELETE /api/v1/user/{id}/token/{tokenId}`      | Delete token       |
+| Operation | Endpoint                                             | Purpose            |
+| --------- | ---------------------------------------------------- | ------------------ |
+| Search    | `GET /api/v1/user/{userId}/tokens`                   | List user's tokens |
+| Get       | `GET /api/v1/user/{userId}/tokens/{tokenId}`         | Get specific token |
+| Create    | `POST /api/v1/user/{userId}/tokens`                  | Create new token   |
+| Update    | `PUT /api/v1/user/{userId}/tokens/{tokenId}`         | Update token name  |
+| Revoke    | `POST /api/v1/user/{userId}/tokens/{tokenId}/revoke` | Revoke token       |
+| Delete    | `DELETE /api/v1/user/{userId}/tokens/{tokenId}`      | Delete token       |
 
 ## Flow
 

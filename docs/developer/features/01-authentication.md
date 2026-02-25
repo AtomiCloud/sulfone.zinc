@@ -99,9 +99,7 @@ sequenceDiagram
 
 ## API Token Generation
 
-**Important**: Previous documentation incorrectly described token format.
-
-### Actual Format
+### Token Format
 
 - **Type**: 64-character random alphanumeric string
 - **Generation**: `PasswordGenerator` library with lowercase, uppercase, numeric

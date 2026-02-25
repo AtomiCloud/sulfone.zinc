@@ -66,7 +66,7 @@ sequenceDiagram
     participant Repository
     participant DB
 
-    User->>Controller: POST /like (username, name, like=true)
+    User->>Controller: POST /like/{likerId}/{like}
     Controller->>Service: Like(likerId, username, name, true)
     Service->>Repository: Like(likerId, username, name, true)
     Repository->>DB: Check if like exists
