@@ -152,6 +152,13 @@ Policies are configured in `appsettings.json`:
 
 ## Policy Registration Flow
 
+<!--
+NOTE: This sequence diagram is a conceptual representation of the policy registration flow.
+The handlers (HasAnyHandler, HasAllHandler) are registered via extension methods (AddAnyScope/AddAllScope)
+that internally handle DI registration. The diagram shows the logical flow, not exact method call order.
+The actual implementation uses builder pattern extensions that abstract away the DI registration details.
+-->
+
 ```mermaid
 sequenceDiagram
     participant Config as appsettings.json

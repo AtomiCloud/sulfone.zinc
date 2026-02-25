@@ -13,7 +13,7 @@ flowchart TB
         LikeOpt[Like Optimistic Locking]
     end
 
-    subgraph Used By
+    subgraph "Used By"
         Template[Template Registry]
         Processor[Processor Registry]
         Plugin[Plugin Registry]

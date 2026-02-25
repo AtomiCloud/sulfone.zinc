@@ -8,6 +8,10 @@
 - `App/Modules/Cyan/API/V1/Controllers/TemplateController.cs` → Template endpoints
 - `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs` → Template data access
 - `Domain/Service/TemplateService.cs` → Template business logic
+- `App/Modules/Cyan/API/V1/Controllers/ProcessorController.cs` → Processor endpoints
+- `App/Modules/Cyan/Data/Repositories/ProcessorRepository.cs` → Processor data access
+- `App/Modules/Cyan/API/V1/Controllers/PluginController.cs` → Plugin endpoints
+- `App/Modules/Cyan/Data/Repositories/PluginRepository.cs` → Plugin data access
 
 ## Responsibilities
 

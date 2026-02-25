@@ -41,6 +41,8 @@ flowchart TB
 ### Domain Services
 
 - **TemplateService**: Template CRUD and version management
+- **ProcessorService**: Processor CRUD and version management
+- **PluginService**: Plugin CRUD and version management
 - **UserService**: User account operations
 - **TokenService**: API token lifecycle
 

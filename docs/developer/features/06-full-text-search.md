@@ -34,8 +34,7 @@ public record TemplateData
 modelBuilder.Entity<TemplateData>(entity =>
 {
     entity.HasIndex(x => x.SearchVector)
-        .HasMethod("GIN")
-        .IsTsVector();
+        .HasMethod("GIN");
 });
 ```
 
@@ -127,12 +126,12 @@ if (search.Search != null)
 
 ## Search Fields
 
-| Field       | Source               | Processing                           |
-| ----------- | -------------------- | ------------------------------------ |
-| Name        | Template name        | `ToTsVector("english", Name)`        |
-| Description | Template description | `ToTsVector("english", Description)` |
-| Tags        | Tag array            | `ArrayToTsVector(Tags)`              |
-| Username    | Owner username       | `ToTsVector("english", Username)`    |
+| Field       | Source               | Processing                            |
+| ----------- | -------------------- | ------------------------------------- |
+| Name        | Template name        | Pre-computed in `SearchVector` column |
+| Description | Template description | Pre-computed in `SearchVector` column |
+| Tags        | Tag array            | `ArrayToTsVector(Tags)`               |
+| Username    | Owner username       | `ToTsVector("english", Username)`     |
 
 ## Search Operators
 
@@ -182,4 +181,4 @@ USING GIN (search_vector);
 - [Template Registry Feature](./03-template-registry.md#search-functionality) - Template search
 - [Processor Registry Feature](./04-processor-registry.md) - Processor search
 - [Plugin Registry Feature](./05-plugin-registry.md) - Plugin search
-- [Version Resolution Algorithm](../algorithms/02-version-resolution.md) - Query patterns
+- [Full-Text Search Algorithm](../algorithms/03-full-text-search.md) - PostgreSQL tsvector algorithm details

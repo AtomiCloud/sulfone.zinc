@@ -98,10 +98,10 @@ GET /api/v1/template/slug/{username}/{name}
 
 **Path Parameters**:
 
-| Parameter  | Type   | Description   |
-| ---------- | ------ | ------------- |
-| `username` | string | Username      |
-| `name`     | string | Template name |
+| Parameter      | Type   | Description   |
+| -------------- | ------ | ------------- |
+| `username`     | string | Username      |
+| `templateName` | string | Template name |
 
 **Response**: `200 OK` (same as Get by ID)
 
@@ -440,6 +440,7 @@ POST /api/v1/template/slug/{username}/{templateName}/versions
 **Errors**:
 
 - `400 Bad Request` - Validation failed
+- `401 Unauthorized` - Username doesn't match authenticated user
 - `404 Not Found` - Template or dependency not found
 
 **Key File**: `TemplateController.cs:248-291`
@@ -734,4 +735,4 @@ POST /api/v1/template/push/{username}
 ## Related
 
 - [Template Registry Feature](../../features/03-template-registry.md)
-- [Template Repository](../../../App/Modules/Cyan/Data/Repositories/TemplateRepository.cs)
+- [Template Repository](../../../../App/Modules/Cyan/Data/Repositories/TemplateRepository.cs)

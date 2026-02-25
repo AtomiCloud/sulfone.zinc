@@ -56,7 +56,7 @@ GET /api/v1/user/Me
 
 **Response**: `200 OK` (plain text)
 
-```
+```text
 user-id-123
 ```
 
@@ -65,6 +65,12 @@ user-id-123
 ---
 
 ### Get User by ID
+
+<!--
+NOTE: The {id} parameter uses string type without :guid constraint in GET and PUT routes.
+This matches the actual controller implementation. DELETE uses {id:guid} constraint.
+This inconsistency reflects the current code behavior - changing would require code modifications.
+-->
 
 ```http
 GET /api/v1/user/{id}
@@ -157,6 +163,14 @@ POST /api/v1/user
 
 **Description**: Create a new user.
 
+<!--
+NOTE: "Authorization: None" means no additional authorization policy is enforced beyond token validation.
+A valid Descope-issued JWT must be present in the Authorization header for self-registration.
+The user identity is extracted from the JWT to create the user account.
+-->
+
+**Authorization**: None (requires valid Descope JWT in Authorization header for self-registration)
+
 **Request Body**:
 
 ```json
@@ -233,7 +247,7 @@ PUT /api/v1/user/{id}
 - `403 Forbidden` - Trying to update another user's data
 - `404 Not Found` - User doesn't exist
 
-**Key File**: `UserController.cs:118-138`
+**Key File**: `UserController.cs:120-138`
 
 ---
 
@@ -247,9 +261,9 @@ DELETE /api/v1/user/{id:guid}
 
 **Path Parameters**:
 
-| Parameter | Type   | Description           |
-| --------- | ------ | --------------------- |
-| `id`      | string | User ID (GUID format) |
+| Parameter | Type | Description           |
+| --------- | ---- | --------------------- |
+| `id`      | Guid | User ID (GUID format) |
 
 **Authorization**: Requires `Admin` scope (via `AuthPolicies.OnlyAdmin` policy)
 

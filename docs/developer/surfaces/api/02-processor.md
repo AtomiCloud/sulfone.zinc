@@ -43,7 +43,7 @@ GET /api/v1/processor?skip=0&limit=50&search=query&owner=username
 ### Get Processor by ID
 
 ```http
-GET /api/v1/processor/id/{userId}/{processorId}
+GET /api/v1/processor/id/{userId}/{processorId:guid}
 ```
 
 **Description**: Get a specific processor by user ID and processor ID.
@@ -143,6 +143,13 @@ POST /api/v1/processor/id/{userId}
 
 **Errors**:
 
+<!--
+NOTE: The 401 Unauthorized response for user ID mismatch matches the current controller implementation.
+While HTTP semantics might suggest 403 Forbidden for an authenticated-but-unauthorized user, the docs
+accurately reflect the current code behavior. Changing this would require code modifications and could
+break existing API consumers.
+-->
+
 - `400 Bad Request` - Validation failed
 - `401 Unauthorized` - User ID doesn't match authenticated user
 - `409 Conflict` - Processor name already exists
@@ -202,7 +209,7 @@ PUT /api/v1/processor/id/{userId}/{processorId}
 ### Delete Processor
 
 ```http
-DELETE /api/v1/processor/id/{userId}/{processorId}
+DELETE /api/v1/processor/id/{userId}/{processorId:guid}
 ```
 
 **Description**: Delete a processor. Requires Admin scope.
@@ -659,7 +666,7 @@ POST /api/v1/processor/push/{username}
 
 - `400 Bad Request` - Validation failed
 - `401 Unauthorized` - Username doesn't match authenticated user
-- `404 Not Found` - Processor not found
+- `404 Not Found` - Referenced dependency (processor/plugin/template) not found during version creation
 
 **Key File**: `ProcessorController.cs:353-391`
 
@@ -668,4 +675,4 @@ POST /api/v1/processor/push/{username}
 ## Related
 
 - [Processor Registry Feature](../../features/04-processor-registry.md)
-- [Processor Repository](../../../App/Modules/Cyan/Data/Repositories/ProcessorRepository.cs)
+- [Processor Repository](../../../../App/Modules/Cyan/Data/Repositories/ProcessorRepository.cs)

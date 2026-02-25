@@ -19,6 +19,8 @@ All registries follow the same structure:
 
 ```mermaid
 flowchart TB
+    RegistryNode[Registry]
+
     subgraph Registry Entity
         Id[Guid Id]
         Name[Name]
@@ -39,7 +41,10 @@ flowchart TB
         Likes[Likes Count]
     end
 
-    Registry -->|1:N| Versions[Version Entities]
+    RegistryNode --- Id
+    RegistryNode --- Metadata
+    Stats --> Statistics
+    RegistryNode -->|1:N| Versions[Version Entities]
 ```
 
 ## Registry vs Version
@@ -79,6 +84,9 @@ stateDiagram-v2
     Created --> Deleted: Delete
     Updated --> Deleted: Delete
     Created --> Versioned: CreateVersion
+    Updated --> Versioned: CreateVersion
+    Versioned --> Updated: Update Metadata
+    Versioned --> Deleted: Delete
 ```
 
 ## Naming Convention

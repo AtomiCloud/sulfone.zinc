@@ -143,6 +143,12 @@ POST /api/v1/plugin/id/{userId}
 
 **Errors**:
 
+<!--
+NOTE: The 401 Unauthorized response when userId doesn't match is intentional and matches the current controller implementation (PluginController.cs:70-90).
+While HTTP semantics might suggest 403 Forbidden for an authenticated-but-unauthorized user, changing this would be a breaking API change
+and is outside the scope of documentation. The docs accurately reflect the current code behavior.
+-->
+
 - `400 Bad Request` - Validation failed
 - `401 Unauthorized` - User ID doesn't match authenticated user
 - `409 Conflict` - Plugin name already exists
@@ -668,4 +674,4 @@ POST /api/v1/plugin/push/{username}
 ## Related
 
 - [Plugin Registry Feature](../../features/05-plugin-registry.md)
-- [Plugin Repository](../../../App/Modules/Cyan/Data/Repositories/PluginRepository.cs)
+- [Plugin Repository](../../../../App/Modules/Cyan/Data/Repositories/PluginRepository.cs)

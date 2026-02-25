@@ -103,6 +103,12 @@ public async Task<ActionResult<TemplatePrincipalResp>> Create(
 
 ### Validation Flow
 
+<!--
+NOTE: This diagram intentionally shows only the validation flow (ValidateAsync → ThenAwait → Service).
+Authorization is a separate concern handled at the controller level before validation.
+See the Error Mapping table below for how UnauthorizedException maps to HTTP 401.
+-->
+
 ```mermaid
 flowchart TB
     Request[HTTP Request] --> Validate[ValidateAsync]

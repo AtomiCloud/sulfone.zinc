@@ -18,6 +18,7 @@ Zinc supports two authentication schemes:
 
 - **Format**: 64-character random alphanumeric string
 - **Storage**: Plaintext in database with revocation flag
+  > ⚠️ **Security Note**: Plaintext storage risks token exposure on database compromise. Mitigations include encryption at rest, strict DB access controls, or migrating to SHA-256 digests. See [Authentication Feature](../features/01-authentication.md) for details.
 - **Validation**: Database lookup against active tokens
 - **Use Case**: Service-to-service automation (CLI, CI/CD)
 - **Key File**: `App/Modules/Users/API/Auth/ApiKeyAuthenticationOptions.cs:15-50`
@@ -46,6 +47,7 @@ stateDiagram-v2
     [*] --> Active: Create Token
     Active --> Revoked: Revoke
     Revoked --> [*]: Delete
+    Active --> [*]: Delete
     Active --> Active: Validate
 ```
 

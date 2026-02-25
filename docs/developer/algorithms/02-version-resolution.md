@@ -20,13 +20,20 @@ Resolves template, processor, and plugin versions by querying the database. Supp
 
 ## Output
 
-| Result            | Description                    |
-| ----------------- | ------------------------------ |
-| `TemplateVersion` | Requested version entity       |
-| `null`            | Version not found              |
-| `Error`           | Authorization or query failure |
+| Result                                           | Description                    |
+| ------------------------------------------------ | ------------------------------ |
+| `TemplateVersion/ProcessorVersion/PluginVersion` | Requested version entity       |
+| `null`                                           | Version not found              |
+| `Error`                                          | Authorization or query failure |
 
 ## Steps
+
+<!--
+NOTE: The CheckAuth step in these flowcharts represents the conceptual authorization check that occurs during the version resolution flow.
+While the actual authorization is enforced at the controller layer (via [Authorize] attributes) before the service is called,
+these flowcharts show the complete request flow from a client perspective. The diagrams are intentionally inclusive of auth
+to help developers understand the full sequence of checks, regardless of which layer performs them.
+-->
 
 ### Get Latest Version
 
@@ -107,7 +114,30 @@ public async Task<Result<TemplateVersion?>> GetVersion(
 
 **Key File**: `Domain/Service/TemplateService.cs:117-148`
 
-### Repository Query
+### Specific Version Query
+
+```csharp
+public async Task<Result<TemplateVersion?>> GetVersion(
+    string username,
+    string name,
+    int version
+)
+{
+    var result = await db.TemplateVersions
+        .Include(x => x.Template)
+        .ThenInclude(x => x.User)
+        .Where(x => x.Template.User.Username == username
+            && x.Template.Name == name
+            && x.Version == version)
+        .FirstOrDefaultAsync();
+
+    return result?.ToDomain() ?? (TemplateVersion?)null;
+}
+```
+
+**Key File**: `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs`
+
+### Repository Query (Latest Version)
 
 ```csharp
 public async Task<Result<TemplateVersion>> GetVersion(string username, string name)

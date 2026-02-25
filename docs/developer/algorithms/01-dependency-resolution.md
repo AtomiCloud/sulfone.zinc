@@ -6,7 +6,12 @@
 
 ## Overview
 
-Validates that all referenced processor, plugin, and template versions exist before creating a new template version. This ensures template versions never have broken dependencies.
+<!--
+NOTE: The phrasing "ensures template versions never have broken dependencies" refers to direct reference validation.
+Self-references and circular references are not detected - this is documented in the Edge Cases section below.
+-->
+
+Validates that all directly referenced processor, plugin, and template versions exist before creating a new template version. This ensures template versions have no unresolvable direct dependencies, though self-references and circular references are not detected (see Edge Cases).
 
 ## Input
 
@@ -32,12 +37,14 @@ Each reference contains:
 
 ```mermaid
 sequenceDiagram
+    participant Client
     participant Service as TemplateService
     participant PluginRepo as PluginRepository
     participant ProcessorRepo as ProcessorRepository
     participant TemplateRepo as TemplateRepository
     participant DB as Database
 
+    Client->>Service: CreateVersion(userId, name, record, ...)
     Note over Service: Fetch all dependency versions (eager evaluation)
 
     Service->>PluginRepo: GetAllVersion(plugins)
@@ -60,7 +67,9 @@ sequenceDiagram
     alt All Dependencies Found
         Service->>TemplateRepo: CreateVersion(..., ids)
         TemplateRepo->>DB: INSERT with dependency IDs
-        DB-->>Service: Success
+        DB-->>TemplateRepo: Success
+        TemplateRepo-->>Service: Success
+        Service-->>Client: Success: TemplateVersionPrincipal
     else Any Dependency Missing
         Service-->>Client: Error: Dependency not found
     end
@@ -87,12 +96,16 @@ public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
     var templateResults = await repo.GetAllVersion(templates);
 
     // Combine results using LINQ
+    // NOTE: The LINQ range variables (plugin, processor, template) intentionally shadow the injected
+    // repository fields (IPluginRepository plugin, IProcessorRepository processor, etc.) within the query scope.
+    // This is safe because the fields are accessed before the query (via GetAllVersion) and the range variables
+    // are only used within the LINQ expression.
     var a = from plugin in pluginResults
             from processor in processorResults
             from template in templateResults
             select (plugin.Select(x => x.Id), processor.Select(x => x.Id), template.Select(x => x.Id));
 
-    return await Task.FromResult(a)
+    return await a
         .ThenAwait(refs =>
         {
             var (pluginIds, processorIds, templateIds) = refs;
@@ -113,6 +126,10 @@ public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
 | Missing template   | Invalid template ID        | Returns error before creating version | `TemplateRepository.GetAllVersion()`  |
 | Self-reference     | Template references itself | Not explicitly prevented              | N/A                                   |
 | Circular reference | A→B→A                      | Not explicitly prevented              | N/A                                   |
+
+> **Note**: Self-referencing template versions and circular dependencies (A→B→A) will silently persist in the database since this algorithm only validates direct references without graph traversal. These can cause infinite loops in future graph-traversal tooling (e.g., dependency resolution at install time). Consider adding pre-CreateVersion validation to detect self-references and simple cycles before persisting.
+>
+> <!-- TODO: Implement cycle detection in CreateVersion flow before adding graph-traversal consumers -->
 
 ## Error Handling
 

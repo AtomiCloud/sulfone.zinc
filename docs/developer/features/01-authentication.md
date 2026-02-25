@@ -37,8 +37,8 @@ Zinc implements a multi-scheme authentication system that automatically selects 
 ```mermaid
 flowchart TB
     Request[Incoming Request] --> CheckHeader{Has Authorization<br/>Header?}
-    CheckHeader -->|Yes, Bearer| JWT[JWT Bearer Scheme]
-    CheckHeader -->|No| APIKey[API Key Scheme]
+    CheckHeader -->|Yes, starts with "Bearer "| JWT[JWT Bearer Scheme]
+    CheckHeader -->|No or non-Bearer| APIKey[API Key Scheme]
 
     JWT --> ValidateJWT[Validate with Descope JWKS]
     ValidateJWT -->|Valid| Claims[Extract Claims]
@@ -88,13 +88,14 @@ sequenceDiagram
 
 ## Edge Cases
 
-| Case                 | Behavior         | Key File                               |
-| -------------------- | ---------------- | -------------------------------------- |
-| Missing both headers | 401 Unauthorized | `ApiKeyAuthenticationOptions.cs:25-28` |
-| Invalid JWT          | 401 Unauthorized | JWT validation                         |
-| Invalid API Key      | 401 Unauthorized | `ApiKeyAuthenticationOptions.cs:33-39` |
-| Revoked API Key      | 401 Unauthorized | `TokenService.cs:36-39`                |
-| Expired JWT          | 401 Unauthorized | JWT validation                         |
+| Case                   | Behavior         | Key File                                                   |
+| ---------------------- | ---------------- | ---------------------------------------------------------- |
+| Missing both headers   | 401 Unauthorized | `ApiKeyAuthenticationOptions.cs:25-28`                     |
+| Invalid JWT            | 401 Unauthorized | JWT validation                                             |
+| Invalid API Key        | 401 Unauthorized | `ApiKeyAuthenticationOptions.cs:33-39`                     |
+| Revoked API Key        | 401 Unauthorized | `TokenService.cs:36-39`                                    |
+| Expired JWT            | 401 Unauthorized | JWT validation                                             |
+| Non-Bearer Auth header | 401 Unauthorized | Falls through to API Key scheme, fails without X-API-TOKEN |
 
 ## API Token Generation
 
@@ -118,12 +119,6 @@ public string Generate()
 }
 ```
 
-### NOT (Previous Incorrect Docs)
-
-- ❌ `zinc_<userId>_<random>_<signature>` - This format was never implemented
-- ❌ SHA256 hashing - Tokens are stored in plaintext
-- ❌ Semver encoding - Versions are simple `ulong` auto-increment
-
 ## API Token Lifecycle
 
 ```mermaid
@@ -144,13 +139,13 @@ stateDiagram-v2
 
 After successful authentication, the following claims are available:
 
-| Scheme  | Claim Type                              | Value                  | Key File                            |
-| ------- | --------------------------------------- | ---------------------- | ----------------------------------- |
-| JWT     | `sub`                                   | User ID                | From Descope                        |
-| JWT     | `scope`                                 | Space-separated scopes | From Descope                        |
-| JWT     | `http://schemas.microsoft.com/.../role` | Role claims            | From Descope                        |
-| API Key | `sub`                                   | User ID                | `ApiKeyAuthenticationOptions.cs:44` |
-| API Key | `username`                              | Username               | `ApiKeyAuthenticationOptions.cs:44` |
+| Scheme  | Claim Type                                                     | Value                  | Key File                            |
+| ------- | -------------------------------------------------------------- | ---------------------- | ----------------------------------- |
+| JWT     | `sub`                                                          | User ID                | From Descope                        |
+| JWT     | `scope`                                                        | Space-separated scopes | From Descope                        |
+| JWT     | `http://schemas.microsoft.com/ws/2008/06/identity/claims/role` | Role claims            | From Descope                        |
+| API Key | `sub`                                                          | User ID                | `ApiKeyAuthenticationOptions.cs:44` |
+| API Key | `username`                                                     | Username               | `ApiKeyAuthenticationOptions.cs:44` |
 
 ## Scheme Selection Logic
 
@@ -159,7 +154,7 @@ The authentication scheme is automatically selected based on request headers:
 ```csharp
 o.ForwardDefaultSelector = context =>
 {
-    string authorization = context.Request.Headers[HeaderNames.Authorization]!;
+    string authorization = context.Request.Headers[HeaderNames.Authorization];
     if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
     {
         return JwtBearerDefaults.AuthenticationScheme;

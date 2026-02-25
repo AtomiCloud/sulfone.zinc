@@ -98,11 +98,17 @@ Templates support versioning. For details on version management, see [Version Co
 
 ## Edge Cases
 
+<!--
+NOTE: The 401 Unauthorized response for user mismatch matches the current controller implementation.
+While HTTP semantics might suggest 403 Forbidden for an authenticated-but-unauthorized user,
+the docs accurately reflect the current code behavior. Changing this would require code modifications.
+-->
+
 | Case                         | Behavior         | Key File                        |
 | ---------------------------- | ---------------- | ------------------------------- |
 | Duplicate name (same user)   | 409 Conflict     | `TemplateRepository.cs:150-163` |
-| Update non-existent template | null result      | `TemplateRepository.cs:185-186` |
-| Delete non-existent template | null result      | `TemplateRepository.cs:244-245` |
+| Update non-existent template | 404 Not Found    | `TemplateRepository.cs:185-186` |
+| Delete non-existent template | 404 Not Found    | `TemplateRepository.cs:244-245` |
 | User mismatch                | 401 Unauthorized | `TemplateController.cs:78-84`   |
 
 ## Search Functionality
@@ -121,5 +127,5 @@ Templates can be identified two ways:
 - [Registry Concept](../concepts/03-registry.md) - Registry entity structure
 - [Version Concept](../concepts/04-version.md) - Version management
 - [Dependency Concept](../concepts/05-dependency.md) - Cross-version references
-- [Cyan Module](../modules/01-cyan.md) - Code organization
+- [Cyan Module](../modules/02-cyan.md) - Code organization
 - [Template API](../surfaces/api/01-template.md) - API endpoints

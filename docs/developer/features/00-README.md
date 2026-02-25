@@ -82,8 +82,8 @@ sequenceDiagram
 flowchart TB
     Create[Create] --> Update[Update Metadata]
     Create --> Version[Create Version]
+    Create --> Like[Like/Unlike]
     Update --> Delete[Delete]
-    Version --> Like[Like/Unlike]
     Version --> Search[Search]
 ```
 

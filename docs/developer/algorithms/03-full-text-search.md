@@ -21,10 +21,10 @@ PostgreSQL full-text search using `tsvector` columns and GIN indexes. Supports s
 
 ## Output
 
-| Result                   | Description           |
-| ------------------------ | --------------------- |
-| `IEnumerable<Principal>` | Ranked search results |
-| `Error`                  | Query failure         |
+| Result                                   | Description           |
+| ---------------------------------------- | --------------------- |
+| `Result<IEnumerable<TemplatePrincipal>>` | Ranked search results |
+| `Error`                                  | Query failure         |
 
 ## Steps
 
@@ -120,12 +120,13 @@ SearchVector = to_tsvector('english',
 
 ## Edge Cases
 
-| Case               | Input                   | Behavior                        | Key File                       |
-| ------------------ | ----------------------- | ------------------------------- | ------------------------------ |
-| Empty search       | `search = ""` or `null` | Returns all (paginated) results | `TemplateRepository.cs:33`     |
-| Special characters | `search = "user/repo"`  | Replaced with spaces            | `TemplateRepository.cs:40, 46` |
-| No matches         | Valid query, no results | Returns empty array             | `TemplateRepository.cs:52`     |
-| Filter by owner    | `owner = "alice"`       | Filters to user's templates     | `TemplateRepository.cs:30-32`  |
+| Case                | Input                   | Behavior                                   | Key File                       |
+| ------------------- | ----------------------- | ------------------------------------------ | ------------------------------ |
+| Empty search (null) | `search = null`         | Returns all (paginated) results            | `TemplateRepository.cs:33`     |
+| Empty string ("")   | `search = ""`           | Passes to FTS — verify PostgreSQL behavior | `TemplateRepository.cs:33`     |
+| Special characters  | `search = "user/repo"`  | Replaced with spaces                       | `TemplateRepository.cs:40, 46` |
+| No matches          | Valid query, no results | Returns empty array                        | `TemplateRepository.cs:52`     |
+| Filter by owner     | `owner = "alice"`       | Filters to user's templates                | `TemplateRepository.cs:30-32`  |
 
 ## Indexing
 
@@ -135,8 +136,7 @@ GIN indexes provide fast lookups:
 modelBuilder.Entity<TemplateData>(entity =>
 {
     entity.HasIndex(x => x.SearchVector)
-        .HasMethod("GIN")
-        .IsTsVector();
+        .HasMethod("GIN");
 });
 ```
 
@@ -144,13 +144,13 @@ modelBuilder.Entity<TemplateData>(entity =>
 
 ## Search Fields
 
-| Field         | Processing          | Purpose              |
-| ------------- | ------------------- | -------------------- |
-| `Name`        | `ToTsVector()`      | Name matching        |
-| `Description` | `ToTsVector()`      | Description matching |
-| `Readme`      | `ToTsVector()`      | Readme matching      |
-| `Tags`        | `ArrayToTsVector()` | Tag matching         |
-| `Username`    | `ToTsVector()`      | Owner matching       |
+| Field         | Processing                    | Purpose              |
+| ------------- | ----------------------------- | -------------------- |
+| `Name`        | Pre-computed (SearchVector)   | Name matching        |
+| `Description` | Pre-computed (SearchVector)   | Description matching |
+| `Readme`      | Pre-computed (SearchVector)   | Readme matching      |
+| `Tags`        | `ArrayToTsVector()` (runtime) | Tag matching         |
+| `Username`    | `ToTsVector()` (runtime)      | Owner matching       |
 
 ## Error Handling
 

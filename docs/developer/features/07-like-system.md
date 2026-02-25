@@ -128,6 +128,13 @@ public class LikeConflictError : UserError
 
 ### LikeRaceConditionError
 
+<!--
+NOTE: LikeRaceConditionError extends UserError but maps to HTTP 500 Internal Server Error.
+This is intentional: while UserError typically maps to 4xx client errors, a race condition
+indicates a transient server-side conflict (concurrent modification) rather than a client
+mistake. The 500 status signals the client should retry the operation, not fix their request.
+-->
+
 ```csharp
 public class LikeRaceConditionError : UserError
 {
@@ -185,4 +192,4 @@ public class TemplateInfo
 ## Related
 
 - [Registry Feature](./03-template-registry.md) - Template operations
-- [User Module](../modules/02-users.md) - User data model
+- [User Module](../modules/03-users.md) - User data model

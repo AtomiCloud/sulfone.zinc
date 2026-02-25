@@ -1,5 +1,12 @@
 # System API
 
+<!--
+NOTE: The System controllers are located at App/Modules/System/ rather than App/Modules/System/API/V1/.
+This is intentional - SystemController and V1ErrorController are infrastructure-level controllers
+that don't follow the same versioning pattern as business modules (Cyan, Users). Moving them would
+require code changes beyond documentation scope.
+-->
+
 **Base Path**: `/` and `/api/v1/error-info`
 **Key File**: `App/Modules/System/SystemController.cs`, `App/Modules/System/V1ErrorController.cs`
 

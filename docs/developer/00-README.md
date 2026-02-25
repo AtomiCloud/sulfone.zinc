@@ -5,14 +5,14 @@
 ## Quick Start
 
 1. **New to Zinc?** Start with [Getting Started](./01-getting-started.md)
-2. **Understanding the system** See [Architecture](./02-architecture.md)
+2. **Understanding the system**: See [Architecture](./02-architecture.md)
 3. **Core concepts** Read [Concepts](./concepts/)
 4. **Feature details** Explore [Features](./features/)
 5. **API reference** Check [Surfaces](./surfaces/)
 
 ## Documentation Structure
 
-```
+```text
 docs/developer/
 ├── 00-README.md              # This file - entry point
 ├── 01-getting-started.md     # Setup & quickstart

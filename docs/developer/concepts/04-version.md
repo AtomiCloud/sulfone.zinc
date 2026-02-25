@@ -14,7 +14,7 @@
 
 **Example**:
 
-```
+```text
 my-template: v1, v2, v3, v4, ...
 ```
 
@@ -74,17 +74,17 @@ sequenceDiagram
     Service->>ProcessorRepo: GetAllVersion(processors)
     ProcessorRepo->>DB: SELECT WHERE id IN (...)
     DB-->>ProcessorRepo: Processor Versions
-    ProcessorRepo-->>Service: Processor IDs
+    ProcessorRepo-->>Service: Processor Versions
 
     Service->>PluginRepo: GetAllVersion(plugins)
     PluginRepo->>DB: SELECT WHERE id IN (...)
     DB-->>PluginRepo: Plugin Versions
-    PluginRepo-->>Service: Plugin IDs
+    PluginRepo-->>Service: Plugin Versions
 
     Service->>TemplateRepo: GetAllVersion(templates)
     TemplateRepo->>DB: SELECT WHERE id IN (...)
     DB-->>TemplateRepo: Template Versions
-    TemplateRepo-->>Service: Template IDs
+    TemplateRepo-->>Service: Template Versions
 
     Service->>TemplateRepo: CreateVersion(..., processorIds, pluginIds, templateIds)
     TemplateRepo->>DB: INSERT INTO TemplateVersions
@@ -146,6 +146,9 @@ stateDiagram-v2
     Created --> Downloaded: GetVersion(bumpDownload=true)
     Created --> Updated: UpdateVersion()
     Updated --> Downloaded: GetVersion(bumpDownload=true)
+    Downloaded --> Updated: UpdateVersion()
+    Updated --> Updated: UpdateVersion()
+    Downloaded --> Downloaded: GetVersion(bumpDownload=true)
 
     note right of Downloaded
         Increments download count

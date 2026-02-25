@@ -17,6 +17,8 @@ Each registry type has its own Like entity:
 
 ```mermaid
 flowchart TB
+    Like[Like Entity]
+
     subgraph Like Entity
         Id[Guid Id]
         UserId[User Id]
@@ -27,9 +29,6 @@ flowchart TB
         User[User] -->|creates| Like
         Target[Template/Processor/Plugin] -->|receives| Like
     end
-
-    Like --> User
-    Like --> Target
 ```
 
 **Example**:
@@ -111,7 +110,12 @@ Likes use optimistic locking to handle race conditions:
 
 ```mermaid
 flowchart TB
-    Start[Unlike Request] --> CheckExists{Like exists?}
+    LikeReq[Like Request] --> CheckLikeExists{Like exists?}
+    CheckLikeExists -->|Yes| LikeConflict[LikeConflictError]
+    CheckLikeExists -->|No| AddLike[Insert into DB]
+    AddLike --> LikeSuccess[Success]
+
+    UnlikeReq[Unlike Request] --> CheckExists{Like exists?}
     CheckExists -->|No| Conflict[LikeConflictError]
     CheckExists -->|Yes| RemoveLike[Remove from DB]
     RemoveLike --> CheckRemoved{Still exists?}
@@ -156,11 +160,11 @@ flowchart TB
 
 ## Like API Endpoints
 
-| Endpoint                                   | Method | Purpose                 |
-| ------------------------------------------ | ------ | ----------------------- |
-| `/api/v1/template/{username}/{name}/like`  | POST   | Like/unlike a template  |
-| `/api/v1/plugin/{username}/{name}/like`    | POST   | Like/unlike a plugin    |
-| `/api/v1/processor/{username}/{name}/like` | POST   | Like/unlike a processor |
+| Endpoint                                                         | Method | Purpose                 |
+| ---------------------------------------------------------------- | ------ | ----------------------- |
+| `/api/v1/template/slug/{username}/{name}/like/{likerId}/{like}`  | POST   | Like/unlike a template  |
+| `/api/v1/plugin/slug/{username}/{name}/like/{likerId}/{like}`    | POST   | Like/unlike a plugin    |
+| `/api/v1/processor/slug/{username}/{name}/like/{likerId}/{like}` | POST   | Like/unlike a processor |
 
 **Key File**: `App/Modules/Cyan/API/V1/Controllers/TemplateController.cs`
 

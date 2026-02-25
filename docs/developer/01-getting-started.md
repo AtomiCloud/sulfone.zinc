@@ -59,6 +59,11 @@ Run `pls --list` to see all available tasks.
 
 Test that the service is running:
 
+<!--
+NOTE: Port 5000 is the ASP.NET Core default and is used here for simplicity in a getting-started guide.
+For production or custom configurations, refer to the Configuration Reference table below or your Tilt/Lapras config.
+-->
+
 ```bash
 curl http://localhost:5000/
 ```

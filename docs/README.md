@@ -6,11 +6,11 @@ Zinc is the **Registry Backend** for the CyanPrint platform - an ASP.NET Core AP
 
 | Section | Description |
 |---------|-------------|
-| [Developer Documentation](developer/README.md) | Complete developer guide |
-| [Getting Started](developer/getting-started/00-README.md) | Run Zinc locally |
+| [Developer Documentation](developer/00-README.md) | Complete developer guide |
+| [Getting Started](developer/01-getting-started.md) | Run Zinc locally |
 | [Features](developer/features/00-README.md) | All features and capabilities |
 | [API Reference](developer/surfaces/api/00-README.md) | REST API endpoints |
-| [Architecture](developer/architecture/00-README.md) | User flows and key decisions |
+| [Architecture](developer/02-architecture.md) | User flows and key decisions |
 
 ## About Zinc
 
@@ -20,7 +20,7 @@ Zinc is part of the **CyanPrint Registry Cluster**, providing:
 - **Plugin Registry** - Plugin discovery and metadata
 - **Processor Registry** - Docker-based processor management
 - **User Management** - OAuth2/OIDC via Descope with API token support
-- **Search** - Full-text search across all templates
+- **Search** - Full-text search across all registries (templates, plugins, processors)
 
 ### Tech Stack
 
@@ -30,6 +30,7 @@ Zinc is part of the **CyanPrint Registry Cluster**, providing:
 - **JWT Bearer Authentication** via Descope
 - **OpenTelemetry** for observability
 - **Swagger/OpenAPI** for API documentation
+- **Redis** for caching
 
 ### Architecture Position
 
@@ -65,19 +66,19 @@ graph TB
 ## Documentation Structure
 
 ### Developer Documentation
-- [README](developer/README.md) - Overview and quick reference
-- [Getting Started](developer/getting-started/00-README.md) - Setup and run locally
+- [README](developer/00-README.md) - Overview and quick reference
+- [Getting Started](developer/01-getting-started.md) - Setup and run locally
 - [Features](developer/features/00-README.md) - Complete feature guide
 - [API Reference](developer/surfaces/api/00-README.md) - All REST API endpoints
-- [Architecture](developer/architecture/00-README.md) - User flows and key decisions
+- [Architecture](developer/02-architecture.md) - User flows and key decisions
 
 ## Related Components
 
 | Component | Description | Link |
 |-----------|-------------|------|
-| **Argon** | Registry Frontend (SvelteKit) | [../argon/](../argon/) |
-| **Iridium** | CyanPrint CLI (Rust) | [../iridium/](../iridium/) |
-| **Boron** | Execution Coordinator (Go) | [../boron/](../boron/) |
+| **Argon** | Registry Frontend (SvelteKit) | [GitHub](https://github.com/AtomiCloud/argon) |
+| **Iridium** | CyanPrint CLI (Rust) | [GitHub](https://github.com/AtomiCloud/iridium) |
+| **Boron** | Execution Coordinator (Go) | [GitHub](https://github.com/AtomiCloud/boron) |
 
 ## Contributing
 

@@ -211,4 +211,4 @@ public static class AuthPolicies
 
 - [Authentication Feature](../features/01-authentication.md) - Auth implementation
 - [Authorization Feature](../features/02-authorization.md) - Policy implementation
-- [Database](../features/06-full-text-search.md#database-configuration) - DB configuration
+- [Database (FTS Configuration)](../features/06-full-text-search.md#database-configuration) - DB configuration

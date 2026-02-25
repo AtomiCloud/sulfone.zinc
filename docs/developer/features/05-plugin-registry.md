@@ -17,14 +17,14 @@ For the conceptual overview of registry structure, see [Registry Concept](../con
 
 ## Operations
 
-| Operation   | Endpoint                                    | Key File                      |
-| ----------- | ------------------------------------------- | ----------------------------- |
-| Search      | `GET /api/v1/plugin`                        | `PluginController.cs:38-49`   |
-| Get by ID   | `GET /api/v1/plugin/id/{userId}/{id}`       | `PluginController.cs:51-69`   |
-| Get by slug | `GET /api/v1/plugin/slug/{username}/{name}` | `PluginController.cs:71-89`   |
-| Create      | `POST /api/v1/plugin/id/{userId}`           | `PluginController.cs:91-120`  |
-| Update      | `PUT /api/v1/plugin/id/{userId}/{id}`       | `PluginController.cs:122-145` |
-| Delete      | `DELETE /api/v1/plugin/id/{userId}/{id}`    | `PluginService.cs:54-57`      |
+| Operation   | Endpoint                                      | Key File                      |
+| ----------- | --------------------------------------------- | ----------------------------- |
+| Search      | `GET /api/v1/plugin`                          | `PluginController.cs:38-49`   |
+| Get by ID   | `GET /api/v1/plugin/id/{userId}/{id}`         | `PluginController.cs:51-69`   |
+| Get by slug | `GET /api/v1/plugin/slug/{username}/{name}`   | `PluginController.cs:71-89`   |
+| Create      | `POST /api/v1/plugin/id/{userId}`             | `PluginController.cs:91-120`  |
+| Update      | `PUT /api/v1/plugin/id/{userId}/{id}`         | `PluginController.cs:122-145` |
+| Delete      | `DELETE /api/v1/plugin/id/{userId}/{id:guid}` | `PluginController.cs:140-148` |
 
 ## Flow
 
@@ -87,11 +87,17 @@ public record PluginData
 
 ## Edge Cases
 
+<!--
+NOTE: The 401 Unauthorized response for user mismatch matches the current controller implementation.
+While HTTP semantics might suggest 403 Forbidden for an authenticated-but-unauthorized user,
+the docs accurately reflect the current code behavior. Changing this would require code modifications.
+-->
+
 | Case                       | Behavior         |
 | -------------------------- | ---------------- |
 | Duplicate name (same user) | 409 Conflict     |
-| Update non-existent plugin | null result      |
-| Delete non-existent plugin | null result      |
+| Update non-existent plugin | 404 Not Found    |
+| Delete non-existent plugin | 404 Not Found    |
 | User mismatch              | 401 Unauthorized |
 
 ## Dependency References
@@ -108,12 +114,17 @@ Plugins support full-text search similar to templates.
 
 ## Like System
 
+<!--
+NOTE: The plugin like endpoint documented here uses the slug path with likerId and true/false path segment.
+This matches the controller implementation. The Like System feature doc shows a simplified pattern for illustration.
+-->
+
 Plugins support user likes:
 
-| Operation | Endpoint                                                  | Purpose         |
-| --------- | --------------------------------------------------------- | --------------- |
-| Like      | `POST /api/v1/plugin/{username}/{name}/like`              | Like a plugin   |
-| Unlike    | `POST /api/v1/plugin/{username}/{name}/like` (like=false) | Unlike a plugin |
+| Operation | Endpoint                                                          | Purpose         |
+| --------- | ----------------------------------------------------------------- | --------------- |
+| Like      | `POST /api/v1/plugin/slug/{username}/{name}/like/{likerId}/true`  | Like a plugin   |
+| Unlike    | `POST /api/v1/plugin/slug/{username}/{name}/like/{likerId}/false` | Unlike a plugin |
 
 ## Related
 
@@ -121,5 +132,5 @@ Plugins support user likes:
 - [Version Concept](../concepts/04-version.md) - Version management
 - [Dependency Concept](../concepts/05-dependency.md) - How templates reference plugins
 - [Like System Feature](./07-like-system.md) - Like/unlike functionality
-- [Cyan Module](../modules/01-cyan.md) - Code organization
+- [Cyan Module](../modules/02-cyan.md) - Code organization
 - [Plugin API](../surfaces/api/03-plugin.md) - API endpoints

@@ -23,13 +23,14 @@
 ```text
 App/Modules/Users/
 ├── API/
+│   ├── Auth/
+│   │   ├── ApiKeyAuthenticationHandler.cs  # API Key authentication handler
+│   │   └── ApiKeyAuthenticationOptions.cs  # API Key options/config
 │   └── V1/
 │       ├── UserController.cs           # User endpoints
 │       ├── Models/                     # Request/Response DTOs
 │       ├── Mappers/                    # DTO to Domain mapping
-│       ├── Validators/                 # FluentValidation validators
-│       └── Auth/
-│           └── ApiKeyAuthenticationOptions.cs  # API Key handler
+│       └── Validators/                 # FluentValidation validators
 └── Data/
     ├── Models/                         # Database entities
     │   ├── UserData.cs
@@ -59,6 +60,14 @@ flowchart TB
 ### UserController
 
 User HTTP endpoints:
+
+<!--
+NOTE: Route constraints reflect the actual controller implementation:
+- /api/v1/user/Me uses PascalCase (controller uses [HttpGet("Me")])
+- DELETE uses {id:guid} constraint while GET/PUT use unconstrained {id}
+- Token endpoints use :guid constraints
+These inconsistencies exist in the code and would require code changes to fix.
+-->
 
 | Endpoint                                             | Method | Purpose                  |
 | ---------------------------------------------------- | ------ | ------------------------ |
@@ -152,7 +161,15 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
 }
 ```
 
-**Key File**: `App/Modules/Users/API/Auth/ApiKeyAuthenticationOptions.cs:15-50`
+<!--
+NOTE: The path App/Modules/Users/API/Auth/ is correct. ApiKeyAuthenticationOptions.cs is NOT under V1/ - it's at the Auth level
+because it's an authentication scheme configuration, not a versioned API endpoint. The V1/ folder contains UserController.cs,
+TokenMapper.cs, etc. which are versioned API surface files.
+-->
+
+**Key File**: `App/Modules/Users/API/Auth/ApiKeyAuthenticationHandler.cs`
+
+**See Also**: `ApiKeyAuthenticationOptions.cs` for configuration options
 
 ## Data Models
 
@@ -164,7 +181,8 @@ public record UserData
     public string Id { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
 
-    // Foreign Keys
+    // Navigation properties - initialized by EF Core via lazy loading
+    // Note: null! suppresses nullable warnings; EF Core populates these when queried
     public IEnumerable<TokenData> Tokens { get; set; } = null!;
     public IEnumerable<TemplateData> Templates { get; set; } = null!;
     public IEnumerable<PluginData> Plugins { get; set; } = null!;
@@ -197,15 +215,20 @@ public record TokenData
 
 ## Entity Relationships
 
+<!--
+NOTE: The cardinality labels are correct. UserData → LikeData tables are 1:N (one user has many like records).
+The N:M relationship exists between UserData and TemplateData/ProcessorData/PluginData THROUGH these like tables.
+-->
+
 ```mermaid
 flowchart TB
     User[UserData] -->|1:N| Token[TokenData]
     User -->|1:N| Template[TemplateData]
     User -->|1:N| Processor[ProcessorData]
     User -->|1:N| Plugin[PluginData]
-    User -->|N:M| TemplateLike[TemplateLikeData]
-    User -->|N:M| ProcessorLike[ProcessorLikeData]
-    User -->|N:M| PluginLike[PluginLikeData]
+    User -->|1:N| TemplateLike[TemplateLikeData]
+    User -->|1:N| ProcessorLike[ProcessorLikeData]
+    User -->|1:N| PluginLike[PluginLikeData]
 ```
 
 ## Related
