@@ -24,7 +24,7 @@ For the conceptual overview of registry structure, see [Registry Concept](../con
 | Get by slug | `GET /api/v1/processor/slug/{username}/{name}` | `ProcessorController.cs:71-89`   |
 | Create      | `POST /api/v1/processor/id/{userId}`           | `ProcessorController.cs:91-120`  |
 | Update      | `PUT /api/v1/processor/id/{userId}/{id}`       | `ProcessorController.cs:122-145` |
-| Delete      | `DELETE /api/v1/processor/id/{userId}/{id}`    | `ProcessorService.cs:54-57`      |
+| Delete      | `DELETE /api/v1/processor/id/{userId}/{id}`    | `ProcessorController.cs:147-155` |
 
 ## Flow
 

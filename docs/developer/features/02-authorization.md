@@ -68,7 +68,7 @@ sequenceDiagram
     participant Resource as Protected Resource
     participant AuthZ as Authorization Middleware
     participant Handler as HasAny/HasAll Handler
-    participant Claims as Claim Principal
+    participant Claims as ClaimsPrincipal
 
     Client->>Resource: HTTP Request + Policy
     Resource->>AuthZ: Check Policy

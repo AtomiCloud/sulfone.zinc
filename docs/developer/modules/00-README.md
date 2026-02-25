@@ -72,7 +72,7 @@ flowchart TB
 
 ## File Organization
 
-```
+```text
 App/
 ├── StartUp/              # Configuration and DI
 │   ├── Services/         # Service configurations

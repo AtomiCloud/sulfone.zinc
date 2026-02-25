@@ -90,11 +90,11 @@ public class V1ErrorController : AtomiControllerBase
 
 ## Endpoints
 
-| Endpoint                      | Method | Purpose           | Response                                    |
-| ----------------------------- | ------ | ----------------- | ------------------------------------------- |
-| `GET /`                       | GET    | System info       | `{"landscape": "...", "status": "OK", ...}` |
-| `GET /api/v1/error-info`      | GET    | List error types  | Array of error IDs                          |
-| `GET /api/v1/error-info/{id}` | GET    | Get error details | ErrorInfo with schema                       |
+| Endpoint                      | Purpose           | Response                                    |
+| ----------------------------- | ----------------- | ------------------------------------------- |
+| `GET /`                       | System info       | `{"landscape": "...", "status": "OK", ...}` |
+| `GET /api/v1/error-info`      | List error types  | Array of error IDs                          |
+| `GET /api/v1/error-info/{id}` | Get error details | ErrorInfo with schema                       |
 
 ## Error Types
 

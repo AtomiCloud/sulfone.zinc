@@ -37,7 +37,7 @@ The authentication scheme is automatically selected based on request headers:
 - **Generation**: `PasswordGenerator` library with lowercase, uppercase, numeric
 - **Key File**: `Domain/Service/ApiKeyGenerator.cs:7-15`
 
-**Example**: `aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0uV1wX2yZ3aB4cD5eF6gH7iJ8kL9mN0oP`
+**Example**: `aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0uV1wX2yZ3aB4cD5eF6gH7iJ8kL9mN0oP1q`
 
 ## Token Lifecycle
 

@@ -10,7 +10,7 @@
 - **Type**: `ulong` (simple integer)
 - **Pattern**: Auto-increment starting from 1
 - **Uniqueness**: Unique per parent entity (Id + Version)
-- **Immutability**: Once created, versions cannot be modified
+- **Immutability**: Version numbers cannot be changed; however, version **properties** (description, docker image, docker tag) can be updated via `UpdateVersion()`
 
 **Example**:
 

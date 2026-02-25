@@ -178,7 +178,7 @@ public class TemplateInfo
 
 ```json
 {
-  "like": true // true to like, false to unlike
+  "like": true
 }
 ```
 

@@ -66,6 +66,7 @@ All endpoints (except health check) require authentication:
 | [Processor](./02-processor.md) | Processor registry | `ProcessorController.cs` |
 | [Plugin](./03-plugin.md) | Plugin registry | `PluginController.cs` |
 | [User](./04-user.md) | User management | `UserController.cs` |
+| [Token](./04-user.md#token-endpoints) | API token management | `UserController.cs` |
 | [System](./05-system.md) | Health & errors | `SystemController.cs` |
 
 ## Common Patterns

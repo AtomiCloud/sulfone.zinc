@@ -79,8 +79,8 @@ public async Task<Result<IEnumerable<TemplatePrincipal>>> Search(TemplateSearch 
                 || EF.Functions.ILike(x.Name, $"%{search.Search}%")
                 || EF.Functions.ILike(x.User.Username, $"%{search.Search}%")
             )
-            // Rank by relevance
-            .OrderBy(x =>
+            // Rank by relevance (highest first)
+            .OrderByDescending(x =>
                 x.SearchVector
                     .Concat(EF.Functions.ToTsVector("english", x.User.Username))
                     .Concat(EF.Functions.ArrayToTsVector(x.Tags))

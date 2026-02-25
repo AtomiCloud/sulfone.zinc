@@ -6,11 +6,11 @@ Zinc is the **Registry Backend** for the CyanPrint platform - an ASP.NET Core AP
 
 | Section | Description |
 |---------|-------------|
-| [Developer Documentation](developer/) | Complete developer guide |
-| [Getting Started](developer/getting-started.md) | Run Zinc locally |
-| [Features](developer/features.md) | All features and capabilities |
-| [API Reference](developer/api.md) | REST API endpoints |
-| [Architecture](developer/architecture.md) | User flows and key decisions |
+| [Developer Documentation](developer/README.md) | Complete developer guide |
+| [Getting Started](developer/getting-started/00-README.md) | Run Zinc locally |
+| [Features](developer/features/00-README.md) | All features and capabilities |
+| [API Reference](developer/surfaces/api/00-README.md) | REST API endpoints |
+| [Architecture](developer/architecture/00-README.md) | User flows and key decisions |
 
 ## About Zinc
 
@@ -66,10 +66,10 @@ graph TB
 
 ### Developer Documentation
 - [README](developer/README.md) - Overview and quick reference
-- [Getting Started](developer/getting-started.md) - Setup and run locally
-- [Features](developer/features.md) - Complete feature guide
-- [API Reference](developer/api.md) - All REST API endpoints
-- [Architecture](developer/architecture.md) - User flows and key decisions
+- [Getting Started](developer/getting-started/00-README.md) - Setup and run locally
+- [Features](developer/features/00-README.md) - Complete feature guide
+- [API Reference](developer/surfaces/api/00-README.md) - All REST API endpoints
+- [Architecture](developer/architecture/00-README.md) - User flows and key decisions
 
 ## Related Components
 

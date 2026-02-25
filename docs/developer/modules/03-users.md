@@ -20,7 +20,7 @@
 
 ## Structure
 
-```
+```text
 App/Modules/Users/
 ├── API/
 │   └── V1/
