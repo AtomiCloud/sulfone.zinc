@@ -398,10 +398,10 @@ POST /api/v1/template/slug/{username}/{templateName}/versions
 
 **Path Parameters**:
 
-| Parameter  | Type   | Description   |
-| ---------- | ------ | ------------- |
-| `username` | string | Username      |
-| `name`     | string | Template name |
+| Parameter      | Type   | Description   |
+| -------------- | ------ | ------------- |
+| `username`     | string | Username      |
+| `templateName` | string | Template name |
 
 **Request Body**:
 

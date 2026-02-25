@@ -21,7 +21,7 @@
 
 ## Structure
 
-```
+```text
 App/Modules/Cyan/
 ├── API/
 │   └── V1/
@@ -102,9 +102,12 @@ flowchart TB
     Processor -->|1:N| ProcessorVer[ProcessorVersionData]
     Plugin -->|1:N| PluginVer[PluginVersionData]
 
-    User -->|N:M| Template
-    User -->|N:M| Processor
-    User -->|N:M| Plugin
+    User -->|N:M via likes| TemplateLike[TemplateLikeData]
+    User -->|N:M via likes| ProcessorLike[ProcessorLikeData]
+    User -->|N:M via likes| PluginLike[PluginLikeData]
+    TemplateLike -->|N:1| Template
+    ProcessorLike -->|N:1| Processor
+    PluginLike -->|N:1| Plugin
 
     TemplateVer -->|N:M| ProcessorVer
     TemplateVer -->|N:M| PluginVer

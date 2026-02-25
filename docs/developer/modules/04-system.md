@@ -16,7 +16,7 @@
 
 ## Structure
 
-```
+```text
 App/Modules/System/
 ├── SystemController.cs        # System info endpoint
 └── V1ErrorController.cs       # Error documentation
@@ -74,7 +74,8 @@ public class V1ErrorController : AtomiControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<string>> ErrorInfo()
     {
-        return Ok(V1ProblemTypes.Select(x => ((IDomainProblem)Activator.CreateInstance(x)!).Id));
+        return Ok(V1ProblemTypes
+            .Select(x => Activator.CreateInstance(x) is IDomainProblem p ? p.Id : throw new InvalidOperationException($"Cannot create {x.FullName} as IDomainProblem")));
     }
 
     [HttpGet("{id}")]
@@ -113,5 +114,5 @@ flowchart TB
 
 ## Related
 
-- [Error Handling](../features/01-authentication.md#edge-cases) - Error patterns
+- [Error Handling](./05-common.md#error-mapping) - Error patterns via MapError
 - [API Errors](../surfaces/api/) - Endpoint-specific errors

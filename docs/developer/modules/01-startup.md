@@ -21,7 +21,7 @@
 
 ## Structure
 
-```
+```text
 App/StartUp/
 ├── Services/              # Service configurations
 │   ├── AuthService.cs     # JWT + API Key setup

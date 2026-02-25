@@ -17,14 +17,14 @@ For the conceptual overview of registry structure, see [Registry Concept](../con
 
 ## Operations
 
-| Operation   | Endpoint                                      | Key File                       |
-| ----------- | --------------------------------------------- | ------------------------------ |
-| Search      | `GET /api/v1/template`                        | `TemplateController.cs:38-49`  |
-| Get by ID   | `GET /api/v1/template/id/{userId}/{id}`       | `TemplateController.cs:51-69`  |
-| Get by slug | `GET /api/v1/template/slug/{username}/{name}` | `TemplateController.cs:71-89`  |
-| Create      | `POST /api/v1/template/id/{userId}`           | `TemplateController.cs:71-91`  |
-| Update      | `PUT /api/v1/template/id/{userId}/{id}`       | `TemplateController.cs:93-115` |
-| Delete      | `DELETE /api/v1/template/id/{userId}/{id}`    | `TemplateService.cs:54-57`     |
+| Operation   | Endpoint                                      | Key File                        |
+| ----------- | --------------------------------------------- | ------------------------------- |
+| Search      | `GET /api/v1/template`                        | `TemplateController.cs:38-49`   |
+| Get by ID   | `GET /api/v1/template/id/{userId}/{id}`       | `TemplateController.cs:51-59`   |
+| Get by slug | `GET /api/v1/template/slug/{username}/{name}` | `TemplateController.cs:61-69`   |
+| Create      | `POST /api/v1/template/id/{userId}`           | `TemplateController.cs:71-91`   |
+| Update      | `PUT /api/v1/template/id/{userId}/{id}`       | `TemplateController.cs:93-117`  |
+| Delete      | `DELETE /api/v1/template/id/{userId}/{id}`    | `TemplateController.cs:149-157` |
 
 ## Flow
 

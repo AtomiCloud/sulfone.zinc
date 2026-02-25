@@ -17,7 +17,7 @@
 
 ## Structure
 
-```
+```text
 App/Modules/Common/
 └── BaseController.cs            # Base controller class (AtomiControllerBase)
 

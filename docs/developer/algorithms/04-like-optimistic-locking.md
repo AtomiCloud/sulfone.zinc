@@ -46,7 +46,7 @@ flowchart TB
     CreateLike --> Save[Save to Database]
     Save --> ReturnSuccess[Return Unit]
 
-    UnlikeFlow --> Unlike
+    UnlikeFlow --> UnlikeStart[See Unlike Flow below]
 ```
 
 ### Unlike (Delete) Flow

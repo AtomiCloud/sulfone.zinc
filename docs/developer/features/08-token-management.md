@@ -74,7 +74,7 @@ sequenceDiagram
     participant Repository as TokenRepository
     participant DB as Database
 
-    Client->>Controller: POST /api/v1/user/id/{id}/token
+    Client->>Controller: POST /api/v1/user/{id}/token
     Controller->>Controller: Check userId == sub
     Controller->>Validator: ValidateAsync
     Validator-->>Controller: ValidationResult
@@ -170,8 +170,8 @@ public string Generate()
 
 ## Security Considerations
 
-- **Plaintext Storage**: Tokens are stored in plaintext (NOT hashed)
-- **Single Use**: Token is shown only on creation
+- **Plaintext Storage**: Tokens are stored in plaintext (NOT hashed). This is a deliberate trade-off favoring fast O(1) token lookup and simple revocation checks over hashed storage. **Risks**: DB read compromise (SQL injection, backup leak, insider threat) exposes all active tokens. **Mitigations**: Strict DB access controls, encryption at rest recommended. **Future migration path**: Store SHA-256(token) digest with HMAC prefix for fast lookup.
+- **Single Use**: Token value is returned via API response only once on creation, but the plaintext persists in the database until the token is revoked or deleted.
 - **Revocation**: Soft delete (sets `Revoked = true`)
 - **User Ownership**: Users can only manage their own tokens
 

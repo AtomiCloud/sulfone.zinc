@@ -189,7 +189,7 @@ public record TokenData
     public string ApiToken { get; set; } = string.Empty;
     public bool Revoked { get; set; } = false;
     public string UserId { get; set; } = string.Empty;
-    public UserData User { get; set; } = new();
+    public UserData User { get; set; } = null!;
 }
 ```
 

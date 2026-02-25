@@ -25,7 +25,7 @@ Zinc implements a multi-scheme authentication system that automatically selects 
 ### API Key Authentication
 
 - **Format**: 64-character random alphanumeric string
-- **Storage**: Plaintext in database with revocation flag
+- **Storage**: Plaintext in database with revocation flag. This design intentionally favors fast token lookup and simple revocation checks over the stronger protection of hashed token storage. Be aware of the plaintext exposure risk (DB compromise). Mitigations: encryption at rest, strict DB access controls, or migrate to SHA-256 digests.
 - **Validation**: Database lookup against active tokens
 - **Use Case**: Service-to-service automation (CLI, CI/CD)
 - **Header**: `X-API-TOKEN: <api-key>`

@@ -38,35 +38,31 @@ sequenceDiagram
     participant TemplateRepo as TemplateRepository
     participant DB as Database
 
+    Note over Service: Fetch all dependency versions (eager evaluation)
+
     Service->>PluginRepo: GetAllVersion(plugins)
     PluginRepo->>DB: SELECT * FROM PluginVersions WHERE Id IN (...)
     DB-->>PluginRepo: Results
     PluginRepo-->>Service: Result<IEnumerable<PluginVersion>>
 
-    alt All Plugins Found
-        Service->>ProcessorRepo: GetAllVersion(processors)
-        ProcessorRepo->>DB: SELECT * FROM ProcessorVersions WHERE Id IN (...)
-        DB-->>ProcessorRepo: Results
-        ProcessorRepo-->>Service: Result<IEnumerable<ProcessorVersion>>
+    Service->>ProcessorRepo: GetAllVersion(processors)
+    ProcessorRepo->>DB: SELECT * FROM ProcessorVersions WHERE Id IN (...)
+    DB-->>ProcessorRepo: Results
+    ProcessorRepo-->>Service: Result<IEnumerable<ProcessorVersion>>
 
-        alt All Processors Found
-            Service->>TemplateRepo: GetAllVersion(templates)
-            TemplateRepo->>DB: SELECT * FROM TemplateVersions WHERE Id IN (...)
-            DB-->>TemplateRepo: Results
-            TemplateRepo-->>Service: Result<IEnumerable<TemplateVersion>>
+    Service->>TemplateRepo: GetAllVersion(templates)
+    TemplateRepo->>DB: SELECT * FROM TemplateVersions WHERE Id IN (...)
+    DB-->>TemplateRepo: Results
+    TemplateRepo-->>Service: Result<IEnumerable<TemplateVersion>>
 
-            alt All Templates Found
-                Service->>TemplateRepo: CreateVersion(..., ids)
-                TemplateRepo->>DB: INSERT with dependency IDs
-                DB-->>Service: Success
-            else Any Template Missing
-                Service-->>Client: Error: Template not found
-            end
-        else Any Processor Missing
-            Service-->>Client: Error: Processor not found
-        end
-    else Any Plugin Missing
-        Service-->>Client: Error: Plugin not found
+    Note over Service: Combine results via LINQ monadic comprehension
+
+    alt All Dependencies Found
+        Service->>TemplateRepo: CreateVersion(..., ids)
+        TemplateRepo->>DB: INSERT with dependency IDs
+        DB-->>Service: Success
+    else Any Dependency Missing
+        Service-->>Client: Error: Dependency not found
     end
 ```
 
@@ -112,8 +108,8 @@ public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
 | Case               | Input                      | Behavior                              | Key File                              |
 | ------------------ | -------------------------- | ------------------------------------- | ------------------------------------- |
 | Empty dependencies | `[]`, `[]`, `[]`           | Version created without dependencies  | `TemplateService.cs:160-196`          |
-| Missing processor  | Invalid processor ID       | Returns error before creating version | `PluginRepository.GetAllVersion()`    |
-| Missing plugin     | Invalid plugin ID          | Returns error before creating version | `ProcessorRepository.GetAllVersion()` |
+| Missing processor  | Invalid processor ID       | Returns error before creating version | `ProcessorRepository.GetAllVersion()` |
+| Missing plugin     | Invalid plugin ID          | Returns error before creating version | `PluginRepository.GetAllVersion()`    |
 | Missing template   | Invalid template ID        | Returns error before creating version | `TemplateRepository.GetAllVersion()`  |
 | Self-reference     | Template references itself | Not explicitly prevented              | N/A                                   |
 | Circular reference | A→B→A                      | Not explicitly prevented              | N/A                                   |

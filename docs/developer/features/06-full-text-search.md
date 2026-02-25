@@ -114,7 +114,7 @@ if (search.Search != null)
             || EF.Functions.ILike(x.User.Username, $"%{search.Search}%")
         )
         // Rank with full text search
-        .OrderBy(x =>
+        .OrderByDescending(x =>
             x.SearchVector
                 .Concat(EF.Functions.ToTsVector("english", x.User.Username))
                 .Concat(EF.Functions.ArrayToTsVector(x.Tags))
@@ -137,9 +137,9 @@ if (search.Search != null)
 ## Search Operators
 
 | Operator    | Purpose                            | Example                              |
-| ----------- | ---------------------------------- | ------------------------------------ | ----------------------------- | --- | --- | --- |
+| ----------- | ---------------------------------- | ------------------------------------ |
 | `@@`        | Matches (tsvector matches tsquery) | `SearchVector @@ ToTsQuery('query')` |
-| `           |                                    | `                                    | Concatenate (combine vectors) | `V1 |     | V2` |
+| `\|\|`      | Concatenate (combine vectors)      | `V1 \|\| V2`                         |
 | `ts_rank()` | Calculate relevance score          | `ts_rank(vector, query)`             |
 
 ## Indexing

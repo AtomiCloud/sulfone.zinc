@@ -169,13 +169,13 @@ modelBuilder.Entity<TemplateData>(entity =>
 ## PostgreSQL Functions Used
 
 | Function                          | Purpose                        |
-| --------------------------------- | ------------------------------ | ---------- | ----------------- |
+| --------------------------------- | ------------------------------ |
 | `ToTsVector('english', text)`     | Convert text to tsvector       |
 | `ArrayToTsVector(array)`          | Convert array to tsvector      |
 | `PlainToTsQuery('english', text)` | Convert search text to tsquery |
 | `tsvector @@ tsquery`             | Check for match                |
 | `ts_rank(tsvector, tsquery)`      | Calculate relevance score      |
-| `                                 |                                | ` (concat) | Combine tsvectors |
+| `\|\|` (concat)                   | Combine tsvectors              |
 
 **Key File**: `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs:38-48`
 
