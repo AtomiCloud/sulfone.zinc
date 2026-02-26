@@ -240,7 +240,7 @@ DELETE /api/v1/template/id/{userId}/{templateId}
 ### Like Template
 
 ```http
-POST /api/v1/template/slug/{username}/{templateName}/like/{likerId}/{like}
+POST /api/v1/template/slug/{username}/{name}/like/{likerId}/{like}
 ```
 
 **Description**: Like or unlike a template.
@@ -270,7 +270,7 @@ POST /api/v1/template/slug/{username}/{templateName}/like/{likerId}/{like}
 ### Get Template Versions
 
 ```http
-GET /api/v1/template/slug/{username}/{templateName}/versions?skip=0&limit=50&search=query
+GET /api/v1/template/slug/{username}/{name}/versions?skip=0&limit=50&search=query
 ```
 
 **Description**: List template versions.
@@ -312,7 +312,7 @@ GET /api/v1/template/slug/{username}/{templateName}/versions?skip=0&limit=50&sea
 ### Get Template Version by Number
 
 ```http
-GET /api/v1/template/slug/{username}/{templateName}/versions/{ver}?bumpDownload=true
+GET /api/v1/template/slug/{username}/{name}/versions/{ver}?bumpDownload=true
 ```
 
 **Description**: Get a specific template version.
@@ -364,7 +364,7 @@ GET /api/v1/template/slug/{username}/{templateName}/versions/{ver}?bumpDownload=
 ### Get Latest Template Version
 
 ```http
-GET /api/v1/template/slug/{username}/{templateName}/versions/latest?bumpDownload=true
+GET /api/v1/template/slug/{username}/{name}/versions/latest?bumpDownload=true
 ```
 
 **Description**: Get the latest template version.
@@ -391,7 +391,7 @@ GET /api/v1/template/slug/{username}/{templateName}/versions/latest?bumpDownload
 ### Create Template Version
 
 ```http
-POST /api/v1/template/slug/{username}/{templateName}/versions
+POST /api/v1/template/slug/{username}/{name}/versions
 ```
 
 **Description**: Create a new template version.
