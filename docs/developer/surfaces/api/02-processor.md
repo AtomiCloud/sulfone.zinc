@@ -238,19 +238,19 @@ DELETE /api/v1/processor/id/{userId}/{processorId:guid}
 ### Like Processor
 
 ```http
-POST /api/v1/processor/slug/{username}/{processorName}/like/{likerId}/{like}
+POST /api/v1/processor/slug/{username}/{name}/like/{likerId}/{like}
 ```
 
 **Description**: Like or unlike a processor.
 
 **Path Parameters**:
 
-| Parameter       | Type    | Description                                                         |
-| --------------- | ------- | ------------------------------------------------------------------- |
-| `username`      | string  | Username of processor owner                                         |
-| `processorName` | string  | Processor name                                                      |
-| `likerId`       | string  | User ID of the user liking/unliking (must match authenticated user) |
-| `like`          | boolean | `true` to like, `false` to unlike                                   |
+| Parameter  | Type    | Description                                                         |
+| ---------- | ------- | ------------------------------------------------------------------- |
+| `username` | string  | Username of processor owner                                         |
+| `name`     | string  | Processor name                                                      |
+| `likerId`  | string  | User ID of the user liking/unliking (must match authenticated user) |
+| `like`     | boolean | `true` to like, `false` to unlike                                   |
 
 **Response**: `204 No Content`
 
@@ -268,17 +268,17 @@ POST /api/v1/processor/slug/{username}/{processorName}/like/{likerId}/{like}
 ### Get Processor Versions
 
 ```http
-GET /api/v1/processor/slug/{username}/{processorName}/versions?skip=0&limit=50&search=query
+GET /api/v1/processor/slug/{username}/{name}/versions?skip=0&limit=50&search=query
 ```
 
 **Description**: List processor versions.
 
 **Path Parameters**:
 
-| Parameter       | Type   | Description    |
-| --------------- | ------ | -------------- |
-| `username`      | string | Username       |
-| `processorName` | string | Processor name |
+| Parameter  | Type   | Description    |
+| ---------- | ------ | -------------- |
+| `username` | string | Username       |
+| `name`     | string | Processor name |
 
 **Query Parameters**:
 
@@ -352,18 +352,18 @@ GET /api/v1/processor/id/{userId}/{processorId:guid}/versions?skip=0&limit=50&se
 ### Get Processor Version by Number
 
 ```http
-GET /api/v1/processor/slug/{username}/{processorName}/versions/{ver}?bumpDownload=true
+GET /api/v1/processor/slug/{username}/{name}/versions/{ver}?bumpDownload=true
 ```
 
 **Description**: Get a specific processor version.
 
 **Path Parameters**:
 
-| Parameter       | Type   | Description    |
-| --------------- | ------ | -------------- |
-| `username`      | string | Username       |
-| `processorName` | string | Processor name |
-| `ver`           | ulong  | Version number |
+| Parameter  | Type   | Description    |
+| ---------- | ------ | -------------- |
+| `username` | string | Username       |
+| `name`     | string | Processor name |
+| `ver`      | ulong  | Version number |
 
 **Query Parameters**:
 
@@ -391,17 +391,17 @@ GET /api/v1/processor/slug/{username}/{processorName}/versions/{ver}?bumpDownloa
 ### Get Latest Processor Version
 
 ```http
-GET /api/v1/processor/slug/{username}/{processorName}/versions/latest?bumpDownload=true
+GET /api/v1/processor/slug/{username}/{name}/versions/latest?bumpDownload=true
 ```
 
 **Description**: Get the latest processor version.
 
 **Path Parameters**:
 
-| Parameter       | Type   | Description    |
-| --------------- | ------ | -------------- |
-| `username`      | string | Username       |
-| `processorName` | string | Processor name |
+| Parameter  | Type   | Description    |
+| ---------- | ------ | -------------- |
+| `username` | string | Username       |
+| `name`     | string | Processor name |
 
 **Query Parameters**:
 
@@ -482,17 +482,17 @@ GET /api/v1/processor/versions/{versionId:guid}
 ### Create Processor Version
 
 ```http
-POST /api/v1/processor/slug/{username}/{processorName}/versions
+POST /api/v1/processor/slug/{username}/{name}/versions
 ```
 
 **Description**: Create a new processor version.
 
 **Path Parameters**:
 
-| Parameter       | Type   | Description    |
-| --------------- | ------ | -------------- |
-| `username`      | string | Username       |
-| `processorName` | string | Processor name |
+| Parameter  | Type   | Description    |
+| ---------- | ------ | -------------- |
+| `username` | string | Username       |
+| `name`     | string | Processor name |
 
 **Request Body**:
 

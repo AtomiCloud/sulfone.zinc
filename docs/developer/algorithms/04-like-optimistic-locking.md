@@ -219,11 +219,11 @@ internal class LikeRaceConditionError : IDomainProblem
 
 ## Error Handling
 
-| Error                    | Cause                                    | HTTP Status               | Key File                        |
-| ------------------------ | ---------------------------------------- | ------------------------- | ------------------------------- |
-| `LikeConflictError`      | Like/unlike conflicts with current state | 409 Conflict              | `LikeConflict.cs`               |
-| `LikeRaceConditionError` | Race condition detected                  | 500 Internal Server Error | `LikeRaceCondition.cs`          |
-| `null`                   | Template not found                       | 404 Not Found             | `TemplateRepository.cs:282-283` |
+| Error                    | Cause                                    | HTTP Status   | Key File                        |
+| ------------------------ | ---------------------------------------- | ------------- | ------------------------------- |
+| `LikeConflictError`      | Like/unlike conflicts with current state | 409 Conflict  | `LikeConflict.cs`               |
+| `LikeRaceConditionError` | Race condition detected                  | 409 Conflict  | `LikeRaceCondition.cs`          |
+| `null`                   | Template not found                       | 404 Not Found | `TemplateRepository.cs:282-283` |
 
 ## Uniqueness Constraint
 

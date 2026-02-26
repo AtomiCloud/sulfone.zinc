@@ -82,7 +82,7 @@ sequenceDiagram
             Repository-->>Service: Unit
         else Entry disappeared - race condition
             Repository-->>Service: LikeRaceConditionError
-            Service-->>Controller: 500 Error
+            Service-->>Controller: 409 Conflict
             Controller-->>Client: Error: Race condition
         end
     else like=false and not exists
@@ -106,7 +106,7 @@ The Like System uses optimistic locking to detect race conditions during unlike 
 | ------------------------ | ------------ | ------------------------ | ------------------------------- |
 | Like already liked       | 409 Conflict | `LikeConflictError`      | `TemplateRepository.cs:270-276` |
 | Unlike not liked         | 409 Conflict | `LikeConflictError`      | `TemplateRepository.cs:270-276` |
-| Race condition on unlike | 500 Error    | `LikeRaceConditionError` | `TemplateRepository.cs:313-318` |
+| Race condition on unlike | 409 Conflict | `LikeRaceConditionError` | `TemplateRepository.cs:313-318` |
 
 ## Error Types
 
