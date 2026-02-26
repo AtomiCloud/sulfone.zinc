@@ -1,3 +1,22 @@
+## [2.3.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.0...v2.3.1) (2026-02-26)
+
+
+### Documentation Updates
+
+* add Zinc registry design and integration documentation ([d0015ae](https://github.com/AtomiCloud/sulfone.zinc/commit/d0015ae67ba844ca84e63d4937be5a85e042b4c6))
+* address additional CodeRabbit review feedback ([7fa2829](https://github.com/AtomiCloud/sulfone.zinc/commit/7fa28298257e4949b2c43a187c9da63f6fb40939))
+* address additional CodeRabbit review feedback ([ee903f0](https://github.com/AtomiCloud/sulfone.zinc/commit/ee903f0ce2401f6e83af1fe833cd4b5f94e81eb0))
+* address additional CodeRabbit review feedback ([3d4949d](https://github.com/AtomiCloud/sulfone.zinc/commit/3d4949d07e98eae238cb1d054c79e7b3f5a47c66))
+* address CodeRabbit review feedback ([733492e](https://github.com/AtomiCloud/sulfone.zinc/commit/733492ee77f0e11f0b4b3d999a740eed966e352f))
+* fix all remaining CodeRabbit review issues ([9737f2f](https://github.com/AtomiCloud/sulfone.zinc/commit/9737f2f62d6abdadd0435670f7cefdf05d10274b))
+* fix CodeRabbit local review findings ([4bdf799](https://github.com/AtomiCloud/sulfone.zinc/commit/4bdf7992d82da5d4456957cf2a976fbc27eb61b3))
+* fix CodeRabbit review issues in documentation ([d47292f](https://github.com/AtomiCloud/sulfone.zinc/commit/d47292fc70b083e6de5a92e80f790360a19ef80d))
+* fix FTS link in startup module ([e8ab10c](https://github.com/AtomiCloud/sulfone.zinc/commit/e8ab10cdb8021c6fdbef5cd76d8828778b15007e))
+* fix LikeRaceConditionError HTTP status and route parameter naming ([6942b9e](https://github.com/AtomiCloud/sulfone.zinc/commit/6942b9e015be0f4afe6c0efe414770705318326a))
+* fix remaining CodeRabbit review issues ([9ee9667](https://github.com/AtomiCloud/sulfone.zinc/commit/9ee9667199b1904eadbcd5340e72b03e01dcdc85))
+* fix Unlike sequence diagram endpoint format ([566990d](https://github.com/AtomiCloud/sulfone.zinc/commit/566990d1244af42dba9921628e837ca6ac3ba109))
+* use consistent {name} parameter in template API routes ([ec4fb1c](https://github.com/AtomiCloud/sulfone.zinc/commit/ec4fb1c4db91f91b05fca7460ff263cacf887aa9))
+
 ## [2.3.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.2.0...v2.3.0) (2025-09-20)
 
 
