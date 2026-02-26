@@ -52,7 +52,7 @@ flowchart TB
 | [StartUp](./01-startup.md) | Configuration, DI setup | `App/StartUp/` | All modules |
 | [Cyan](./02-cyan.md) | Templates, Processors, Plugins | `App/Modules/Cyan/` | Domain, Users |
 | [Users](./03-users.md) | User management, tokens | `App/Modules/Users/` | Domain |
-| [System](./04-system.md) | Health, error handling | `App/Modules/System/` | None |
+| [System](./04-system.md) | Health, error handling | `App/Modules/System/` | Common, Domain |
 | [Common](./05-common.md) | Shared components | `App/Modules/Common/` | None |
 
 ## Layer Architecture

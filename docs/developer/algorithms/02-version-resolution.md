@@ -18,6 +18,8 @@ Resolves template, processor, and plugin versions by querying the database. Supp
 | `parentIdentifier`   | Guid or string | Parent entity ID or slug    |
 | `version` (optional) | ulong          | Specific version number     |
 
+> **Note**: `userId` is used for authorization at the controller layer before the service is invoked.
+
 ## Output
 
 | Result                                           | Description                    |
@@ -140,7 +142,7 @@ public async Task<Result<TemplateVersion?>> GetVersion(
 ### Repository Query (Latest Version)
 
 ```csharp
-public async Task<Result<TemplateVersion>> GetVersion(string username, string name)
+public async Task<TemplateVersion?> GetVersion(string username, string name)
 {
     var query = db.TemplateVersions
         .Include(x => x.Template)
@@ -150,7 +152,7 @@ public async Task<Result<TemplateVersion>> GetVersion(string username, string na
         .Take(1);
 
     var result = await query.FirstOrDefaultAsync();
-    return result?.ToDomain() ?? (TemplateVersion?)null;
+    return result?.ToDomain();
 }
 ```
 

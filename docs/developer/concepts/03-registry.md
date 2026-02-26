@@ -49,12 +49,12 @@ flowchart TB
 
 ## Registry vs Version
 
-| Aspect           | Registry          | Version                   |
-| ---------------- | ----------------- | ------------------------- |
-| **Identity**     | Name + Owner      | Version Number            |
-| **Mutability**   | Metadata editable | Immutable once created    |
-| **Dependencies** | None              | References other versions |
-| **Docker Ref**   | None              | Image + Tag               |
+| Aspect           | Registry          | Version                                |
+| ---------------- | ----------------- | -------------------------------------- |
+| **Identity**     | Name + Owner      | Version Number                         |
+| **Mutability**   | Metadata editable | Content immutable (metadata updatable) |
+| **Dependencies** | None              | References other versions              |
+| **Docker Ref**   | None              | Image + Tag                            |
 
 **Example**:
 

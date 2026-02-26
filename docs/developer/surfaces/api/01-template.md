@@ -98,10 +98,10 @@ GET /api/v1/template/slug/{username}/{name}
 
 **Path Parameters**:
 
-| Parameter      | Type   | Description   |
-| -------------- | ------ | ------------- |
-| `username`     | string | Username      |
-| `templateName` | string | Template name |
+| Parameter  | Type   | Description   |
+| ---------- | ------ | ------------- |
+| `username` | string | Username      |
+| `name`     | string | Template name |
 
 **Response**: `200 OK` (same as Get by ID)
 
@@ -277,10 +277,10 @@ GET /api/v1/template/slug/{username}/{templateName}/versions?skip=0&limit=50&sea
 
 **Path Parameters**:
 
-| Parameter      | Type   | Description   |
-| -------------- | ------ | ------------- |
-| `username`     | string | Username      |
-| `templateName` | string | Template name |
+| Parameter  | Type   | Description   |
+| ---------- | ------ | ------------- |
+| `username` | string | Username      |
+| `name`     | string | Template name |
 
 **Query Parameters**:
 
@@ -371,10 +371,10 @@ GET /api/v1/template/slug/{username}/{templateName}/versions/latest?bumpDownload
 
 **Path Parameters**:
 
-| Parameter      | Type   | Description   |
-| -------------- | ------ | ------------- |
-| `username`     | string | Username      |
-| `templateName` | string | Template name |
+| Parameter  | Type   | Description   |
+| ---------- | ------ | ------------- |
+| `username` | string | Username      |
+| `name`     | string | Template name |
 
 **Query Parameters**:
 
@@ -398,10 +398,10 @@ POST /api/v1/template/slug/{username}/{templateName}/versions
 
 **Path Parameters**:
 
-| Parameter      | Type   | Description   |
-| -------------- | ------ | ------------- |
-| `username`     | string | Username      |
-| `templateName` | string | Template name |
+| Parameter  | Type   | Description   |
+| ---------- | ------ | ------------- |
+| `username` | string | Username      |
+| `name`     | string | Template name |
 
 **Request Body**:
 

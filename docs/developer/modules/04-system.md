@@ -81,7 +81,8 @@ public class V1ErrorController : AtomiControllerBase
     [HttpGet("{id}")]
     public ActionResult<ErrorInfo> Get(string id)
     {
-        // Returns ErrorInfo with schema and problem details
+        // Implementation retrieves error schema from NJsonSchema generated types
+        // Returns ErrorInfo with JSON schema and problem details metadata
     }
 }
 ```

@@ -132,6 +132,16 @@ Custom authentication handler for API tokens:
 ```csharp
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
 {
+    private readonly ITokenService token;
+
+    public ApiKeyAuthenticationHandler(
+        ITokenService token,
+        // ... other dependencies
+    ) : base(/* ... */)
+    {
+        this.token = token;
+    }
+
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         // Check X-API-TOKEN header

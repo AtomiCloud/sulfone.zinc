@@ -77,7 +77,14 @@ flowchart TB
 
 ## Dependency Graph
 
-Templates form a directed acyclic graph (DAG):
+Templates form a directed graph structure:
+
+<!--
+NOTE: While templates conceptually form a DAG, circular references are not explicitly
+prevented at the database level. The dependency resolution algorithm only validates
+that referenced entities exist. Cycle detection should be added before implementing
+graph-traversal tooling to prevent infinite loops.
+-->
 
 ```mermaid
 flowchart TB

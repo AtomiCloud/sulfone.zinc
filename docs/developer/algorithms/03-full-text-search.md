@@ -124,7 +124,7 @@ SearchVector = to_tsvector('english',
 | ------------------- | ----------------------- | ------------------------------------------ | ------------------------------ |
 | Empty search (null) | `search = null`         | Returns all (paginated) results            | `TemplateRepository.cs:33`     |
 | Empty string ("")   | `search = ""`           | Passes to FTS — verify PostgreSQL behavior | `TemplateRepository.cs:33`     |
-| Special characters  | `search = "user/repo"`  | Replaced with spaces                       | `TemplateRepository.cs:40, 46` |
+| Special characters  | `search = "user/repo"`  | Forward slash `/` replaced with space      | `TemplateRepository.cs:40, 46` |
 | No matches          | Valid query, no results | Returns empty array                        | `TemplateRepository.cs:52`     |
 | Filter by owner     | `owner = "alice"`       | Filters to user's templates                | `TemplateRepository.cs:30-32`  |
 

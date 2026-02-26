@@ -145,6 +145,11 @@ public class TemplateInfo
 }
 ```
 
+<!--
+NOTE: TemplateInfo is shown as an example. All registry types (Template, Processor, Plugin)
+include a Stars property that tracks like counts. See ProcessorInfo and PluginInfo for equivalent structures.
+-->
+
 **Key File**: `Domain/Model/Template.cs`
 
 ## Like Statistics

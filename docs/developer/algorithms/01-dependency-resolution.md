@@ -23,8 +23,9 @@ Validates that all directly referenced processor, plugin, and template versions 
 
 Each reference contains:
 
-- `Id` (Guid) - The entity ID
-- `Version` (ulong) - The specific version number
+- `Username` (string) - Owner's username
+- `Name` (string) - Entity name
+- `Version` (ulong?) - Optional specific version number (null = latest)
 
 ## Output
 

@@ -155,12 +155,12 @@ USING GIN (search_vector);
 
 ## Edge Cases
 
-| Case               | Behavior                         |
-| ------------------ | -------------------------------- |
-| Empty search query | Returns all results (paginated)  |
-| No matches         | Returns empty array              |
-| Special characters | Replaced with spaces (`/` → ` `) |
-| Multiple words     | AND logic (all words must match) |
+| Case               | Behavior                              |
+| ------------------ | ------------------------------------- |
+| Empty search query | Returns all results (paginated)       |
+| No matches         | Returns empty array                   |
+| Special characters | Forward slash `/` replaced with space |
+| Multiple words     | AND logic (all words must match)      |
 
 ## Search Configuration
 
