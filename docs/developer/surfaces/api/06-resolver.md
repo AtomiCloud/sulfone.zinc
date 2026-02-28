@@ -25,12 +25,12 @@ GET /
 
 **Query Parameters**:
 
-| Name | Type | Required | Description |
-| ------- | ------ | -------- | ------------------------------ |
-| `Owner` | string | no | Filter by owner username |
-| `Search` | string | no | Full-text search query |
-| `Limit` | int | no | Max results (default: 20) |
-| `Skip` | int | no | Skip results (default: 0) |
+| Name     | Type   | Required | Description               |
+| -------- | ------ | -------- | ------------------------- |
+| `Owner`  | string | no       | Filter by owner username  |
+| `Search` | string | no       | Full-text search query    |
+| `Limit`  | int    | no       | Max results (default: 20) |
+| `Skip`   | int    | no       | Skip results (default: 0) |
 
 **Response**: `200 OK`
 
