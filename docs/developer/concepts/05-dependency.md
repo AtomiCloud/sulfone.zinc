@@ -12,6 +12,7 @@ Templates can depend on:
 | Processor       | Template Version | Processor Version | Data processing components |
 | Plugin          | Template Version | Plugin Version    | Extensible functionality   |
 | Template        | Template Version | Template Version  | Template composition       |
+| Resolver        | Template Version | Resolver Version  | Resolution components      |
 
 ## Dependency Reference Format
 
@@ -35,6 +36,12 @@ public class TemplateVersionRef
     public Guid TemplateId { get; set; }
     public ulong Version { get; set; }
 }
+
+public class ResolverVersionRef
+{
+    public Guid ResolverId { get; set; }
+    public ulong Version { get; set; }
+}
 ```
 
 ## Junction Tables
@@ -52,21 +59,25 @@ flowchart TB
         TPV[TemplateProcessorVersion]
         TPV2[TemplatePluginVersion]
         TTV[TemplateTemplateVersion]
+        TRV[TemplateResolverVersion]
     end
 
     subgraph Dependencies
         PV[ProcessorVersion]
         PlV[PluginVersion]
         TV2[TemplateVersion]
+        RV[ResolverVersion]
     end
 
     TemplateVersion -->|1:N| TPV
     TemplateVersion -->|1:N| TPV2
     TemplateVersion -->|1:N| TTV
+    TemplateVersion -->|1:N| TRV
 
     TPV -->|N:1| PV
     TPV2 -->|N:1| PlV
     TTV -->|N:1| TV2
+    TRV -->|N:1| RV
 ```
 
 **Key Files**:
@@ -74,6 +85,7 @@ flowchart TB
 - `App/Modules/Cyan/Data/Models/TemplateProcessorData.cs`
 - `App/Modules/Cyan/Data/Models/TemplatePluginData.cs`
 - `App/Modules/Cyan/Data/Models/TemplateTemplateData.cs`
+- `App/Modules/Cyan/Data/Models/TemplateResolverData.cs`
 
 ## Dependency Graph
 

@@ -57,7 +57,8 @@ public interface ITemplateRepository
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates
+    IEnumerable<Guid> templates,
+    IEnumerable<Guid> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
@@ -67,7 +68,8 @@ public interface ITemplateRepository
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates
+    IEnumerable<Guid> templates,
+    IEnumerable<Guid> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(

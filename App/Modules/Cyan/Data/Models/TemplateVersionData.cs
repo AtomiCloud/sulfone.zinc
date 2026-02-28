@@ -29,6 +29,8 @@ public record TemplateVersionData
 
   public IEnumerable<TemplatePluginVersionData> Plugins { get; set; } = null!;
 
+  public IEnumerable<TemplateResolverVersionData> Resolvers { get; set; } = null!;
+
   public IEnumerable<TemplateTemplateVersionData> Templates { get; set; } = null!;
 
   public IEnumerable<TemplateTemplateVersionData> TemplateRefs { get; set; } = null!;

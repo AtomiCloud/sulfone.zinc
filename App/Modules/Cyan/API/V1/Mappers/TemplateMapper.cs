@@ -119,6 +119,9 @@ public static class TemplateVersionMapper
   public static TemplateVersionRef ToDomain(this TemplateReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
+  public static ResolverVersionRef ToDomain(this ResolverReferenceReq req) =>
+    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+
   // Response
 
   public static TemplatePropertyResp ToResp(this TemplateVersionProperty property) =>
@@ -144,6 +147,7 @@ public static class TemplateVersionMapper
       version.TemplatePrincipal.ToResp(),
       version.Plugins.Select(x => x.ToResp()),
       version.Processors.Select(x => x.ToResp()),
-      version.Templates.Select(x => x.ToResp())
+      version.Templates.Select(x => x.ToResp()),
+      version.Resolvers.Select(x => x.ToResp())
     );
 }

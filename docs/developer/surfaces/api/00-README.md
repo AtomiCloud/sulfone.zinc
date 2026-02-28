@@ -10,6 +10,7 @@ flowchart TB
         Template[Template API]
         Processor[Processor API]
         Plugin[Plugin API]
+        Resolver[Resolver API]
         User[User API]
         Token[Token API]
         System[System API]
@@ -36,6 +37,11 @@ flowchart TB
     Plugin --> Version
     Plugin --> Search
     Plugin --> Like
+
+    Resolver --> CRUD
+    Resolver --> Version
+    Resolver --> Search
+    Resolver --> Like
 
     User --> CRUD
     Token --> CRUD
@@ -68,6 +74,7 @@ All endpoints (except System API: `GET /`, `GET /api/v1/error-info`, `GET /api/v
 | [Template](./01-template.md) | Template registry | `TemplateController.cs` |
 | [Processor](./02-processor.md) | Processor registry | `ProcessorController.cs` |
 | [Plugin](./03-plugin.md) | Plugin registry | `PluginController.cs` |
+| [Resolver](./06-resolver.md) | Resolver registry | `ResolverController.cs` |
 | [User](./04-user.md) | User management | `UserController.cs` |
 | [Token](./04-user.md#get-user-tokens) | API token management | `UserController.cs` |
 | [System](./05-system.md) | Health & errors | `SystemController.cs` |

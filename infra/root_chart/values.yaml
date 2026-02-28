@@ -169,6 +169,9 @@ migration:
 
 maindb:
   nameOverride: main-database
+  image:
+    repository: bitnamilegacy/postgresql
+    pullPolicy: IfNotPresent
   primary:
     persistence:
       enabled: false

@@ -268,9 +268,10 @@ public class TemplateController(
                 templateName,
                 c.ToRecord(),
                 c.Properties?.ToProperty(),
-                c.Processors.Select(p => p.ToDomain()),
-                c.Plugins.Select(p => p.ToDomain()),
-                c.Templates.Select(t => t.ToDomain())
+                (c.Processors ?? Array.Empty<ProcessorReferenceReq>()).Select(p => p.ToDomain()),
+                (c.Plugins ?? Array.Empty<PluginReferenceReq>()).Select(p => p.ToDomain()),
+                (c.Templates ?? Array.Empty<TemplateReferenceReq>()).Select(t => t.ToDomain()),
+                (c.Resolvers ?? Array.Empty<ResolverReferenceReq>()).Select(r => r.ToDomain())
               )
             )
             .Then(c => c?.ToResp(), Errors.MapAll);
@@ -314,9 +315,10 @@ public class TemplateController(
           templateId,
           c.ToRecord(),
           c.Properties?.ToProperty(),
-          c.Processors.Select(p => p.ToDomain()),
-          c.Plugins.Select(p => p.ToDomain()),
-          c.Templates.Select(t => t.ToDomain())
+          (c.Processors ?? Array.Empty<ProcessorReferenceReq>()).Select(p => p.ToDomain()),
+          (c.Plugins ?? Array.Empty<PluginReferenceReq>()).Select(p => p.ToDomain()),
+          (c.Templates ?? Array.Empty<TemplateReferenceReq>()).Select(t => t.ToDomain()),
+          (c.Resolvers ?? Array.Empty<ResolverReferenceReq>()).Select(r => r.ToDomain())
         )
       )
       .Then(x => x?.ToResp(), Errors.MapAll);
@@ -382,9 +384,10 @@ public class TemplateController(
                 metadata,
                 vRecord,
                 vProperty,
-                req.Processors.Select(p => p.ToDomain()),
-                req.Plugins.Select(p => p.ToDomain()),
-                req.Templates.Select(t => t.ToDomain())
+                (req.Processors ?? Array.Empty<ProcessorReferenceReq>()).Select(p => p.ToDomain()),
+                (req.Plugins ?? Array.Empty<PluginReferenceReq>()).Select(p => p.ToDomain()),
+                (req.Templates ?? Array.Empty<TemplateReferenceReq>()).Select(t => t.ToDomain()),
+                (req.Resolvers ?? Array.Empty<ResolverReferenceReq>()).Select(r => r.ToDomain())
               );
             })
             .Then(c => c?.ToResp(), Errors.MapAll);

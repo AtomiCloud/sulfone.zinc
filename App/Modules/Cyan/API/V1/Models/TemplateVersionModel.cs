@@ -9,7 +9,8 @@ public record CreateTemplateVersionReq(
   TemplatePropertyReq? Properties,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors,
-  TemplateReferenceReq[] Templates
+  TemplateReferenceReq[] Templates,
+  ResolverReferenceReq[] Resolvers
 );
 
 public record PushTemplateReq(
@@ -24,7 +25,8 @@ public record PushTemplateReq(
   TemplatePropertyReq? Properties,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors,
-  TemplateReferenceReq[] Templates
+  TemplateReferenceReq[] Templates,
+  ResolverReferenceReq[] Resolvers
 );
 
 public record TemplatePropertyReq(
@@ -39,6 +41,8 @@ public record PluginReferenceReq(string Username, string Name, uint Version);
 public record ProcessorReferenceReq(string Username, string Name, uint Version);
 
 public record TemplateReferenceReq(string Username, string Name, uint Version);
+
+public record ResolverReferenceReq(string Username, string Name, uint Version);
 
 public record UpdateTemplateVersionReq(string Description);
 
@@ -64,5 +68,6 @@ public record TemplateVersionResp(
   TemplatePrincipalResp Template,
   IEnumerable<PluginVersionPrincipalResp> Plugins,
   IEnumerable<ProcessorVersionPrincipalResp> Processors,
-  IEnumerable<TemplateVersionPrincipalResp> Templates
+  IEnumerable<TemplateVersionPrincipalResp> Templates,
+  IEnumerable<ResolverVersionPrincipalResp> Resolvers
 );

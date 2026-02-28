@@ -13,6 +13,42 @@ public class SearchTemplateVersionQueryValidator : AbstractValidator<SearchTempl
   }
 }
 
+public class PluginReferenceReqValidator : AbstractValidator<PluginReferenceReq>
+{
+  public PluginReferenceReqValidator()
+  {
+    this.RuleFor(x => x.Username).NotNull().UsernameValid();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+  }
+}
+
+public class ProcessorReferenceReqValidator : AbstractValidator<ProcessorReferenceReq>
+{
+  public ProcessorReferenceReqValidator()
+  {
+    this.RuleFor(x => x.Username).NotNull().UsernameValid();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+  }
+}
+
+public class TemplateReferenceReqValidator : AbstractValidator<TemplateReferenceReq>
+{
+  public TemplateReferenceReqValidator()
+  {
+    this.RuleFor(x => x.Username).NotNull().UsernameValid();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+  }
+}
+
+public class ResolverReferenceReqValidator : AbstractValidator<ResolverReferenceReq>
+{
+  public ResolverReferenceReqValidator()
+  {
+    this.RuleFor(x => x.Username).NotNull().UsernameValid();
+    this.RuleFor(x => x.Name).NotNull().UsernameValid();
+  }
+}
+
 public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplateVersionReq>
 {
   public CreateTemplateVersionReqValidator()
@@ -21,6 +57,18 @@ public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplat
     this.RuleFor(x => x.Properties!)
       .SetValidator(new TemplatePropertyReqValidator())
       .Unless(x => x.Properties == null);
+    this.RuleForEach(x => x.Plugins!)
+      .SetValidator(new PluginReferenceReqValidator())
+      .When(x => x.Plugins != null);
+    this.RuleForEach(x => x.Processors!)
+      .SetValidator(new ProcessorReferenceReqValidator())
+      .When(x => x.Processors != null);
+    this.RuleForEach(x => x.Templates!)
+      .SetValidator(new TemplateReferenceReqValidator())
+      .When(x => x.Templates != null);
+    this.RuleForEach(x => x.Resolvers!)
+      .SetValidator(new ResolverReferenceReqValidator())
+      .When(x => x.Resolvers != null);
   }
 }
 
@@ -59,5 +107,17 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
     this.RuleFor(x => x.Properties!)
       .SetValidator(new TemplatePropertyReqValidator())
       .Unless(x => x.Properties == null);
+    this.RuleForEach(x => x.Plugins!)
+      .SetValidator(new PluginReferenceReqValidator())
+      .When(x => x.Plugins != null);
+    this.RuleForEach(x => x.Processors!)
+      .SetValidator(new ProcessorReferenceReqValidator())
+      .When(x => x.Processors != null);
+    this.RuleForEach(x => x.Templates!)
+      .SetValidator(new TemplateReferenceReqValidator())
+      .When(x => x.Templates != null);
+    this.RuleForEach(x => x.Resolvers!)
+      .SetValidator(new ResolverReferenceReqValidator())
+      .When(x => x.Resolvers != null);
   }
 }

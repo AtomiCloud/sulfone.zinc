@@ -461,6 +461,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .ThenInclude(x => x.Plugin)
         .Include(x => x.Processors)
         .ThenInclude(x => x.Processor)
+        .Include(x => x.Resolvers)
+        .ThenInclude(x => x.Resolver)
         .Include(x => x.TemplateRefs)
         .ThenInclude(x => x.TemplateRef)
         .Where(x =>
@@ -496,6 +498,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .TemplateVersions.Include(x => x.Template)
         .Include(x => x.Plugins)
         .Include(x => x.Processors)
+        .Include(x => x.Resolvers)
         .Include(x => x.TemplateRefs)
         .Where(x => x.Template.UserId == userId && x.Template.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
@@ -531,6 +534,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .ThenInclude(x => x.Plugin)
         .Include(x => x.Processors)
         .ThenInclude(x => x.Processor)
+        .Include(x => x.Resolvers)
+        .ThenInclude(x => x.Resolver)
         .Include(x => x.TemplateRefs)
         .ThenInclude(x => x.TemplateRef)
         .Where(x => x.Template.User.Username == username && x.Template.Name == name)
@@ -562,6 +567,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .ThenInclude(x => x.Processor)
         .Include(x => x.Plugins)
         .ThenInclude(x => x.Plugin)
+        .Include(x => x.Resolvers)
+        .ThenInclude(x => x.Resolver)
         .Include(x => x.TemplateRefs)
         .ThenInclude(x => x.TemplateRef)
         .FirstOrDefaultAsync();
@@ -581,7 +588,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates
+    IEnumerable<Guid> templates,
+    IEnumerable<Guid> resolvers
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -627,6 +635,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         CreatedAt = DateTime.UtcNow,
         Plugins = null!,
         Processors = null!,
+        Resolvers = null!,
         Templates = null!,
         TemplateRefs = null!,
       };
@@ -668,6 +677,23 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         processorLinks.ToJson()
       );
       db.TemplateProcessorVersions.AddRange(processorLinks);
+
+      // save resolver links
+      var resolverLinks = resolvers.Select(x => new TemplateResolverVersionData
+      {
+        ResolverId = x,
+        Resolver = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      logger.LogInformation(
+        "Saving resolvers links for '{Username}/{Name}:{Version}', Resolvers: {@Resolvers}",
+        username,
+        name,
+        latest,
+        resolverLinks.ToJson()
+      );
+      db.TemplateResolverVersions.AddRange(resolverLinks);
 
       // save template links
       var templateLinks = templates.Select(x => new TemplateTemplateVersionData
@@ -712,7 +738,8 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates
+    IEnumerable<Guid> templates,
+    IEnumerable<Guid> resolvers
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -767,6 +794,14 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         Template = null!,
       });
       db.TemplateProcessorVersions.AddRange(processorLinks);
+      var resolverLinks = resolvers.Select(x => new TemplateResolverVersionData
+      {
+        ResolverId = x,
+        Resolver = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      db.TemplateResolverVersions.AddRange(resolverLinks);
       var templateLinks = templates.Select(x => new TemplateTemplateVersionData
       {
         TemplateRefId = x,

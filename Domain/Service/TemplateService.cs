@@ -9,6 +9,7 @@ public class TemplateService(
   ITemplateRepository repo,
   IPluginRepository plugin,
   IProcessorRepository processor,
+  IResolverRepository resolver,
   ILogger<TemplateService> logger,
   IUserRepository user
 ) : ITemplateService
@@ -164,21 +165,29 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates
+    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<ResolverVersionRef> resolvers
   )
   {
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
     var templateResults = await repo.GetAllVersion(templates);
+    var resolverResults = await resolver.GetAllVersion(resolvers);
     var a =
       from plugin in pluginResults
       from processor in processorResults
       from template in templateResults
-      select (plugin.Select(x => x.Id), processor.Select(x => x.Id), template.Select(x => x.Id));
+      from resolver in resolverResults
+      select (
+        plugin.Select(x => x.Id),
+        processor.Select(x => x.Id),
+        template.Select(x => x.Id),
+        resolver.Select(x => x.Id)
+      );
     return await Task.FromResult(a)
       .ThenAwait(refs =>
       {
-        var (pl, pr, t) = refs;
+        var (pl, pr, t, r) = refs;
         logger.LogInformation(
           "Creating Template Version '{Name}' for '{UserId}', Processors: {@Processors}",
           name,
@@ -191,7 +200,13 @@ public class TemplateService(
           userId,
           pl
         );
-        return repo.CreateVersion(userId, name, record, property, pr, pl, t);
+        logger.LogInformation(
+          "Creating Template Version '{Name}' for '{UserId}', Resolvers: {@Resolvers}",
+          name,
+          userId,
+          r
+        );
+        return repo.CreateVersion(userId, name, record, property, pr, pl, t, r);
       });
   }
 
@@ -202,22 +217,30 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates
+    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<ResolverVersionRef> resolvers
   )
   {
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
     var templateResults = await repo.GetAllVersion(templates);
+    var resolverResults = await resolver.GetAllVersion(resolvers);
     var a =
       from plugin in pluginResults
       from processor in processorResults
       from template in templateResults
-      select (plugin.Select(x => x.Id), processor.Select(x => x.Id), template.Select(x => x.Id));
+      from resolver in resolverResults
+      select (
+        plugin.Select(x => x.Id),
+        processor.Select(x => x.Id),
+        template.Select(x => x.Id),
+        resolver.Select(x => x.Id)
+      );
     return await Task.FromResult(a)
       .ThenAwait(refs =>
       {
-        var (pr, pl, t) = refs;
-        return repo.CreateVersion(userId, id, record, property, pr, pl, t);
+        var (pl, pr, t, r) = refs;
+        return repo.CreateVersion(userId, id, record, property, pr, pl, t, r);
       });
   }
 
@@ -249,7 +272,8 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates
+    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<ResolverVersionRef> resolvers
   )
   {
     return await repo.Get(username, pRecord.Name)
@@ -261,7 +285,16 @@ public class TemplateService(
           .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata));
       })
       .ThenAwait(x =>
-        this.CreateVersion(username, pRecord.Name, record, property, processors, plugins, templates)
+        this.CreateVersion(
+          username,
+          pRecord.Name,
+          record,
+          property,
+          processors,
+          plugins,
+          templates,
+          resolvers
+        )
       );
   }
 }
