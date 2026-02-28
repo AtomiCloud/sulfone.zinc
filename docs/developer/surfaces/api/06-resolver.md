@@ -24,6 +24,7 @@ GET /
 **Authorization**: Not required
 
 **Query Parameters**:
+
 | Name | Type | Required | Description |
 | ------- | ------ | -------- | ------------------------------ |
 | `Owner` | string | no | Filter by owner username |

@@ -96,14 +96,19 @@
       "title": "OpenApiOption",
       "type": "object",
       "additionalProperties": false,
-      "required": ["Title"],
+      "required": [
+        "Title"
+      ],
       "properties": {
         "Title": {
           "type": "string",
           "minLength": 1
         },
         "Description": {
-          "type": ["null", "string"],
+          "type": [
+            "null",
+            "string"
+          ],
           "minLength": 1
         },
         "OpenApiContact": {
@@ -127,7 +132,10 @@
           ]
         },
         "TermsOfService": {
-          "type": ["null", "string"],
+          "type": [
+            "null",
+            "string"
+          ],
           "format": "uri"
         }
       },
@@ -137,15 +145,24 @@
           "additionalProperties": false,
           "properties": {
             "Name": {
-              "type": ["null", "string"],
+              "type": [
+                "null",
+                "string"
+              ],
               "minLength": 1
             },
             "Email": {
-              "type": ["null", "string"],
+              "type": [
+                "null",
+                "string"
+              ],
               "format": "email"
             },
             "Url": {
-              "type": ["null", "string"],
+              "type": [
+                "null",
+                "string"
+              ],
               "format": "uri"
             }
           }
@@ -155,11 +172,17 @@
           "additionalProperties": false,
           "properties": {
             "Name": {
-              "type": ["null", "string"],
+              "type": [
+                "null",
+                "string"
+              ],
               "minLength": 1
             },
             "Url": {
-              "type": ["null", "string"],
+              "type": [
+                "null",
+                "string"
+              ],
               "format": "uri"
             }
           }
@@ -176,35 +199,52 @@
         "CorsOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Name"],
+          "required": [
+            "Name"
+          ],
           "properties": {
             "Name": {
               "type": "string",
               "minLength": 1
             },
             "Origins": {
-              "type": ["array", "null"],
+              "type": [
+                "array",
+                "null"
+              ],
               "items": {
                 "type": "string"
               }
             },
             "Headers": {
-              "type": ["array", "null"],
+              "type": [
+                "array",
+                "null"
+              ],
               "items": {
                 "type": "string"
               }
             },
             "Methods": {
-              "type": ["array", "null"],
+              "type": [
+                "array",
+                "null"
+              ],
               "items": {
                 "type": "string"
               }
             },
             "PreflightMaxAge": {
-              "type": ["integer", "null"]
+              "type": [
+                "integer",
+                "null"
+              ]
             },
             "SupportCredentials": {
-              "type": ["boolean", "null"]
+              "type": [
+                "boolean",
+                "null"
+              ]
             }
           }
         }
@@ -266,7 +306,10 @@
         "MetricConsoleOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Enabled", "ExportInterval"],
+          "required": [
+            "Enabled",
+            "ExportInterval"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -282,7 +325,10 @@
         "MetricOtlpOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Endpoint", "Headers"],
+          "required": [
+            "Endpoint",
+            "Headers"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -339,16 +385,28 @@
           "additionalProperties": false,
           "properties": {
             "AspNetCore": {
-              "type": ["boolean", "null"]
+              "type": [
+                "boolean",
+                "null"
+              ]
             },
             "HttpClient": {
-              "type": ["boolean", "null"]
+              "type": [
+                "boolean",
+                "null"
+              ]
             },
             "Process": {
-              "type": ["boolean", "null"]
+              "type": [
+                "boolean",
+                "null"
+              ]
             },
             "Runtime": {
-              "type": ["boolean", "null"]
+              "type": [
+                "boolean",
+                "null"
+              ]
             }
           }
         }
@@ -400,7 +458,9 @@
         "LogsConsoleOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Enabled"],
+          "required": [
+            "Enabled"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -410,7 +470,10 @@
         "LogsOtlpOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Endpoint", "Headers"],
+          "required": [
+            "Endpoint",
+            "Headers"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -514,7 +577,9 @@
         "TraceConsoleOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Enabled"],
+          "required": [
+            "Enabled"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -524,7 +589,10 @@
         "TraceOtlpOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Endpoint", "Headers"],
+          "required": [
+            "Endpoint",
+            "Headers"
+          ],
           "properties": {
             "Enabled": {
               "type": "boolean"
@@ -713,7 +781,15 @@
         "DatabaseOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Host", "User", "Password", "Port", "Database", "AutoMigrate", "Timeout"],
+          "required": [
+            "Host",
+            "User",
+            "Password",
+            "Port",
+            "Database",
+            "AutoMigrate",
+            "Timeout"
+          ],
           "properties": {
             "Host": {
               "type": "string",
@@ -834,7 +910,10 @@
           ],
           "properties": {
             "User": {
-              "type": ["null", "string"]
+              "type": [
+                "null",
+                "string"
+              ]
             },
             "AbortConnect": {
               "type": "boolean"
@@ -887,7 +966,10 @@
         "HttpClientOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["BaseAddress", "Timeout"],
+          "required": [
+            "BaseAddress",
+            "Timeout"
+          ],
           "properties": {
             "BaseAddress": {
               "type": "string",
@@ -901,7 +983,10 @@
               "minimum": 0.0
             },
             "BearerAuth": {
-              "type": ["null", "string"]
+              "type": [
+                "null",
+                "string"
+              ]
             }
           }
         }
@@ -911,7 +996,12 @@
       "title": "ErrorPortalOption",
       "type": "object",
       "additionalProperties": false,
-      "required": ["Enabled", "EnableExceptionResponse", "Scheme", "Host"],
+      "required": [
+        "Enabled",
+        "EnableExceptionResponse",
+        "Scheme",
+        "Host"
+      ],
       "properties": {
         "Enabled": {
           "type": "boolean"
@@ -933,7 +1023,9 @@
       "title": "AuthOption",
       "type": "object",
       "additionalProperties": false,
-      "required": ["Enabled"],
+      "required": [
+        "Enabled"
+      ],
       "properties": {
         "Enabled": {
           "type": "boolean"
@@ -970,7 +1062,10 @@
               "$ref": "#/definitions/Auth/definitions/TokenValidationParametersOption"
             },
             "Policies": {
-              "type": ["null", "object"],
+              "type": [
+                "null",
+                "object"
+              ],
               "additionalProperties": {
                 "$ref": "#/definitions/Auth/definitions/AuthPolicyOption"
               }
@@ -1009,7 +1104,11 @@
         "AuthPolicyOption": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["Type", "Field", "Target"],
+          "required": [
+            "Type",
+            "Field",
+            "Target"
+          ],
           "properties": {
             "Type": {
               "type": "string",

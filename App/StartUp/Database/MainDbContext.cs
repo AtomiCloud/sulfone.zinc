@@ -219,5 +219,8 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasMany<TemplateResolverVersionData>(x => x.Resolvers)
       .WithOne(x => x.Template)
       .HasForeignKey(x => x.TemplateId);
+
+    var templateResolver = modelBuilder.Entity<TemplateResolverVersionData>();
+    templateResolver.HasIndex(x => new { x.TemplateId, x.ResolverId }).IsUnique();
   }
 }
