@@ -171,7 +171,7 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
     {
       logger.LogError(
         e,
-        "Failed updating resolver {UserId} with Record {@Record} and Metadata {@Metadata}",
+        "Failed creating resolver {UserId} with Record {@Record} and Metadata {@Metadata}",
         userId,
         record.ToJson(),
         metadata.ToJson()

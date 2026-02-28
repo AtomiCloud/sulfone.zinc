@@ -34,7 +34,7 @@ Implement a Resolver Registry system for Zinc following the existing Processor/P
 
 - [ ] Services registered in DI container
 - [ ] MainDbContext updated with DbSets and entity configurations
-- [ ] Feature documentation: `docs/developer/features/06-resolver-registry.md`
+- [ ] Feature documentation: `docs/developer/features/09-resolver-registry.md`
 - [ ] API documentation: `docs/developer/surfaces/api/06-resolver.md`
 - [ ] Dependency documentation: `docs/developer/concepts/05-dependency.md` updated
 - [ ] README updated with Resolver Registry in feature list
@@ -235,7 +235,7 @@ Templates can depend on resolvers, following the same pattern as processors and 
 14. `App/Modules/Cyan/API/V1/Mappers/ResolverMapper.cs`
 15. `App/Modules/Cyan/API/V1/Validators/ResolverValidator.cs`
 16. `App/Modules/Cyan/API/V1/Validators/ResolverVersionValidator.cs`
-17. `docs/developer/features/06-resolver-registry.md`
+17. `docs/developer/features/09-resolver-registry.md`
 18. `docs/developer/surfaces/api/06-resolver.md`
 
 ### Modified Files (8)

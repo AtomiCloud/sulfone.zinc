@@ -100,7 +100,7 @@ public class ResolverController(
     if (sub != userId)
     {
       Result<ResolverPrincipalResp> e = new Unauthorized(
-        "You are not authorized to create a resolver for this user"
+        "You are not authorized to update this resolver"
       ).ToException();
       return this.ReturnResult(e);
     }
@@ -322,7 +322,7 @@ public class ResolverController(
     if (sub != userId)
     {
       Result<ResolverVersionPrincipalResp> e = new Unauthorized(
-        "You are not authorized to create a resolver for this user"
+        "You are not authorized to update this resolver version"
       ).ToException();
       return this.ReturnResult(e);
     }
