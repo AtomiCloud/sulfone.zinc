@@ -97,12 +97,12 @@ public record ResolverData
 
 ## Edge Cases
 
-| Case                         | Behavior         |
-| ---------------------------- | ---------------- |
-| Duplicate name (same user)   | 409 Conflict     |
-| Update non-existent resolver | 404 Not Found    |
-| Delete non-existent resolver | 404 Not Found    |
-| User mismatch                | 403 Forbidden    |
+| Case                         | Behavior      |
+| ---------------------------- | ------------- |
+| Duplicate name (same user)   | 409 Conflict  |
+| Update non-existent resolver | 404 Not Found |
+| Delete non-existent resolver | 404 Not Found |
+| User mismatch                | 403 Forbidden |
 
 ## Dependency References
 
