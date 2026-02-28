@@ -213,7 +213,7 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasForeignKey(x => x.ResolverId);
 
     var resolverVersion = modelBuilder.Entity<ResolverVersionData>();
-    resolverVersion.HasIndex(x => new { x.Id, x.Version }).IsUnique();
+    resolverVersion.HasIndex(x => new { x.ResolverId, x.Version }).IsUnique();
 
     templateVersion
       .HasMany<TemplateResolverVersionData>(x => x.Resolvers)

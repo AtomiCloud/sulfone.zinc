@@ -168,7 +168,7 @@ DELETE /id/{userId}/{resolverId:guid}
 
 **Authorization**: Required (admin only)
 
-**Response**: `200 OK`
+**Response**: `204 No Content`
 
 ---
 

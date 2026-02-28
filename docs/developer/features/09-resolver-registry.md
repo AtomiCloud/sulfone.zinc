@@ -102,7 +102,7 @@ public record ResolverData
 | Duplicate name (same user)   | 409 Conflict     |
 | Update non-existent resolver | 404 Not Found    |
 | Delete non-existent resolver | 404 Not Found    |
-| User mismatch                | 401 Unauthorized |
+| User mismatch                | 403 Forbidden    |
 
 ## Dependency References
 

@@ -499,6 +499,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .Include(x => x.Plugins)
         .Include(x => x.Processors)
         .Include(x => x.Resolvers)
+        .ThenInclude(x => x.Resolver)
         .Include(x => x.TemplateRefs)
         .Where(x => x.Template.UserId == userId && x.Template.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
