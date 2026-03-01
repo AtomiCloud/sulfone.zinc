@@ -19,8 +19,9 @@ Zinc is part of the **CyanPrint Registry Cluster**, providing:
 - **Template Registry** - CRUD for CyanPrint templates with version management
 - **Plugin Registry** - Plugin discovery and metadata
 - **Processor Registry** - Docker-based processor management
+- **Resolver Registry** - Resolution component management
 - **User Management** - OAuth2/OIDC via Descope with API token support
-- **Search** - Full-text search across all registries (templates, plugins, processors)
+- **Search** - Full-text search across all registries (templates, plugins, processors, resolvers)
 
 ### Tech Stack
 

@@ -17,9 +17,13 @@ public record UserData
 
   public IEnumerable<ProcessorData> Processors { get; set; } = null!;
 
+  public IEnumerable<ResolverData> Resolvers { get; set; } = null!;
+
   public IEnumerable<TemplateLikeData> TemplateLikes { get; set; } = null!;
 
   public IEnumerable<PluginLikeData> PluginLikes { get; set; } = null!;
 
   public IEnumerable<ProcessorLikeData> ProcessorLikes { get; set; } = null!;
+
+  public IEnumerable<ResolverLikeData> ResolverLikes { get; set; } = null!;
 };

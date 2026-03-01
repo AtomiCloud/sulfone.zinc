@@ -19,6 +19,7 @@ flowchart TB
         Template[Template Registry]
         Processor[Processor Registry]
         Plugin[Plugin Registry]
+        Resolver[Resolver Registry]
     end
 
     subgraph Features
@@ -43,6 +44,10 @@ flowchart TB
     Plugin --> Version
     Plugin --> Search
     Plugin --> Like
+
+    Resolver --> Version
+    Resolver --> Search
+    Resolver --> Like
 ```
 
 ## Feature Index
@@ -57,6 +62,7 @@ flowchart TB
 | [Full-Text Search](./06-full-text-search.md) | PostgreSQL tsvector search | Fast text queries | `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs:20-64` |
 | [Like System](./07-like-system.md) | User bookmarks + counts | Discovery & popularity | `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs:258-339` |
 | [Token Management](./08-token-management.md) | API token lifecycle | Service authentication | `Domain/Service/TokenService.cs` |
+| [Resolver Registry](./09-resolver-registry.md) | Resolver CRUD + versions | Dependency resolution | `Domain/Service/ResolverService.cs` |
 
 ## Feature Relationships
 

@@ -18,6 +18,7 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
   public DbSet<TemplateVersionData> TemplateVersions { get; set; } = null!;
   public DbSet<TemplateProcessorVersionData> TemplateProcessorVersions { get; set; } = null!;
   public DbSet<TemplatePluginVersionData> TemplatePluginVersions { get; set; } = null!;
+  public DbSet<TemplateResolverVersionData> TemplateResolverVersions { get; set; } = null!;
 
   public DbSet<TemplateTemplateVersionData> TemplateTemplateVersions { get; set; } = null!;
 
@@ -27,10 +28,14 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
   public DbSet<ProcessorData> Processors { get; set; } = null!;
   public DbSet<ProcessorVersionData> ProcessorVersions { get; set; } = null!;
 
+  public DbSet<ResolverData> Resolvers { get; set; } = null!;
+  public DbSet<ResolverVersionData> ResolverVersions { get; set; } = null!;
+
   // likes
   public DbSet<TemplateLikeData> TemplateLikes { get; set; } = null!;
   public DbSet<PluginLikeData> PluginLikes { get; set; } = null!;
   public DbSet<ProcessorLikeData> ProcessorLikes { get; set; } = null!;
+  public DbSet<ResolverLikeData> ResolverLikes { get; set; } = null!;
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
@@ -55,6 +60,8 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .WithOne(x => x.User)
       .HasForeignKey(x => x.UserId);
 
+    user.HasMany<ResolverData>(x => x.Resolvers).WithOne(x => x.User).HasForeignKey(x => x.UserId);
+
     user.HasMany<TemplateLikeData>(x => x.TemplateLikes)
       .WithOne(x => x.User)
       .HasForeignKey(x => x.UserId);
@@ -67,6 +74,10 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .WithOne(x => x.User)
       .HasForeignKey(x => x.UserId);
 
+    user.HasMany<ResolverLikeData>(x => x.ResolverLikes)
+      .WithOne(x => x.User)
+      .HasForeignKey(x => x.UserId);
+
     var templateLikes = modelBuilder.Entity<TemplateLikeData>();
     templateLikes.HasIndex(x => new { x.UserId, x.TemplateId }).IsUnique();
 
@@ -75,6 +86,9 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
 
     var processorLikes = modelBuilder.Entity<ProcessorLikeData>();
     processorLikes.HasIndex(x => new { x.UserId, x.ProcessorId }).IsUnique();
+
+    var resolverLikes = modelBuilder.Entity<ResolverLikeData>();
+    resolverLikes.HasIndex(x => new { x.UserId, x.ResolverId }).IsUnique();
 
     var token = modelBuilder.Entity<TokenData>();
     token.HasIndex(x => x.ApiToken).IsUnique();
@@ -175,5 +189,38 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
 
     var processorVersion = modelBuilder.Entity<ProcessorVersionData>();
     processorVersion.HasIndex(x => new { x.Id, x.Version }).IsUnique();
+
+    var resolver = modelBuilder.Entity<ResolverData>();
+    resolver.HasIndex(x => new { x.UserId, x.Name }).IsUnique();
+
+    resolver
+      .HasGeneratedTsVectorColumn(
+        p => p.SearchVector,
+        "english",
+        p => new { p.Name, p.Description }
+      )
+      .HasIndex(p => p.SearchVector)
+      .HasMethod("GIN");
+
+    resolver
+      .HasMany<ResolverVersionData>(x => x.Versions)
+      .WithOne(x => x.Resolver)
+      .HasForeignKey(x => x.ResolverId);
+
+    resolver
+      .HasMany<ResolverLikeData>(x => x.Likes)
+      .WithOne(x => x.Resolver)
+      .HasForeignKey(x => x.ResolverId);
+
+    var resolverVersion = modelBuilder.Entity<ResolverVersionData>();
+    resolverVersion.HasIndex(x => new { x.ResolverId, x.Version }).IsUnique();
+
+    templateVersion
+      .HasMany<TemplateResolverVersionData>(x => x.Resolvers)
+      .WithOne(x => x.Template)
+      .HasForeignKey(x => x.TemplateId);
+
+    var templateResolver = modelBuilder.Entity<TemplateResolverVersionData>();
+    templateResolver.HasIndex(x => new { x.TemplateId, x.ResolverId }).IsUnique();
   }
 }

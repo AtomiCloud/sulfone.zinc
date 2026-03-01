@@ -111,5 +111,6 @@ public static class TemplateVersionMapper
       Plugins = data.Plugins.Select(x => x.Plugin.ToPrincipal()).ToList(),
       Processors = data.Processors.Select(x => x.Processor.ToPrincipal()).ToList(),
       Templates = data.TemplateRefs.Select(x => x.TemplateRef.ToPrincipal()).ToList(),
+      Resolvers = data.Resolvers.Select(x => x.Resolver.ToPrincipal()).ToList(),
     };
 }

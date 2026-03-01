@@ -32,6 +32,10 @@ public static class DomainServices
 
     s.AddScoped<ITemplateRepository, TemplateRepository>().AutoTrace<ITemplateRepository>();
 
+    s.AddScoped<IResolverService, ResolverService>().AutoTrace<IResolverService>();
+
+    s.AddScoped<IResolverRepository, ResolverRepository>().AutoTrace<IResolverRepository>();
+
     return s;
   }
 }

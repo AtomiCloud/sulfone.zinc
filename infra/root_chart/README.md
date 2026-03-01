@@ -81,6 +81,8 @@ Root Chart to a single Service
 | maindb.auth.database | string | `"sulfone-zinc"` |  |
 | maindb.auth.password | string | `"supersecret"` |  |
 | maindb.auth.username | string | `"admin"` |  |
+| maindb.image.pullPolicy | string | `"IfNotPresent"` |  |
+| maindb.image.repository | string | `"bitnamilegacy/postgresql"` |  |
 | maindb.nameOverride | string | `"main-database"` |  |
 | maindb.primary.persistence.enabled | bool | `false` |  |
 | migration.affinity | object | `{}` |  |
