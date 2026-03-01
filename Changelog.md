@@ -1,3 +1,22 @@
+## [2.4.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.1...v2.4.0) (2026-03-01)
+
+
+### Documentation Updates
+
+* add task spec for CU-86ewrbrfc - Resolver Registry ([ec5684d](https://github.com/AtomiCloud/sulfone.zinc/commit/ec5684d5d9e139d70c4852c5881d992561e4dbb3))
+
+
+### New Features
+
+* **resolver:** add resolver registry system [CU-86ewrbrfc] ([c2e3c80](https://github.com/AtomiCloud/sulfone.zinc/commit/c2e3c80d56f1ff7620b520d8aa224ea3c1083c29))
+
+
+### Bug Fixes
+
+* add unique index for template-resolver links [CU-86ewrbrfc] ([1ce4a9d](https://github.com/AtomiCloud/sulfone.zinc/commit/1ce4a9d3cbf53948cf8a4affd1a83e48b9ac4237))
+* address CodeRabbit local review findings [CU-86ewrbrfc] ([8a5b8f1](https://github.com/AtomiCloud/sulfone.zinc/commit/8a5b8f1ac0d4e29ac2c3d47965bb1ffe8c19e960))
+* address CodeRabbit PR review findings [CU-86ewrbrfc] ([e73b93c](https://github.com/AtomiCloud/sulfone.zinc/commit/e73b93cebc1c0cc93b3c678ed2a9100376124653))
+
 ## [2.3.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.0...v2.3.1) (2026-02-26)
 
 
