@@ -46,6 +46,7 @@ public class ResolverReferenceReqValidator : AbstractValidator<ResolverReference
   {
     this.RuleFor(x => x.Username).NotNull().UsernameValid();
     this.RuleFor(x => x.Name).NotNull().UsernameValid();
+    this.RuleFor(x => x.Files).NotNull();
   }
 }
 

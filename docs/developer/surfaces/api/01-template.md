@@ -353,6 +353,18 @@ GET /api/v1/template/slug/{username}/{name}/versions/{ver}?bumpDownload=true
     }
   ],
   "templates": [],
+  "resolvers": [
+    {
+      "id": "resolver-guid",
+      "version": 1,
+      "createdAt": "2024-01-01T00:00:00Z",
+      "description": "JSON merger resolver",
+      "dockerReference": "atomi/json-merger",
+      "dockerTag": "1",
+      "config": { "strategy": "deep-merge" },
+      "files": ["package.json", "**/tsconfig.json"]
+    }
+  ],
   "createdAt": "2024-01-01T00:00:00Z"
 }
 ```
@@ -422,9 +434,30 @@ POST /api/v1/template/slug/{username}/{name}/versions
       "version": 1
     }
   ],
-  "templates": []
+  "templates": [],
+  "resolvers": [
+    {
+      "username": "atomi",
+      "name": "json-merger",
+      "version": 1,
+      "config": { "strategy": "deep-merge" },
+      "files": ["package.json"]
+    }
+  ]
 }
 ```
+
+**Resolver Request Fields**:
+
+| Field      | Type        | Required | Description                                             |
+| ---------- | ----------- | -------- | ------------------------------------------------------- |
+| `username` | string      | Yes      | Owner of the resolver                                   |
+| `name`     | string      | Yes      | Name of the resolver                                    |
+| `version`  | uint        | No\*     | Version number (0 = latest)                             |
+| `config`   | JsonElement | Yes      | JSON configuration for the resolver (can be empty `{}`) |
+| `files`    | string[]    | Yes      | Glob patterns for file matching (can be empty `[]`)     |
+
+\*If version is 0 or omitted, the latest version is used.
 
 **Response**: `201 Created`
 
@@ -593,7 +626,16 @@ POST /api/v1/template/id/{userId}/{templateId:guid}/versions
       "version": 1
     }
   ],
-  "templates": []
+  "templates": [],
+  "resolvers": [
+    {
+      "username": "atomi",
+      "name": "json-merger",
+      "version": 1,
+      "config": { "strategy": "deep-merge" },
+      "files": ["package.json"]
+    }
+  ]
 }
 ```
 
@@ -707,7 +749,16 @@ POST /api/v1/template/push/{username}
       "version": 1
     }
   ],
-  "templates": []
+  "templates": [],
+  "resolvers": [
+    {
+      "username": "atomi",
+      "name": "json-merger",
+      "version": 1,
+      "config": { "strategy": "deep-merge" },
+      "files": ["package.json"]
+    }
+  ]
 }
 ```
 
@@ -729,6 +780,79 @@ POST /api/v1/template/push/{username}
 - `404 Not Found` - Dependency not found
 
 **Key File**: `TemplateController.cs:358-402`
+
+---
+
+## Architecture
+
+### Resolver Data Flow
+
+When a client POSTs a template version with resolvers, the data flows through the following layers:
+
+```
+cyan.yaml → ResolverReferenceReq (API) → TemplateVersionResolverInput (service) → ResolverLink (repo) → TemplateResolverVersionData (DB) → TemplateVersionResolverRef (domain) → TemplateVersionResolverResp (API response)
+```
+
+**Layer Details:**
+
+1. **API Layer (`ResolverReferenceReq`)**: Receives username, name, version, config, and files from the client
+2. **Service Layer (`TemplateVersionResolverInput`)**: Combines the resolver reference with configuration data
+3. **Repository Layer (`ResolverLink`)**: Links template version to resolver version with stored config/files
+4. **Database Layer (`TemplateResolverVersionData`)**: Persists the relationship and configuration
+5. **Domain Layer (`TemplateVersionResolverRef`)**: Rich domain object combining resolver metadata with config/files
+6. **API Response (`TemplateVersionResolverResp`)**: Full resolver details including config and files for client consumption
+
+### Mapper Decoupling Design
+
+The `ToTemplateResolverResp()` mapper in `TemplateMapper.cs` is intentionally independent from `ResolverMapper.ToResp()` for the following reasons:
+
+1. **Separation of Concerns**: Template API responses need full resolver context (config, files) while resolver-specific endpoints return different response types
+2. **API Stability**: Changes to resolver-specific endpoints don't affect template responses and vice versa
+3. **Clear Ownership**: Template-related response formatting lives in template mappers, resolver-related in resolver mappers
+
+---
+
+## Breaking Changes
+
+### v2.5.0 - Resolver Config and Files Required
+
+When POSTing template versions with resolvers, the `config` and `files` fields are now **required** for each resolver reference:
+
+**Before (v2.4.x):**
+
+```json
+{
+  "resolvers": [
+    {
+      "username": "atomi",
+      "name": "json-merger",
+      "version": 1
+    }
+  ]
+}
+```
+
+**After (v2.5.0+):**
+
+```json
+{
+  "resolvers": [
+    {
+      "username": "atomi",
+      "name": "json-merger",
+      "version": 1,
+      "config": { "strategy": "deep-merge" },
+      "files": ["package.json"]
+    }
+  ]
+}
+```
+
+**Migration Guide:**
+
+- `config`: Can be an empty object `{}` if no configuration is needed
+- `files`: Can be an empty array `[]` if no file patterns are needed
+- Both fields must be present in the request
 
 ---
 

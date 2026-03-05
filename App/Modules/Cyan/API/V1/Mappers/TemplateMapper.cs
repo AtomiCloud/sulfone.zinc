@@ -1,6 +1,7 @@
 using App.Modules.Cyan.API.V1.Models;
 using App.Modules.Users.API.V1;
 using Domain.Model;
+using Domain.Service;
 
 namespace App.Modules.Cyan.API.V1.Mappers;
 
@@ -119,8 +120,12 @@ public static class TemplateVersionMapper
   public static TemplateVersionRef ToDomain(this TemplateReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
-  public static ResolverVersionRef ToDomain(this ResolverReferenceReq req) =>
-    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+  public static TemplateVersionResolverInput ToDomain(this ResolverReferenceReq req) =>
+    new(
+      new ResolverVersionRef(req.Username, req.Name, req.Version == 0 ? null : req.Version),
+      req.Config,
+      req.Files
+    );
 
   // Response
 
@@ -148,6 +153,25 @@ public static class TemplateVersionMapper
       version.Plugins.Select(x => x.ToResp()),
       version.Processors.Select(x => x.ToResp()),
       version.Templates.Select(x => x.ToResp()),
-      version.Resolvers.Select(x => x.ToResp())
+      version.Resolvers.Select(x => x.ToTemplateResolverResp())
+    );
+
+  /// <summary>
+  /// Custom mapper for TemplateVersionResolverRef -> TemplateVersionResolverResp.
+  /// This mapper is independent from ResolverMapper.ToResp() to keep template and resolver
+  /// API concerns fully decoupled.
+  /// </summary>
+  public static TemplateVersionResolverResp ToTemplateResolverResp(
+    this TemplateVersionResolverRef resolverRef
+  ) =>
+    new(
+      resolverRef.Resolver.Id,
+      resolverRef.Resolver.Version,
+      resolverRef.Resolver.CreatedAt,
+      resolverRef.Resolver.Record.Description,
+      resolverRef.Resolver.Property.DockerReference,
+      resolverRef.Resolver.Property.DockerTag,
+      resolverRef.Config,
+      resolverRef.Files
     );
 }

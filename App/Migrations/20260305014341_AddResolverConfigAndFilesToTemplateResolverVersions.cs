@@ -32,15 +32,9 @@ namespace App.Migrations
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-      migrationBuilder.DropColumn(
-        name: "Config",
-        table: "TemplateResolverVersions"
-      );
+      migrationBuilder.DropColumn(name: "Config", table: "TemplateResolverVersions");
 
-      migrationBuilder.DropColumn(
-        name: "Files",
-        table: "TemplateResolverVersions"
-      );
+      migrationBuilder.DropColumn(name: "Files", table: "TemplateResolverVersions");
     }
   }
 }
