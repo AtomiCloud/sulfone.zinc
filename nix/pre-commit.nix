@@ -9,6 +9,7 @@ pre-commit-lib.run {
       enable = true;
       package = formatter;
       excludes = [
+        "packages.lock.json"
         "infra/.*chart.*/templates/.*(yaml|yml)"
         "infra/.*chart.*/.*(MD|md)"
         ".*(Changelog|README).+(MD|md)"
