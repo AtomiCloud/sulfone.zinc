@@ -48,8 +48,8 @@ public class ResolverReferenceReqValidator : AbstractValidator<ResolverReference
     this.RuleFor(x => x.Username).NotNull().UsernameValid();
     this.RuleFor(x => x.Name).NotNull().UsernameValid();
     this.RuleFor(x => x.Config)
-      .Must(c => c.ValueKind != JsonValueKind.Undefined && c.ValueKind != JsonValueKind.Null)
-      .WithMessage("config is required.");
+      .Must(c => c.ValueKind == JsonValueKind.Object)
+      .WithMessage("config must be a valid JSON object.");
     this.RuleFor(x => x.Files).NotNull();
     this.RuleForEach(x => x.Files!)
       .NotNull()
