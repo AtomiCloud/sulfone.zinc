@@ -1,3 +1,4 @@
+using System.Text.Json;
 using App.Error.V1;
 using App.Modules.Cyan.Data.Mappers;
 using App.Modules.Cyan.Data.Models;
@@ -590,7 +591,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates,
-    IEnumerable<Guid> resolvers
+    IEnumerable<ResolverLink> resolvers
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -679,13 +680,15 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
       );
       db.TemplateProcessorVersions.AddRange(processorLinks);
 
-      // save resolver links
+      // save resolver links with Config and Files
       var resolverLinks = resolvers.Select(x => new TemplateResolverVersionData
       {
-        ResolverId = x,
+        ResolverId = x.ResolverId,
         Resolver = null!,
         TemplateId = t.Id,
         Template = null!,
+        Config = JsonSerializer.Serialize(x.Config),
+        Files = x.Files,
       });
       logger.LogInformation(
         "Saving resolvers links for '{Username}/{Name}:{Version}', Resolvers: {@Resolvers}",
@@ -740,7 +743,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates,
-    IEnumerable<Guid> resolvers
+    IEnumerable<ResolverLink> resolvers
   )
   {
     await using var transaction = await db.Database.BeginTransactionAsync();
@@ -795,14 +798,19 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         Template = null!,
       });
       db.TemplateProcessorVersions.AddRange(processorLinks);
+
+      // save resolver links with Config and Files
       var resolverLinks = resolvers.Select(x => new TemplateResolverVersionData
       {
-        ResolverId = x,
+        ResolverId = x.ResolverId,
         Resolver = null!,
         TemplateId = t.Id,
         Template = null!,
+        Config = JsonSerializer.Serialize(x.Config),
+        Files = x.Files,
       });
       db.TemplateResolverVersions.AddRange(resolverLinks);
+
       var templateLinks = templates.Select(x => new TemplateTemplateVersionData
       {
         TemplateRefId = x,

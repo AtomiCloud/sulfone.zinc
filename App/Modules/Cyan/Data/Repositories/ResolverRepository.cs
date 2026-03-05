@@ -438,7 +438,7 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
     }
   }
 
-  public async Task<Result<IEnumerable<ResolverVersionPrincipal>>> GetAllVersion(
+  public async Task<Result<IEnumerable<ResolverVersionWithIdentity>>> GetAllVersion(
     IEnumerable<ResolverVersionRef> references
   )
   {
@@ -447,7 +447,7 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
     {
       logger.LogInformation("Getting all resolvers versions {@Resolvers}", resolverRefs.ToJson());
       if (resolverRefs.IsNullOrEmpty())
-        return Array.Empty<ResolverVersionPrincipal>();
+        return Array.Empty<ResolverVersionWithIdentity>();
       var query = db
         .ResolverVersions.Include(x => x.Resolver)
         .ThenInclude(x => x.User)
@@ -472,10 +472,17 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
         .Select(g => g.OrderByDescending(o => o.Version).First())
         .ToArray();
 
-      var resolvers = grouped.Select(x => x.ToPrincipal()).ToArray();
+      // Map to ResolverVersionWithIdentity to preserve username/name for correlation
+      var resolvers = grouped
+        .Select(x => new ResolverVersionWithIdentity(
+          x.Resolver.User.Username,
+          x.Resolver.Name,
+          x.ToPrincipal()
+        ))
+        .ToArray();
       logger.LogInformation(
         "Resolver References: {@ResolverReferences}",
-        resolvers.Select(x => x.Id)
+        resolvers.Select(x => x.Principal.Id)
       );
 
       if (resolvers.Length != resolverRefs.Length)

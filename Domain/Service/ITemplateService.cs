@@ -58,7 +58,7 @@ public interface ITemplateService
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
@@ -69,7 +69,7 @@ public interface ITemplateService
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(
@@ -95,6 +95,6 @@ public interface ITemplateService
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   );
 }

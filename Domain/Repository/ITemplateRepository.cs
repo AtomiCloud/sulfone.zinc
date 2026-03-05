@@ -1,7 +1,18 @@
+using System.Text.Json;
 using CSharp_Result;
 using Domain.Model;
 
 namespace Domain.Repository;
+
+/// <summary>
+/// Represents a resolved link between a template version and a resolver version,
+/// including the associated config and file patterns.
+/// This is used when passing resolver data to the repository layer.
+/// </summary>
+/// <param name="ResolverId">The resolved resolver version's GUID</param>
+/// <param name="Config">Dynamic JSON configuration object for the resolver</param>
+/// <param name="Files">Glob patterns for file matching</param>
+public record ResolverLink(Guid ResolverId, JsonElement Config, string[] Files);
 
 public interface ITemplateRepository
 {
@@ -58,7 +69,7 @@ public interface ITemplateRepository
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates,
-    IEnumerable<Guid> resolvers
+    IEnumerable<ResolverLink> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> CreateVersion(
@@ -69,7 +80,7 @@ public interface ITemplateRepository
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<Guid> templates,
-    IEnumerable<Guid> resolvers
+    IEnumerable<ResolverLink> resolvers
   );
 
   Task<Result<TemplateVersionPrincipal?>> UpdateVersion(

@@ -166,23 +166,30 @@ public class TemplateService(
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
+    var resolverInputList = resolvers as TemplateVersionResolverInput[] ?? resolvers.ToArray();
+
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
     var templateResults = await repo.GetAllVersion(templates);
-    var resolverResults = await resolver.GetAllVersion(resolvers);
+
+    // Extract refs from resolver inputs and resolve them
+    var resolverRefs = resolverInputList.Select(r => r.Resolver);
+    var resolverResults = await resolver.GetAllVersion(resolverRefs);
+
     var a =
       from plugin in pluginResults
       from processor in processorResults
       from template in templateResults
-      from resolver in resolverResults
+      from resolvedResolvers in resolverResults
       select (
         plugin.Select(x => x.Id),
         processor.Select(x => x.Id),
         template.Select(x => x.Id),
-        resolver.Select(x => x.Id)
+        // Match resolved resolvers back to inputs by Username/Name to preserve Config/Files
+        CreateResolverLinks(resolverInputList, resolvedResolvers)
       );
     return await Task.FromResult(a)
       .ThenAwait(refs =>
@@ -204,7 +211,7 @@ public class TemplateService(
           "Creating Template Version '{Name}' for '{UserId}', Resolvers: {@Resolvers}",
           name,
           userId,
-          r
+          r.Select(x => x.ResolverId)
         );
         return repo.CreateVersion(userId, name, record, property, pr, pl, t, r);
       });
@@ -218,23 +225,30 @@ public class TemplateService(
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
+    var resolverInputList = resolvers as TemplateVersionResolverInput[] ?? resolvers.ToArray();
+
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
     var templateResults = await repo.GetAllVersion(templates);
-    var resolverResults = await resolver.GetAllVersion(resolvers);
+
+    // Extract refs from resolver inputs and resolve them
+    var resolverRefs = resolverInputList.Select(r => r.Resolver);
+    var resolverResults = await resolver.GetAllVersion(resolverRefs);
+
     var a =
       from plugin in pluginResults
       from processor in processorResults
       from template in templateResults
-      from resolver in resolverResults
+      from resolvedResolvers in resolverResults
       select (
         plugin.Select(x => x.Id),
         processor.Select(x => x.Id),
         template.Select(x => x.Id),
-        resolver.Select(x => x.Id)
+        // Match resolved resolvers back to inputs by Username/Name to preserve Config/Files
+        CreateResolverLinks(resolverInputList, resolvedResolvers)
       );
     return await Task.FromResult(a)
       .ThenAwait(refs =>
@@ -273,7 +287,7 @@ public class TemplateService(
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionRef> templates,
-    IEnumerable<ResolverVersionRef> resolvers
+    IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
     return await repo.Get(username, pRecord.Name)
@@ -296,5 +310,34 @@ public class TemplateService(
           resolvers
         )
       );
+  }
+
+  /// <summary>
+  /// Creates ResolverLink records by matching resolved resolver versions back to their original inputs.
+  /// This preserves the Config and Files data through the resolution process.
+  /// </summary>
+  /// <param name="inputs">The original resolver inputs with Config and Files</param>
+  /// <param name="resolvedResolvers">The resolved resolver versions with identity info</param>
+  /// <returns>A collection of ResolverLink records ready for storage</returns>
+  private static ResolverLink[] CreateResolverLinks(
+    TemplateVersionResolverInput[] inputs,
+    IEnumerable<ResolverVersionWithIdentity> resolvedResolvers
+  )
+  {
+    // Create a lookup from (Username, Name) to resolved principal
+    var resolvedLookup = resolvedResolvers.ToDictionary(
+      r => (r.Username, r.Name),
+      r => r.Principal
+    );
+
+    // For each input, find the corresponding resolved principal and create a ResolverLink
+    return inputs
+      .Select(input =>
+      {
+        var key = (input.Resolver.Username, input.Resolver.Name);
+        var principal = resolvedLookup[key];
+        return new ResolverLink(principal.Id, input.Config, input.Files);
+      })
+      .ToArray();
   }
 }
