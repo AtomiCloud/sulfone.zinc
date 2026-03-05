@@ -48,10 +48,10 @@ Template versions can reference resolvers with additional metadata:
 
 ### Type Flow Through Layers
 
-```
+```text
 API Layer                Service Layer             Repository Layer          Domain Model
 -----------              ----------------          -----------------         -------------
-TemplateVersionResolverInput → ResolverLink → TemplateVersionResolverRef
+ResolverReferenceReq → TemplateVersionResolverInput → ResolverLink → TemplateVersionResolverRef
    (ResolverVersionRef,     (ResolverId,        (ResolverVersionPrincipal,
     Config, Files)           Config, Files)       Config, Files)
 ```
