@@ -1,3 +1,19 @@
+## [2.5.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.4.0...v2.5.0) (2026-03-05)
+
+
+### New Features
+
+* **api:** add resolver config and files to template API models ([7c2870f](https://github.com/AtomiCloud/sulfone.zinc/commit/7c2870f139728267878052c072546265c4e91a67))
+* **template:** add resolver config and files to template domain ([e6c8613](https://github.com/AtomiCloud/sulfone.zinc/commit/e6c8613696c7d052cf582e3ca44bee57b5f08157))
+
+
+### Bug Fixes
+
+* address coderabbit local review findings ([f2b58bc](https://github.com/AtomiCloud/sulfone.zinc/commit/f2b58bc3a75e65fb9cc61bfd538a0a5b72fe1ce3))
+* address CodeRabbit review feedback ([c985970](https://github.com/AtomiCloud/sulfone.zinc/commit/c985970537d177ea46979f377ffaad0788bbf28a))
+* enforce JsonValueKind.Object for resolver config validation ([b650344](https://github.com/AtomiCloud/sulfone.zinc/commit/b650344993bafcd9347d76a10ad7a3ad0cc1872a))
+* exclude test directories from treefmt and improve config validation ([6609bdf](https://github.com/AtomiCloud/sulfone.zinc/commit/6609bdfc9adc02a92e741bed83ec1d5729373f0b))
+
 ## [2.4.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.1...v2.4.0) (2026-03-01)
 
 
