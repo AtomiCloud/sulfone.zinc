@@ -1,3 +1,4 @@
+using System.Text.Json;
 using App.Modules.Cyan.API.V1.Models;
 using App.Utility;
 using FluentValidation;
@@ -46,6 +47,14 @@ public class ResolverReferenceReqValidator : AbstractValidator<ResolverReference
   {
     this.RuleFor(x => x.Username).NotNull().UsernameValid();
     this.RuleFor(x => x.Name).NotNull().UsernameValid();
+    this.RuleFor(x => x.Config)
+      .Must(c => c.ValueKind == JsonValueKind.Object)
+      .WithMessage("config must be a valid JSON object.");
+    this.RuleFor(x => x.Files).NotNull();
+    this.RuleForEach(x => x.Files!)
+      .NotNull()
+      .Must(file => !string.IsNullOrWhiteSpace(file))
+      .WithMessage("file pattern cannot be empty or whitespace.");
   }
 }
 

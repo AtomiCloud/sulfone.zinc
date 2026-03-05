@@ -3,6 +3,12 @@ let
   fmt = {
     projectRootFile = "flake.nix";
 
+    # Exclude test directories from formatting
+    settings.excludes = [
+      "UnitTest/*"
+      "IntTest/*"
+    ];
+
     # enable or disable formatters, see https://github.com/numtide/treefmt-nix#supported-programs
     programs = {
       nixpkgs-fmt.enable = true;

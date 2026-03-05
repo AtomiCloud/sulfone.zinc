@@ -3,6 +3,16 @@ using Domain.Model;
 
 namespace Domain.Repository;
 
+/// <summary>
+/// A resolver version principal with its identity information (username and name).
+/// Used for correlating resolved versions back to their original references.
+/// </summary>
+public record ResolverVersionWithIdentity(
+  string Username,
+  string Name,
+  ResolverVersionPrincipal Principal
+);
+
 public interface IResolverRepository
 {
   Task<Result<IEnumerable<ResolverPrincipal>>> Search(ResolverSearch search);
@@ -27,7 +37,7 @@ public interface IResolverRepository
 
   Task<Result<uint?>> IncrementDownload(string username, string name);
 
-  Task<Result<IEnumerable<ResolverVersionPrincipal>>> GetAllVersion(
+  Task<Result<IEnumerable<ResolverVersionWithIdentity>>> GetAllVersion(
     IEnumerable<ResolverVersionRef> references
   );
 

@@ -1,0 +1,34 @@
+{
+  "ticketId": "CU-86ewuf8zx",
+  "ticketTitle": "[Zn] Add resolver config and glob patterns to registry API models",
+  "phase": "plan",
+  "step": "completed",
+  "specVersion": "v1",
+  "specDir": "spec/CU-86ewuf8zx/v1",
+  "plansWritten": true,
+  "plansApproved": true,
+  "plans": [
+    {
+      "id": "plan-1",
+      "file": "spec/CU-86ewuf8zx/v1/plans/plan-1.md",
+      "title": "Domain, Data, Service, and Repository Layer Changes",
+      "status": "pending"
+    },
+    {
+      "id": "plan-2",
+      "file": "spec/CU-86ewuf8zx/v1/plans/plan-2.md",
+      "title": "API Layer Changes (Models, Mappers, Validators, Controller)",
+      "status": "pending"
+    }
+  ],
+  "config": {
+    "implementer": "claude-impl-kimi",
+    "reviewers": ["claude-reviewer-anthropic"],
+    "timeouts": {
+      "implement": 300,
+      "review": 300,
+      "fix": 300
+    },
+    "maxPushCycles": 3
+  }
+}

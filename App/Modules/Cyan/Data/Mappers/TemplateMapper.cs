@@ -1,3 +1,4 @@
+using System.Text.Json;
 using App.Modules.Cyan.Data.Models;
 using App.Modules.Users.Data;
 using Domain.Model;
@@ -111,6 +112,12 @@ public static class TemplateVersionMapper
       Plugins = data.Plugins.Select(x => x.Plugin.ToPrincipal()).ToList(),
       Processors = data.Processors.Select(x => x.Processor.ToPrincipal()).ToList(),
       Templates = data.TemplateRefs.Select(x => x.TemplateRef.ToPrincipal()).ToList(),
-      Resolvers = data.Resolvers.Select(x => x.Resolver.ToPrincipal()).ToList(),
+      Resolvers = data
+        .Resolvers.Select(x => new TemplateVersionResolverRef(
+          x.Resolver.ToPrincipal(),
+          JsonSerializer.Deserialize<JsonElement>(x.Config),
+          x.Files
+        ))
+        .ToList(),
     };
 }

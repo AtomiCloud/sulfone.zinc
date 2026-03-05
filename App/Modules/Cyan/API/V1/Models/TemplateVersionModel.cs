@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace App.Modules.Cyan.API.V1.Models;
 
 // Request
@@ -42,7 +44,13 @@ public record ProcessorReferenceReq(string Username, string Name, uint Version);
 
 public record TemplateReferenceReq(string Username, string Name, uint Version);
 
-public record ResolverReferenceReq(string Username, string Name, uint Version);
+public record ResolverReferenceReq(
+  string Username,
+  string Name,
+  uint Version,
+  JsonElement Config,
+  string[] Files
+);
 
 public record UpdateTemplateVersionReq(string Description);
 
@@ -69,5 +77,16 @@ public record TemplateVersionResp(
   IEnumerable<PluginVersionPrincipalResp> Plugins,
   IEnumerable<ProcessorVersionPrincipalResp> Processors,
   IEnumerable<TemplateVersionPrincipalResp> Templates,
-  IEnumerable<ResolverVersionPrincipalResp> Resolvers
+  IEnumerable<TemplateVersionResolverResp> Resolvers
+);
+
+public record TemplateVersionResolverResp(
+  Guid Id,
+  ulong Version,
+  DateTime CreatedAt,
+  string Description,
+  string DockerReference,
+  string DockerTag,
+  JsonElement Config,
+  string[] Files
 );
