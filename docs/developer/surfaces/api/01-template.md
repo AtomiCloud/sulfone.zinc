@@ -789,7 +789,7 @@ POST /api/v1/template/push/{username}
 
 When a client POSTs a template version with resolvers, the data flows through the following layers:
 
-```
+```text
 cyan.yaml → ResolverReferenceReq (API) → TemplateVersionResolverInput (service) → ResolverLink (repo) → TemplateResolverVersionData (DB) → TemplateVersionResolverRef (domain) → TemplateVersionResolverResp (API response)
 ```
 

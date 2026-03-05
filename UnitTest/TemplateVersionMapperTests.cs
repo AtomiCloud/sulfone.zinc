@@ -3,6 +3,7 @@ using App.Modules.Cyan.API.V1.Mappers;
 using App.Modules.Cyan.API.V1.Models;
 using Domain.Model;
 using Domain.Service;
+using FluentAssertions;
 
 namespace UnitTest;
 
