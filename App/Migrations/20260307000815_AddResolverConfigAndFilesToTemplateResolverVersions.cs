@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,22 +10,20 @@ namespace App.Migrations
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-      // Add Config column as TEXT with default '{}' (JSON string)
       migrationBuilder.AddColumn<string>(
         name: "Config",
         table: "TemplateResolverVersions",
         type: "text",
         nullable: false,
-        defaultValue: "{}"
+        defaultValue: ""
       );
 
-      // Add Files column as TEXT[] with default empty array
       migrationBuilder.AddColumn<string[]>(
         name: "Files",
         table: "TemplateResolverVersions",
         type: "text[]",
         nullable: false,
-        defaultValueSql: "ARRAY[]::text[]"
+        defaultValue: new string[0]
       );
     }
 
