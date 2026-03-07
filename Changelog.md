@@ -1,3 +1,11 @@
+## [2.5.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.0...v2.5.1) (2026-03-07)
+
+
+### Bug Fixes
+
+* incorrect migration for config ([52f4f07](https://github.com/AtomiCloud/sulfone.zinc/commit/52f4f0789ec5f3f412446c4c65266b7d6ebcb41c))
+* incorrect migration for config ([#47](https://github.com/AtomiCloud/sulfone.zinc/issues/47)) ([14b0d14](https://github.com/AtomiCloud/sulfone.zinc/commit/14b0d14819ccf08ba4ef3fabaab8f184b595f905))
+
 ## [2.5.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.4.0...v2.5.0) (2026-03-05)
 
 
