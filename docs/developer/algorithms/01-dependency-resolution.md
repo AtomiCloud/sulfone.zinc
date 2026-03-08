@@ -127,10 +127,63 @@ public async Task<Result<TemplateVersionPrincipal?>> CreateVersion(
 | Missing template   | Invalid template ID        | Returns error before creating version | `TemplateRepository.GetAllVersion()`  |
 | Self-reference     | Template references itself | Not explicitly prevented              | N/A                                   |
 | Circular reference | A→B→A                      | Not explicitly prevented              | N/A                                   |
+| Duplicate refs     | `["ref1", "ref1"]`         | Returns `[entity1, entity1]`          | Repository `GetAllVersion()`          |
 
 > **Note**: Self-referencing template versions and circular dependencies (A→B→A) will silently persist in the database since this algorithm only validates direct references without graph traversal. These can cause infinite loops in future graph-traversal tooling (e.g., dependency resolution at install time). Consider adding pre-CreateVersion validation to detect self-references and simple cycles before persisting.
 
 <!-- TODO: Implement cycle detection in CreateVersion flow before adding graph-traversal consumers -->
+
+## Batch Fetch Behavior
+
+The `GetAllVersion` methods in each repository handle batch entity resolution with the following characteristics:
+
+### Input Processing
+
+Each reference (`PluginVersionRef`, `ProcessorVersionRef`, `TemplateVersionRef`, `ResolverVersionRef`) contains:
+
+- `Username` (string) - Owner's username
+- `Name` (string) - Entity name
+- `Version` (ulong?) - Optional specific version (null = fetch latest)
+
+### Output Guarantees
+
+| Guarantee           | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| Order preservation  | Output order matches input order                   |
+| Duplicate handling  | Duplicate refs return duplicate entities           |
+| Version resolution  | Null version resolves to highest available version |
+| Error deduplication | `notFound` errors list distinct missing refs only  |
+
+### Algorithm
+
+```mermaid
+flowchart TB
+    A[Input: refs array] --> B[Build query predicate]
+    B --> C[Execute query - fetch all matching versions]
+    C --> D[Build lookup keyed by username/name/version]
+    D --> E[Build latest version lookup for null-version resolution]
+    E --> F{All refs found?}
+    F -->|Yes| G[Map input refs to entities in order]
+    F -->|No| H[Return MultipleEntityNotFound]
+    G --> I[Return entity array preserving duplicates]
+```
+
+### Example Scenarios
+
+| Input                            | All Exist? | Output                                    |
+| -------------------------------- | ---------- | ----------------------------------------- |
+| `["a:v1", "a:v1"]`               | Yes        | `[entity_a_v1, entity_a_v1]`              |
+| `["a:v1", "b:v1", "a:v1"]`       | Yes        | `[entity_a_v1, entity_b_v1, entity_a_v1]` |
+| `["a:v1", "missing:v1", "a:v1"]` | No         | Error: `notFound=["missing:v1"]`          |
+| `["a:v1", "a:v2"]`               | Yes        | `[entity_a_v1, entity_a_v2]`              |
+| `["a", "a"]` (null version)      | Yes        | `[entity_a_latest, entity_a_latest]`      |
+
+**Key Files**:
+
+- `App/Modules/Cyan/Data/Repositories/PluginRepository.cs:445-530`
+- `App/Modules/Cyan/Data/Repositories/ProcessorRepository.cs:458-545`
+- `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs:933-1015`
+- `App/Modules/Cyan/Data/Repositories/ResolverRepository.cs:441-530`
 
 ## Error Handling
 

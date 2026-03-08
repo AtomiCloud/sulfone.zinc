@@ -63,6 +63,7 @@ flowchart TB
 | [Like System](./07-like-system.md) | User bookmarks + counts | Discovery & popularity | `App/Modules/Cyan/Data/Repositories/TemplateRepository.cs:258-339` |
 | [Token Management](./08-token-management.md) | API token lifecycle | Service authentication | `Domain/Service/TokenService.cs` |
 | [Resolver Registry](./09-resolver-registry.md) | Resolver CRUD + versions | Dependency resolution | `Domain/Service/ResolverService.cs` |
+| [Batch Reference Resolution](./10-batch-reference-resolution.md) | Multi-entity batch fetch | Efficient dependency validation | `App/Modules/Cyan/Data/Repositories/*Repository.cs` |
 
 ## Feature Relationships
 

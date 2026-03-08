@@ -468,37 +468,64 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
       );
 
       var all = await query.Where(predicate).ToArrayAsync();
-      var grouped = all.GroupBy(x => new { x.Resolver.Name, x.Resolver.User.Username })
-        .Select(g => g.OrderByDescending(o => o.Version).First())
+
+      // Build lookup keyed by (username, name, version) for O(1) access
+      var lookup = all.ToDictionary(
+        x => (x.Resolver.User.Username, x.Resolver.Name, x.Version),
+        x => x
+      );
+
+      // Build latest version lookup keyed by (username, name) for null-version resolution
+      var latestVersionLookup = all.GroupBy(x => (x.Resolver.User.Username, x.Resolver.Name))
+        .ToDictionary(g => g.Key, g => g.Max(x => x.Version));
+
+      // Check for missing refs: null-version refs need to exist in latestVersionLookup,
+      // versioned refs need to exist in lookup
+      var missingRefs = resolverRefs
+        .Select(r =>
+        {
+          var isMissing =
+            r.Version == null
+              ? !latestVersionLookup.ContainsKey((r.Username, r.Name))
+              : !lookup.ContainsKey((r.Username, r.Name, r.Version.Value));
+          return (r.Username, r.Name, r.Version, IsMissing: isMissing);
+        })
+        .Where(r => r.IsMissing)
+        .Select(r =>
+          r.Version == null ? $"{r.Username}/{r.Name}" : $"{r.Username}/{r.Name}:{r.Version}"
+        )
+        .Distinct()
         .ToArray();
 
-      // Map to ResolverVersionWithIdentity to preserve username/name for correlation
-      var resolvers = grouped
-        .Select(x => new ResolverVersionWithIdentity(
-          x.Resolver.User.Username,
-          x.Resolver.Name,
-          x.ToPrincipal()
-        ))
+      if (missingRefs.Length > 0)
+      {
+        var found = lookup.Keys.Select(x => $"{x.Username}/{x.Name}:{x.Version}").ToArray();
+        return new MultipleEntityNotFound(
+          "Resolvers not found",
+          typeof(ResolverPrincipal),
+          missingRefs,
+          found
+        ).ToException();
+      }
+
+      // Map through input refs in order to preserve order and duplicates
+      var resolvers = resolverRefs
+        .Select(r =>
+        {
+          var version = r.Version ?? latestVersionLookup[(r.Username, r.Name)];
+          var entity = lookup[(r.Username, r.Name, version)];
+          return new ResolverVersionWithIdentity(
+            entity.Resolver.User.Username,
+            entity.Resolver.Name,
+            entity.ToPrincipal()
+          );
+        })
         .ToArray();
+
       logger.LogInformation(
         "Resolver References: {@ResolverReferences}",
         resolvers.Select(x => x.Principal.Id)
       );
-
-      if (resolvers.Length != resolverRefs.Length)
-      {
-        var found = grouped
-          .Select(x => $"{x.Resolver.User.Username}/{x.Resolver.Name}:{x.Version}")
-          .ToArray();
-        var search = resolverRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
-        var notFound = search.Except(found).ToArray();
-        return new MultipleEntityNotFound(
-          "Resolvers not found",
-          typeof(ResolverPrincipal),
-          notFound,
-          found
-        ).ToException();
-      }
 
       return resolvers;
     }
