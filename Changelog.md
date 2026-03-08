@@ -1,3 +1,11 @@
+## [2.5.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.1...v2.5.2) (2026-03-08)
+
+
+### Bug Fixes
+
+* [Bug] MultipleEntityNotFound false positive when input contains duplicate references [CU-86ewvnpjf] ([#48](https://github.com/AtomiCloud/sulfone.zinc/issues/48)) ([f123852](https://github.com/AtomiCloud/sulfone.zinc/commit/f12385270921a75bb7dc673373ee08a4f5db0d2f))
+* false positive MultipleEntityNotFound with duplicate refs ([8a3a148](https://github.com/AtomiCloud/sulfone.zinc/commit/8a3a148563e5c0845008473becf2aa542e82428e))
+
 ## [2.5.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.0...v2.5.1) (2026-03-07)
 
 
