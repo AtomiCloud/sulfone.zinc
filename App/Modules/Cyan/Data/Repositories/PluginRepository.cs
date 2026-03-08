@@ -469,28 +469,56 @@ public class PluginRepository(MainDbContext db, ILogger<PluginRepository> logger
       );
 
       var all = await query.Where(predicate).ToArrayAsync();
-      var grouped = all.GroupBy(x => new { x.Plugin.Name, x.Plugin.User.Username })
-        .Select(g => g.OrderByDescending(o => o.Version).First())
+
+      // Build lookup keyed by (username, name, version) for O(1) access
+      var lookup = all.ToDictionary(
+        x => (x.Plugin.User.Username, x.Plugin.Name, x.Version),
+        x => x
+      );
+
+      // Build latest version lookup keyed by (username, name) for null-version resolution
+      var latestVersionLookup = all.GroupBy(x => (x.Plugin.User.Username, x.Plugin.Name))
+        .ToDictionary(g => g.Key, g => g.Max(x => x.Version));
+
+      // Check for missing refs: null-version refs need to exist in latestVersionLookup,
+      // versioned refs need to exist in lookup
+      var missingRefs = pluginRefs
+        .Select(r =>
+        {
+          var isMissing =
+            r.Version == null
+              ? !latestVersionLookup.ContainsKey((r.Username, r.Name))
+              : !lookup.ContainsKey((r.Username, r.Name, r.Version.Value));
+          return (r.Username, r.Name, r.Version, IsMissing: isMissing);
+        })
+        .Where(r => r.IsMissing)
+        .Select(r =>
+          r.Version == null ? $"{r.Username}/{r.Name}" : $"{r.Username}/{r.Name}:{r.Version}"
+        )
+        .Distinct()
         .ToArray();
 
-      var plugins = grouped.Select(x => x.ToPrincipal()).ToArray();
-
-      logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
-
-      if (plugins.Length != pluginRefs.Length)
+      if (missingRefs.Length > 0)
       {
-        var found = grouped
-          .Select(x => $"{x.Plugin.User.Username}/{x.Plugin.Name}:{x.Version}")
-          .ToArray();
-        var search = pluginRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
-        var notFound = search.Except(found);
+        var found = lookup.Keys.Select(x => $"{x.Username}/{x.Name}:{x.Version}").ToArray();
         return new MultipleEntityNotFound(
           "Plugins not found",
           typeof(PluginPrincipal),
-          notFound.ToArray(),
-          found.ToArray()
+          missingRefs,
+          found
         ).ToException();
       }
+
+      // Map through input refs in order to preserve order and duplicates
+      var plugins = pluginRefs
+        .Select(r =>
+        {
+          var version = r.Version ?? latestVersionLookup[(r.Username, r.Name)];
+          return lookup[(r.Username, r.Name, version)].ToPrincipal();
+        })
+        .ToArray();
+
+      logger.LogInformation("Plugin References: {@PluginReferences}", plugins.Select(x => x.Id));
 
       return plugins;
     }

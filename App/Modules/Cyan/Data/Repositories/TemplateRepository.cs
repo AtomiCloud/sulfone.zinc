@@ -960,30 +960,59 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
       );
 
       var all = await query.Where(predicate).ToArrayAsync();
-      var grouped = all.GroupBy(x => new { x.Template.Name, x.Template.User.Username })
-        .Select(g => g.OrderByDescending(o => o.Version).First())
+
+      // Build lookup keyed by (username, name, version) for O(1) access
+      var lookup = all.ToDictionary(
+        x => (x.Template.User.Username, x.Template.Name, x.Version),
+        x => x
+      );
+
+      // Build latest version lookup keyed by (username, name) for null-version resolution
+      var latestVersionLookup = all.GroupBy(x => (x.Template.User.Username, x.Template.Name))
+        .ToDictionary(g => g.Key, g => g.Max(x => x.Version));
+
+      // Check for missing refs: null-version refs need to exist in latestVersionLookup,
+      // versioned refs need to exist in lookup
+      var missingRefs = templateRefs
+        .Select(r =>
+        {
+          var isMissing =
+            r.Version == null
+              ? !latestVersionLookup.ContainsKey((r.Username, r.Name))
+              : !lookup.ContainsKey((r.Username, r.Name, r.Version.Value));
+          return (r.Username, r.Name, r.Version, IsMissing: isMissing);
+        })
+        .Where(r => r.IsMissing)
+        .Select(r =>
+          r.Version == null ? $"{r.Username}/{r.Name}" : $"{r.Username}/{r.Name}:{r.Version}"
+        )
+        .Distinct()
         .ToArray();
 
-      var templates = grouped.Select(x => x.ToPrincipal()).ToArray();
+      if (missingRefs.Length > 0)
+      {
+        var found = lookup.Keys.Select(x => $"{x.Username}/{x.Name}:{x.Version}").ToArray();
+        return new MultipleEntityNotFound(
+          "Templates not found",
+          typeof(TemplatePrincipal),
+          missingRefs,
+          found
+        ).ToException();
+      }
+
+      // Map through input refs in order to preserve order and duplicates
+      var templates = templateRefs
+        .Select(r =>
+        {
+          var version = r.Version ?? latestVersionLookup[(r.Username, r.Name)];
+          return lookup[(r.Username, r.Name, version)].ToPrincipal();
+        })
+        .ToArray();
+
       logger.LogInformation(
         "Template References: {@TemplateReferences}",
         templates.Select(x => x.Id)
       );
-
-      if (templates.Length != templateRefs.Length)
-      {
-        var found = grouped
-          .Select(x => $"{x.Template.User.Username}/{x.Template.Name}:{x.Version}")
-          .ToArray();
-        var search = templateRefs.Select(x => $"{x.Username}/{x.Name}:{x.Version}");
-        var notFound = search.Except(found).ToArray();
-        return new MultipleEntityNotFound(
-          "Templates not found",
-          typeof(TemplatePrincipal),
-          notFound,
-          found
-        ).ToException();
-      }
 
       return templates;
     }
