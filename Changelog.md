@@ -1,3 +1,11 @@
+## [2.6.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.2...v2.6.0) (2026-03-09)
+
+
+### New Features
+
+* remove TemplateResolver unique constraint [CU-86ewvt1u7] ([d61e487](https://github.com/AtomiCloud/sulfone.zinc/commit/d61e487af9a652f2e65d496ef13a31da53dc34f9))
+* remove TemplateResolver unique constraint [CU-86ewvt1u7] ([#49](https://github.com/AtomiCloud/sulfone.zinc/issues/49)) ([3ad35ab](https://github.com/AtomiCloud/sulfone.zinc/commit/3ad35abdd1e1f6255e5993fffb37b187b9de9dfb))
+
 ## [2.5.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.1...v2.5.2) (2026-03-08)
 
 
