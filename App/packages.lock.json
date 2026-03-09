@@ -13,11 +13,11 @@
       },
       "Asp.Versioning.Mvc.ApiExplorer": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "eN3Htqa+CWtzTGuOQZsoMJtcTf85ng+5Fg1NJjrCcGfgTB2BA946b3F7eUuo0sPFAQNcKP1cO5VxcO9WiqbmCA==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "a90gW/4TF/14Bjiwg9LqNtdKGC4G3gu02+uynq3bCISfQm48km5chny4Yg5J4hixQPJUwwJJ9Do1G+jM8L9h3g==",
         "dependencies": {
-          "Asp.Versioning.Mvc": "7.0.0"
+          "Asp.Versioning.Mvc": "8.1.0"
         }
       },
       "CSharp-Result": {
@@ -456,10 +456,10 @@
       },
       "Asp.Versioning.Mvc": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "wcaXjeBLbDcSXLXtEJrVPXd8amRuINd/7SNYwMRrwwzQi6QMeJXqFZrFM+Bs4Tmd1C5pXBT51wedFG+zbN7Mzw==",
+        "resolved": "8.1.0",
+        "contentHash": "BMAJM2sGsTUw5FQ9upKQt6GFoldWksePgGpYjl56WSRvIuE3UxKZh0gAL+wDTIfLshUZm97VCVxlOGyrcjWz9Q==",
         "dependencies": {
-          "Asp.Versioning.Http": "7.0.0"
+          "Asp.Versioning.Http": "8.1.0"
         }
       },
       "CommunityToolkit.HighPerformance": {
