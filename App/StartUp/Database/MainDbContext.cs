@@ -221,6 +221,6 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
       .HasForeignKey(x => x.TemplateId);
 
     var templateResolver = modelBuilder.Entity<TemplateResolverVersionData>();
-    templateResolver.HasIndex(x => new { x.TemplateId, x.ResolverId }).IsUnique();
+    templateResolver.HasIndex(x => new { x.TemplateId, x.ResolverId });
   }
 }

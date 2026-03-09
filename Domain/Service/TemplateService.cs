@@ -324,20 +324,12 @@ public class TemplateService(
     IEnumerable<ResolverVersionWithIdentity> resolvedResolvers
   )
   {
-    // Create a lookup from (Username, Name) to resolved principal
-    var resolvedLookup = resolvedResolvers.ToDictionary(
-      r => (r.Username, r.Name),
-      r => r.Principal
-    );
-
-    // For each input, find the corresponding resolved principal and create a ResolverLink
+    // Match by position (index) to support duplicate resolvers with different configs
     return inputs
-      .Select(input =>
-      {
-        var key = (input.Resolver.Username, input.Resolver.Name);
-        var principal = resolvedLookup[key];
-        return new ResolverLink(principal.Id, input.Config, input.Files);
-      })
+      .Zip(
+        resolvedResolvers,
+        (input, resolved) => new ResolverLink(resolved.Principal.Id, input.Config, input.Files)
+      )
       .ToArray();
   }
 }
