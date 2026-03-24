@@ -13,7 +13,7 @@ Extend the `TemplateTemplateVersionData` junction table to store preset answer c
 ## Acceptance Criteria
 
 - [ ] `TemplateTemplateVersionData` has a `PresetAnswers` column (JSON text, non-nullable, default `{}`)
-- [ ] API request models (`CreateTemplateVersionReq`, `PushTemplateReq`) accept `PresetAnswers` on sub-template references
+- [ ] API request models (`CreateTemplateVersionReq`, `PushTemplateReq`) accept `PresetAnswers` (`JsonElement`) on sub-template references
 - [ ] API response includes preset answers for each sub-template via a new `TemplateVersionTemplateRefResp` type
 - [ ] Domain model `TemplateVersion` exposes preset answers through sub-template references
 - [ ] EF Core migration adds the `PresetAnswers` column with default `{}`
@@ -27,10 +27,11 @@ Extend the `TemplateTemplateVersionData` junction table to store preset answer c
 
 ## Constraints
 
-- Follow the resolver config pattern: `JsonElement` in domain, `string` (JSON text) in data layer, `Dictionary<string, string>` in API requests
+- Follow the resolver config pattern: `JsonElement` in domain, `string` (JSON text) in data layer, `JsonElement` in API requests/responses
 - `PresetAnswers` is non-nullable with default `{}` — always present in requests and responses
 - Position-based matching for sub-template links (same pattern as resolver links after PR #49)
 - PostgreSQL TEXT column for storage (no JSONB indexing needed)
+- Values can be strings, arrays, booleans, or nested objects — `JsonElement` handles all cases
 
 ## Context
 
@@ -42,7 +43,7 @@ The existing resolver feature (`TemplateResolverVersionData`) established the pa
 - Domain layer: `JsonElement Config`
 - API: `JsonElement Config` on request, included in response
 
-Preset answers follow the same shape but are specifically `Dictionary<string, string>` (simpler than the generic `JsonElement` resolver config).
+Preset answers follow the same shape as resolver config (`JsonElement`) — values can be strings, arrays, booleans, or nested objects.
 
 ## Edge Cases
 
