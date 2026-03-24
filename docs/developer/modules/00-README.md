@@ -47,13 +47,13 @@ flowchart TB
 
 ## Module Index
 
-| Module | Purpose | Key Files | Dependencies |
-|--------|---------|-----------|--------------|
-| [StartUp](./01-startup.md) | Configuration, DI setup | `App/StartUp/` | All modules |
-| [Cyan](./02-cyan.md) | Templates, Processors, Plugins | `App/Modules/Cyan/` | Domain, Users |
-| [Users](./03-users.md) | User management, tokens | `App/Modules/Users/` | Domain |
-| [System](./04-system.md) | Health, error handling | `App/Modules/System/` | Common, Domain |
-| [Common](./05-common.md) | Shared components | `App/Modules/Common/` | None |
+| Module                     | Purpose                        | Key Files             | Dependencies   |
+| -------------------------- | ------------------------------ | --------------------- | -------------- |
+| [StartUp](./01-startup.md) | Configuration, DI setup        | `App/StartUp/`        | All modules    |
+| [Cyan](./02-cyan.md)       | Templates, Processors, Plugins | `App/Modules/Cyan/`   | Domain, Users  |
+| [Users](./03-users.md)     | User management, tokens        | `App/Modules/Users/`  | Domain         |
+| [System](./04-system.md)   | Health, error handling         | `App/Modules/System/` | Common, Domain |
+| [Common](./05-common.md)   | Shared components              | `App/Modules/Common/` | None           |
 
 ## Layer Architecture
 
@@ -118,23 +118,23 @@ flowchart LR
 
 ## Responsibilities
 
-| Module | Responsibilities |
-|--------|-----------------|
+| Module      | Responsibilities                                       |
+| ----------- | ------------------------------------------------------ |
 | **StartUp** | App initialization, DI configuration, middleware setup |
-| **Cyan** | Template/Processor/Plugin CRUD, versioning, search |
-| **Users** | User CRUD, token management, authentication |
-| **System** | Health checks, error documentation |
-| **Common** | Shared controller base classes, utilities |
+| **Cyan**    | Template/Processor/Plugin CRUD, versioning, search     |
+| **Users**   | User CRUD, token management, authentication            |
+| **System**  | Health checks, error documentation                     |
+| **Common**  | Shared controller base classes, utilities              |
 
 ## Key Interfaces
 
-| Interface | Implementations | Purpose |
-|-----------|----------------|---------|
-| `ITemplateService` | `TemplateService` | Template business logic |
+| Interface           | Implementations    | Purpose                  |
+| ------------------- | ------------------ | ------------------------ |
+| `ITemplateService`  | `TemplateService`  | Template business logic  |
 | `IProcessorService` | `ProcessorService` | Processor business logic |
-| `IPluginService` | `PluginService` | Plugin business logic |
-| `IUserService` | `UserService` | User business logic |
-| `ITokenService` | `TokenService` | Token business logic |
+| `IPluginService`    | `PluginService`    | Plugin business logic    |
+| `IUserService`      | `UserService`      | User business logic      |
+| `ITokenService`     | `TokenService`     | Token business logic     |
 
 ## Related Sections
 

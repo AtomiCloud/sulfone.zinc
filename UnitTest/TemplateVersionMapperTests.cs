@@ -174,4 +174,163 @@ public class TemplateVersionMapperTests
   }
 
   #endregion
+
+  #region ToDomain(TemplateReferenceReq) Tests
+
+  [Fact]
+  public void ToDomain_TemplateReferenceReq_MapsAllFieldsCorrectly()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("""{"projectName": "my-app", "author": "test"}""").RootElement;
+    var req = new TemplateReferenceReq("atomi", "base-template", 3, presetAnswers);
+
+    // Act
+    var result = req.ToDomain();
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Template.Username.Should().Be("atomi");
+    result.Template.Name.Should().Be("base-template");
+    result.Template.Version.Should().Be(3);
+    result.PresetAnswers.ToString().Should().Be(presetAnswers.ToString());
+  }
+
+  [Fact]
+  public void ToDomain_TemplateReferenceReq_VersionZero_BecomesNull()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("{}").RootElement;
+    var req = new TemplateReferenceReq("atomi", "base-template", 0, presetAnswers);
+
+    // Act
+    var result = req.ToDomain();
+
+    // Assert
+    result.Template.Version.Should().BeNull("version 0 should map to null (latest)");
+  }
+
+  [Fact]
+  public void ToDomain_TemplateReferenceReq_EmptyPresetAnswers_ArePreserved()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("{}").RootElement;
+    var req = new TemplateReferenceReq("user", "template", 1, presetAnswers);
+
+    // Act
+    var result = req.ToDomain();
+
+    // Assert
+    result.PresetAnswers.ValueKind.Should().Be(JsonValueKind.Object);
+  }
+
+  [Fact]
+  public void ToDomain_TemplateReferenceReq_ArrayPresetAnswers_ArePreserved()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("""{"tags": ["go", "web"], "enabled": true}""").RootElement;
+    var req = new TemplateReferenceReq("user", "template", 2, presetAnswers);
+
+    // Act
+    var result = req.ToDomain();
+
+    // Assert
+    result.PresetAnswers.TryGetProperty("tags", out var tags).Should().BeTrue();
+    tags.GetArrayLength().Should().Be(2);
+    result.PresetAnswers.TryGetProperty("enabled", out var enabled).Should().BeTrue();
+    enabled.GetBoolean().Should().BeTrue();
+  }
+
+  #endregion
+
+  #region ToTemplateRefResp Tests
+
+  [Fact]
+  public void ToTemplateRefResp_MapsAllFieldsCorrectly()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("""{"name": "my-project"}""").RootElement;
+    var createdAt = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc);
+
+    var templateRef = new TemplateVersionTemplateRef(
+      new TemplateVersionPrincipal
+      {
+        Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
+        Version = 2,
+        CreatedAt = createdAt,
+        Record = new TemplateVersionRecord { Description = "Test sub-template description" },
+        Property = null,
+      },
+      presetAnswers
+    );
+
+    // Act
+    var result = templateRef.ToTemplateRefResp();
+
+    // Assert
+    result.Id.Should().Be(Guid.Parse("12345678-1234-1234-1234-123456789012"));
+    result.Version.Should().Be(2);
+    result.CreatedAt.Should().Be(createdAt);
+    result.Description.Should().Be("Test sub-template description");
+    result.PresetAnswers.ToString().Should().Be(presetAnswers.ToString());
+  }
+
+  [Fact]
+  public void ToTemplateRefResp_WithEmptyPresetAnswers_MapsCorrectly()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument.Parse("{}").RootElement;
+
+    var templateRef = new TemplateVersionTemplateRef(
+      new TemplateVersionPrincipal
+      {
+        Id = Guid.NewGuid(),
+        Version = 1,
+        CreatedAt = DateTime.UtcNow,
+        Record = new TemplateVersionRecord { Description = "Empty preset answers" },
+        Property = null,
+      },
+      presetAnswers
+    );
+
+    // Act
+    var result = templateRef.ToTemplateRefResp();
+
+    // Assert
+    result.PresetAnswers.ValueKind.Should().Be(JsonValueKind.Object);
+  }
+
+  [Fact]
+  public void ToTemplateRefResp_WithComplexPresetAnswers_MapsCorrectly()
+  {
+    // Arrange
+    var presetAnswers = JsonDocument
+      .Parse("""{"nested": {"key": "value"}, "array": [1, 2, 3], "enabled": true, "name": "test"}""")
+      .RootElement;
+
+    var templateRef = new TemplateVersionTemplateRef(
+      new TemplateVersionPrincipal
+      {
+        Id = Guid.NewGuid(),
+        Version = 1,
+        CreatedAt = DateTime.UtcNow,
+        Record = new TemplateVersionRecord { Description = "Complex preset answers" },
+        Property = null,
+      },
+      presetAnswers
+    );
+
+    // Act
+    var result = templateRef.ToTemplateRefResp();
+
+    // Assert
+    result.PresetAnswers.TryGetProperty("nested", out var nested).Should().BeTrue();
+    nested.TryGetProperty("key", out var key).Should().BeTrue();
+    key.GetString().Should().Be("value");
+    result.PresetAnswers.TryGetProperty("enabled", out var enabled).Should().BeTrue();
+    enabled.GetBoolean().Should().BeTrue();
+    result.PresetAnswers.TryGetProperty("array", out var array).Should().BeTrue();
+    array.GetArrayLength().Should().Be(3);
+  }
+
+  #endregion
 }

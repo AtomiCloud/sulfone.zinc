@@ -352,7 +352,15 @@ GET /api/v1/template/slug/{username}/{name}/versions/{ver}?bumpDownload=true
       "version": 1
     }
   ],
-  "templates": [],
+  "templates": [
+    {
+      "id": "sub-template-guid",
+      "version": 1,
+      "createdAt": "2024-01-01T00:00:00Z",
+      "description": "Base template",
+      "presetAnswers": { "projectName": "my-app", "author": "bot" }
+    }
+  ],
   "resolvers": [
     {
       "id": "resolver-guid",
@@ -434,7 +442,14 @@ POST /api/v1/template/slug/{username}/{name}/versions
       "version": 1
     }
   ],
-  "templates": [],
+  "templates": [
+    {
+      "username": "atomi",
+      "name": "base-template",
+      "version": 1,
+      "presetAnswers": { "projectName": "my-app" }
+    }
+  ],
   "resolvers": [
     {
       "username": "atomi",
@@ -446,6 +461,17 @@ POST /api/v1/template/slug/{username}/{name}/versions
   ]
 }
 ```
+
+**Template Reference Fields**:
+
+| Field           | Type        | Required | Description                                                  |
+| --------------- | ----------- | -------- | ------------------------------------------------------------ |
+| `username`      | string      | Yes      | Owner of the sub-template                                    |
+| `name`          | string      | Yes      | Name of the sub-template                                     |
+| `version`       | uint        | No\*     | Version number (0 = latest)                                  |
+| `presetAnswers` | JsonElement | Yes      | JSON preset answers for the sub-template (can be empty `{}`) |
+
+\*If version is 0 or omitted, the latest version is used.
 
 **Resolver Request Fields**:
 
@@ -626,7 +652,14 @@ POST /api/v1/template/id/{userId}/{templateId:guid}/versions
       "version": 1
     }
   ],
-  "templates": [],
+  "templates": [
+    {
+      "username": "atomi",
+      "name": "base-template",
+      "version": 1,
+      "presetAnswers": { "projectName": "my-app" }
+    }
+  ],
   "resolvers": [
     {
       "username": "atomi",
@@ -749,7 +782,14 @@ POST /api/v1/template/push/{username}
       "version": 1
     }
   ],
-  "templates": [],
+  "templates": [
+    {
+      "username": "atomi",
+      "name": "base-template",
+      "version": 1,
+      "presetAnswers": { "projectName": "my-app" }
+    }
+  ],
   "resolvers": [
     {
       "username": "atomi",
@@ -802,6 +842,23 @@ cyan.yaml → ResolverReferenceReq (API) → TemplateVersionResolverInput (servi
 5. **Domain Layer (`TemplateVersionResolverRef`)**: Rich domain object combining resolver metadata with config/files
 6. **API Response (`TemplateVersionResolverResp`)**: Full resolver details including config and files for client consumption
 
+### Sub-Template Data Flow
+
+When a client POSTs a template version with sub-template references, the data flows through the following layers:
+
+```text
+cyan.yaml → TemplateReferenceReq (API) → TemplateVersionTemplateInput (service) → TemplateLink (repo) → TemplateTemplateVersionData (DB) → TemplateVersionTemplateRef (domain) → TemplateVersionTemplateRefResp (API response)
+```
+
+**Layer Details:**
+
+1. **API Layer (`TemplateReferenceReq`)**: Receives username, name, version, and presetAnswers from the client
+2. **Service Layer (`TemplateVersionTemplateInput`)**: Combines the sub-template reference with preset answer data
+3. **Repository Layer (`TemplateLink`)**: Links template version to sub-template version with stored presetAnswers
+4. **Database Layer (`TemplateTemplateVersionData`)**: Persists the relationship and preset answers as JSON string
+5. **Domain Layer (`TemplateVersionTemplateRef`)**: Rich domain object combining sub-template metadata with presetAnswers
+6. **API Response (`TemplateVersionTemplateRefResp`)**: Sub-template details including presetAnswers for client consumption
+
 ### Mapper Decoupling Design
 
 The `ToTemplateResolverResp()` mapper in `TemplateMapper.cs` is intentionally independent from `ResolverMapper.ToResp()` for the following reasons:
@@ -813,6 +870,45 @@ The `ToTemplateResolverResp()` mapper in `TemplateMapper.cs` is intentionally in
 ---
 
 ## Breaking Changes
+
+### v2.7.0 - Sub-Template Preset Answers Required
+
+When POSTing template versions with sub-template references, the `presetAnswers` field is now **required** for each template reference:
+
+**Before (v2.6.x):**
+
+```json
+{
+  "templates": [
+    {
+      "username": "atomi",
+      "name": "base-template",
+      "version": 1
+    }
+  ]
+}
+```
+
+**After (v2.7.0+):**
+
+```json
+{
+  "templates": [
+    {
+      "username": "atomi",
+      "name": "base-template",
+      "version": 1,
+      "presetAnswers": { "projectName": "my-app", "author": "bot" }
+    }
+  ]
+}
+```
+
+**Migration Guide:**
+
+- `presetAnswers`: Must be a JSON object. Can be empty `{}` if no preset answers are needed
+- Values can be strings, arrays, booleans, or nested objects
+- Response `templates` array now includes `presetAnswers` for each sub-template reference
 
 ### v2.5.0 - Resolver Config and Files Required
 

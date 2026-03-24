@@ -14,6 +14,15 @@ namespace Domain.Repository;
 /// <param name="Files">Glob patterns for file matching</param>
 public record ResolverLink(Guid ResolverId, JsonElement Config, string[] Files);
 
+/// <summary>
+/// Represents a resolved link between a template version and a sub-template version,
+/// including the associated preset answer configurations.
+/// This is used when passing sub-template data to the repository layer.
+/// </summary>
+/// <param name="TemplateId">The resolved sub-template version's GUID</param>
+/// <param name="PresetAnswers">Dynamic JSON preset answer configuration for the sub-template</param>
+public record TemplateLink(Guid TemplateId, JsonElement PresetAnswers);
+
 public interface ITemplateRepository
 {
   Task<Result<IEnumerable<TemplatePrincipal>>> Search(TemplateSearch search);
@@ -68,7 +77,7 @@ public interface ITemplateRepository
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates,
+    IEnumerable<TemplateLink> templates,
     IEnumerable<ResolverLink> resolvers
   );
 
@@ -79,7 +88,7 @@ public interface ITemplateRepository
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates,
+    IEnumerable<TemplateLink> templates,
     IEnumerable<ResolverLink> resolvers
   );
 

@@ -117,8 +117,11 @@ public static class TemplateVersionMapper
   public static ProcessorVersionRef ToDomain(this ProcessorReferenceReq req) =>
     new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
 
-  public static TemplateVersionRef ToDomain(this TemplateReferenceReq req) =>
-    new(req.Username, req.Name, req.Version == 0 ? null : req.Version);
+  public static TemplateVersionTemplateInput ToDomain(this TemplateReferenceReq req) =>
+    new(
+      new TemplateVersionRef(req.Username, req.Name, req.Version == 0 ? null : req.Version),
+      req.PresetAnswers
+    );
 
   public static TemplateVersionResolverInput ToDomain(this ResolverReferenceReq req) =>
     new(
@@ -152,7 +155,7 @@ public static class TemplateVersionMapper
       version.TemplatePrincipal.ToResp(),
       version.Plugins.Select(x => x.ToResp()),
       version.Processors.Select(x => x.ToResp()),
-      version.Templates.Select(x => x.ToResp()),
+      version.Templates.Select(x => x.ToTemplateRefResp()),
       version.Resolvers.Select(x => x.ToTemplateResolverResp())
     );
 
@@ -173,5 +176,19 @@ public static class TemplateVersionMapper
       resolverRef.Resolver.Property.DockerTag,
       resolverRef.Config,
       resolverRef.Files
+    );
+
+  /// <summary>
+  /// Maps TemplateVersionTemplateRef -> TemplateVersionTemplateRefResp.
+  /// </summary>
+  public static TemplateVersionTemplateRefResp ToTemplateRefResp(
+    this TemplateVersionTemplateRef templateRef
+  ) =>
+    new(
+      templateRef.Template.Id,
+      templateRef.Template.Version,
+      templateRef.Template.CreatedAt,
+      templateRef.Template.Record.Description,
+      templateRef.PresetAnswers
     );
 }

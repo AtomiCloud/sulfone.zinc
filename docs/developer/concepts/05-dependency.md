@@ -46,7 +46,14 @@ public class ResolverVersionRef
 
 ## Junction Tables
 
-Dependencies are stored in junction tables:
+Dependencies are stored in junction tables. Some junction tables carry additional configuration:
+
+| Junction Table             | Additional Fields                                                                               |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `TemplateProcessorVersion` | None                                                                                            |
+| `TemplatePluginVersion`    | None                                                                                            |
+| `TemplateTemplateVersion`  | `PresetAnswers` (TEXT, default `'{}'`) — JSON preset answer configurations for the sub-template |
+| `TemplateResolverVersion`  | `Config` (TEXT), `Files` (TEXT[]) — resolver configuration                                      |
 
 ```mermaid
 flowchart TB

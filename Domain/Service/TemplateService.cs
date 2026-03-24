@@ -165,15 +165,16 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
     var resolverInputList = resolvers as TemplateVersionResolverInput[] ?? resolvers.ToArray();
+    var templateInputList = templates as TemplateVersionTemplateInput[] ?? templates.ToArray();
 
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
-    var templateResults = await repo.GetAllVersion(templates);
+    var templateResults = await repo.GetAllVersion(templateInputList.Select(t => t.Template));
 
     // Extract refs from resolver inputs and resolve them
     var resolverRefs = resolverInputList.Select(r => r.Resolver);
@@ -187,7 +188,7 @@ public class TemplateService(
       select (
         plugin.Select(x => x.Id),
         processor.Select(x => x.Id),
-        template.Select(x => x.Id),
+        CreateTemplateLinks(templateInputList, template),
         // Match resolved resolvers back to inputs by Username/Name to preserve Config/Files
         CreateResolverLinks(resolverInputList, resolvedResolvers)
       );
@@ -224,15 +225,16 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
     var resolverInputList = resolvers as TemplateVersionResolverInput[] ?? resolvers.ToArray();
+    var templateInputList = templates as TemplateVersionTemplateInput[] ?? templates.ToArray();
 
     var pluginResults = await plugin.GetAllVersion(plugins);
     var processorResults = await processor.GetAllVersion(processors);
-    var templateResults = await repo.GetAllVersion(templates);
+    var templateResults = await repo.GetAllVersion(templateInputList.Select(t => t.Template));
 
     // Extract refs from resolver inputs and resolve them
     var resolverRefs = resolverInputList.Select(r => r.Resolver);
@@ -246,7 +248,7 @@ public class TemplateService(
       select (
         plugin.Select(x => x.Id),
         processor.Select(x => x.Id),
-        template.Select(x => x.Id),
+        CreateTemplateLinks(templateInputList, template),
         // Match resolved resolvers back to inputs by Username/Name to preserve Config/Files
         CreateResolverLinks(resolverInputList, resolvedResolvers)
       );
@@ -286,7 +288,7 @@ public class TemplateService(
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   )
   {
@@ -329,6 +331,27 @@ public class TemplateService(
       .Zip(
         resolvedResolvers,
         (input, resolved) => new ResolverLink(resolved.Principal.Id, input.Config, input.Files)
+      )
+      .ToArray();
+  }
+
+  /// <summary>
+  /// Creates TemplateLink records by matching resolved sub-template versions back to their original inputs.
+  /// This preserves the PresetAnswers data through the resolution process.
+  /// </summary>
+  /// <param name="inputs">The original sub-template inputs with PresetAnswers</param>
+  /// <param name="resolvedTemplates">The resolved sub-template versions</param>
+  /// <returns>A collection of TemplateLink records ready for storage</returns>
+  private static TemplateLink[] CreateTemplateLinks(
+    TemplateVersionTemplateInput[] inputs,
+    IEnumerable<TemplateVersionPrincipal> resolvedTemplates
+  )
+  {
+    // Match by position (index) to support duplicate sub-templates with different preset answers
+    return inputs
+      .Zip(
+        resolvedTemplates,
+        (input, resolved) => new TemplateLink(resolved.Id, input.PresetAnswers)
       )
       .ToArray();
   }

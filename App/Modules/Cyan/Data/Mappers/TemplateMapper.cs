@@ -111,7 +111,14 @@ public static class TemplateVersionMapper
       TemplatePrincipal = data.Template.ToPrincipal(),
       Plugins = data.Plugins.Select(x => x.Plugin.ToPrincipal()).ToList(),
       Processors = data.Processors.Select(x => x.Processor.ToPrincipal()).ToList(),
-      Templates = data.TemplateRefs.Select(x => x.TemplateRef.ToPrincipal()).ToList(),
+      Templates = data
+        .TemplateRefs.Select(x => new TemplateVersionTemplateRef(
+          x.TemplateRef.ToPrincipal(),
+          JsonSerializer.Deserialize<JsonElement>(
+            string.IsNullOrEmpty(x.PresetAnswers) ? "{}" : x.PresetAnswers
+          )
+        ))
+        .ToList(),
       Resolvers = data
         .Resolvers.Select(x => new TemplateVersionResolverRef(
           x.Resolver.ToPrincipal(),

@@ -4,13 +4,13 @@ Zinc is the **Registry Backend** for the CyanPrint platform - an ASP.NET Core AP
 
 ## Quick Links
 
-| Section | Description |
-|---------|-------------|
-| [Developer Documentation](developer/00-README.md) | Complete developer guide |
-| [Getting Started](developer/01-getting-started.md) | Run Zinc locally |
-| [Features](developer/features/00-README.md) | All features and capabilities |
-| [API Reference](developer/surfaces/api/00-README.md) | REST API endpoints |
-| [Architecture](developer/02-architecture.md) | User flows and key decisions |
+| Section                                              | Description                   |
+| ---------------------------------------------------- | ----------------------------- |
+| [Developer Documentation](developer/00-README.md)    | Complete developer guide      |
+| [Getting Started](developer/01-getting-started.md)   | Run Zinc locally              |
+| [Features](developer/features/00-README.md)          | All features and capabilities |
+| [API Reference](developer/surfaces/api/00-README.md) | REST API endpoints            |
+| [Architecture](developer/02-architecture.md)         | User flows and key decisions  |
 
 ## About Zinc
 
@@ -67,6 +67,7 @@ graph TB
 ## Documentation Structure
 
 ### Developer Documentation
+
 - [README](developer/00-README.md) - Overview and quick reference
 - [Getting Started](developer/01-getting-started.md) - Setup and run locally
 - [Features](developer/features/00-README.md) - Complete feature guide
@@ -75,15 +76,16 @@ graph TB
 
 ## Related Components
 
-| Component | Description | Link |
-|-----------|-------------|------|
-| **Argon** | Registry Frontend (SvelteKit) | [GitHub](https://github.com/AtomiCloud/argon) |
-| **Iridium** | CyanPrint CLI (Rust) | [GitHub](https://github.com/AtomiCloud/iridium) |
-| **Boron** | Execution Coordinator (Go) | [GitHub](https://github.com/AtomiCloud/boron) |
+| Component   | Description                   | Link                                            |
+| ----------- | ----------------------------- | ----------------------------------------------- |
+| **Argon**   | Registry Frontend (SvelteKit) | [GitHub](https://github.com/AtomiCloud/argon)   |
+| **Iridium** | CyanPrint CLI (Rust)          | [GitHub](https://github.com/AtomiCloud/iridium) |
+| **Boron**   | Execution Coordinator (Go)    | [GitHub](https://github.com/AtomiCloud/boron)   |
 
 ## Contributing
 
 See [Developer Documentation](developer/) for:
+
 - Code patterns and conventions
 - Internal implementation details
 - Module architecture

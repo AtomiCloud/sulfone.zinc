@@ -57,7 +57,7 @@ public interface ITemplateService
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   );
 
@@ -68,7 +68,7 @@ public interface ITemplateService
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   );
 
@@ -94,7 +94,7 @@ public interface ITemplateService
     TemplateVersionProperty? property,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
-    IEnumerable<TemplateVersionRef> templates,
+    IEnumerable<TemplateVersionTemplateInput> templates,
     IEnumerable<TemplateVersionResolverInput> resolvers
   );
 }

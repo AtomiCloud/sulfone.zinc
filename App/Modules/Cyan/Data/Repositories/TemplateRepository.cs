@@ -502,6 +502,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         .Include(x => x.Resolvers)
         .ThenInclude(x => x.Resolver)
         .Include(x => x.TemplateRefs)
+        .ThenInclude(x => x.TemplateRef)
         .Where(x => x.Template.UserId == userId && x.Template.Id == id && x.Version == version)
         .FirstOrDefaultAsync();
 
@@ -590,7 +591,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates,
+    IEnumerable<TemplateLink> templates,
     IEnumerable<ResolverLink> resolvers
   )
   {
@@ -699,13 +700,14 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
       );
       db.TemplateResolverVersions.AddRange(resolverLinks);
 
-      // save template links
+      // save template links with PresetAnswers
       var templateLinks = templates.Select(x => new TemplateTemplateVersionData
       {
-        TemplateRefId = x,
+        TemplateRefId = x.TemplateId,
         TemplateRef = null!,
         TemplateId = t.Id,
         Template = null!,
+        PresetAnswers = JsonSerializer.Serialize(x.PresetAnswers),
       });
       logger.LogInformation(
         "Saving templates links for '{Username}/{Name}:{Version}', Templates: {@Templates}",
@@ -742,7 +744,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     TemplateVersionProperty? property,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
-    IEnumerable<Guid> templates,
+    IEnumerable<TemplateLink> templates,
     IEnumerable<ResolverLink> resolvers
   )
   {
@@ -811,12 +813,14 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
       });
       db.TemplateResolverVersions.AddRange(resolverLinks);
 
+      // save template links with PresetAnswers
       var templateLinks = templates.Select(x => new TemplateTemplateVersionData
       {
-        TemplateRefId = x,
+        TemplateRefId = x.TemplateId,
         TemplateRef = null!,
         TemplateId = t.Id,
         Template = null!,
+        PresetAnswers = JsonSerializer.Serialize(x.PresetAnswers),
       });
       db.TemplateTemplateVersions.AddRange(templateLinks);
 
