@@ -189,6 +189,7 @@ public static class TemplateVersionMapper
       templateRef.Template.Version,
       templateRef.Template.CreatedAt,
       templateRef.Template.Record.Description,
+      templateRef.Template.Property?.ToResp(),
       templateRef.PresetAnswers
     );
 }

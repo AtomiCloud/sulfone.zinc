@@ -271,6 +271,7 @@ public class TemplateVersionMapperTests
     result.Version.Should().Be(2);
     result.CreatedAt.Should().Be(createdAt);
     result.Description.Should().Be("Test sub-template description");
+    result.Properties.Should().BeNull();
     result.PresetAnswers.ToString().Should().Be(presetAnswers.ToString());
   }
 

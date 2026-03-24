@@ -101,5 +101,6 @@ public record TemplateVersionTemplateRefResp(
   ulong Version,
   DateTime CreatedAt,
   string Description,
+  TemplatePropertyResp? Properties,
   JsonElement PresetAnswers
 );
