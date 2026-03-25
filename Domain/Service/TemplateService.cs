@@ -296,7 +296,7 @@ public class TemplateService(
       .ThenAwait(async p =>
       {
         if (p != null)
-          return await repo.Update(p.Principal.UserId, pRecord.Name, metadata);
+          return await repo.Update(username, pRecord.Name, metadata);
         return await user.GetByUsername(username)
           .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata));
       })
