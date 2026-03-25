@@ -1,140 +1,129 @@
-## [2.6.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.2...v2.6.0) (2026-03-09)
-
+## [Unreleased]
 
 ### New Features
 
-* remove TemplateResolver unique constraint [CU-86ewvt1u7] ([d61e487](https://github.com/AtomiCloud/sulfone.zinc/commit/d61e487af9a652f2e65d496ef13a31da53dc34f9))
-* remove TemplateResolver unique constraint [CU-86ewvt1u7] ([#49](https://github.com/AtomiCloud/sulfone.zinc/issues/49)) ([3ad35ab](https://github.com/AtomiCloud/sulfone.zinc/commit/3ad35abdd1e1f6255e5993fffb37b187b9de9dfb))
+- **template:** add preset answers config to sub-template references [CU-86ex0ycvb]
+
+## [2.6.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.2...v2.6.0) (2026-03-09)
+
+### New Features
+
+- remove TemplateResolver unique constraint [CU-86ewvt1u7] ([d61e487](https://github.com/AtomiCloud/sulfone.zinc/commit/d61e487af9a652f2e65d496ef13a31da53dc34f9))
+- remove TemplateResolver unique constraint [CU-86ewvt1u7] ([#49](https://github.com/AtomiCloud/sulfone.zinc/issues/49)) ([3ad35ab](https://github.com/AtomiCloud/sulfone.zinc/commit/3ad35abdd1e1f6255e5993fffb37b187b9de9dfb))
 
 ## [2.5.2](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.1...v2.5.2) (2026-03-08)
 
-
 ### Bug Fixes
 
-* [Bug] MultipleEntityNotFound false positive when input contains duplicate references [CU-86ewvnpjf] ([#48](https://github.com/AtomiCloud/sulfone.zinc/issues/48)) ([f123852](https://github.com/AtomiCloud/sulfone.zinc/commit/f12385270921a75bb7dc673373ee08a4f5db0d2f))
-* false positive MultipleEntityNotFound with duplicate refs ([8a3a148](https://github.com/AtomiCloud/sulfone.zinc/commit/8a3a148563e5c0845008473becf2aa542e82428e))
+- [Bug] MultipleEntityNotFound false positive when input contains duplicate references [CU-86ewvnpjf] ([#48](https://github.com/AtomiCloud/sulfone.zinc/issues/48)) ([f123852](https://github.com/AtomiCloud/sulfone.zinc/commit/f12385270921a75bb7dc673373ee08a4f5db0d2f))
+- false positive MultipleEntityNotFound with duplicate refs ([8a3a148](https://github.com/AtomiCloud/sulfone.zinc/commit/8a3a148563e5c0845008473becf2aa542e82428e))
 
 ## [2.5.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.5.0...v2.5.1) (2026-03-07)
 
-
 ### Bug Fixes
 
-* incorrect migration for config ([52f4f07](https://github.com/AtomiCloud/sulfone.zinc/commit/52f4f0789ec5f3f412446c4c65266b7d6ebcb41c))
-* incorrect migration for config ([#47](https://github.com/AtomiCloud/sulfone.zinc/issues/47)) ([14b0d14](https://github.com/AtomiCloud/sulfone.zinc/commit/14b0d14819ccf08ba4ef3fabaab8f184b595f905))
+- incorrect migration for config ([52f4f07](https://github.com/AtomiCloud/sulfone.zinc/commit/52f4f0789ec5f3f412446c4c65266b7d6ebcb41c))
+- incorrect migration for config ([#47](https://github.com/AtomiCloud/sulfone.zinc/issues/47)) ([14b0d14](https://github.com/AtomiCloud/sulfone.zinc/commit/14b0d14819ccf08ba4ef3fabaab8f184b595f905))
 
 ## [2.5.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.4.0...v2.5.0) (2026-03-05)
 
-
 ### New Features
 
-* **api:** add resolver config and files to template API models ([7c2870f](https://github.com/AtomiCloud/sulfone.zinc/commit/7c2870f139728267878052c072546265c4e91a67))
-* **template:** add resolver config and files to template domain ([e6c8613](https://github.com/AtomiCloud/sulfone.zinc/commit/e6c8613696c7d052cf582e3ca44bee57b5f08157))
-
+- **api:** add resolver config and files to template API models ([7c2870f](https://github.com/AtomiCloud/sulfone.zinc/commit/7c2870f139728267878052c072546265c4e91a67))
+- **template:** add resolver config and files to template domain ([e6c8613](https://github.com/AtomiCloud/sulfone.zinc/commit/e6c8613696c7d052cf582e3ca44bee57b5f08157))
 
 ### Bug Fixes
 
-* address coderabbit local review findings ([f2b58bc](https://github.com/AtomiCloud/sulfone.zinc/commit/f2b58bc3a75e65fb9cc61bfd538a0a5b72fe1ce3))
-* address CodeRabbit review feedback ([c985970](https://github.com/AtomiCloud/sulfone.zinc/commit/c985970537d177ea46979f377ffaad0788bbf28a))
-* enforce JsonValueKind.Object for resolver config validation ([b650344](https://github.com/AtomiCloud/sulfone.zinc/commit/b650344993bafcd9347d76a10ad7a3ad0cc1872a))
-* exclude test directories from treefmt and improve config validation ([6609bdf](https://github.com/AtomiCloud/sulfone.zinc/commit/6609bdfc9adc02a92e741bed83ec1d5729373f0b))
+- address coderabbit local review findings ([f2b58bc](https://github.com/AtomiCloud/sulfone.zinc/commit/f2b58bc3a75e65fb9cc61bfd538a0a5b72fe1ce3))
+- address CodeRabbit review feedback ([c985970](https://github.com/AtomiCloud/sulfone.zinc/commit/c985970537d177ea46979f377ffaad0788bbf28a))
+- enforce JsonValueKind.Object for resolver config validation ([b650344](https://github.com/AtomiCloud/sulfone.zinc/commit/b650344993bafcd9347d76a10ad7a3ad0cc1872a))
+- exclude test directories from treefmt and improve config validation ([6609bdf](https://github.com/AtomiCloud/sulfone.zinc/commit/6609bdfc9adc02a92e741bed83ec1d5729373f0b))
 
 ## [2.4.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.1...v2.4.0) (2026-03-01)
 
-
 ### Documentation Updates
 
-* add task spec for CU-86ewrbrfc - Resolver Registry ([ec5684d](https://github.com/AtomiCloud/sulfone.zinc/commit/ec5684d5d9e139d70c4852c5881d992561e4dbb3))
-
+- add task spec for CU-86ewrbrfc - Resolver Registry ([ec5684d](https://github.com/AtomiCloud/sulfone.zinc/commit/ec5684d5d9e139d70c4852c5881d992561e4dbb3))
 
 ### New Features
 
-* **resolver:** add resolver registry system [CU-86ewrbrfc] ([c2e3c80](https://github.com/AtomiCloud/sulfone.zinc/commit/c2e3c80d56f1ff7620b520d8aa224ea3c1083c29))
-
+- **resolver:** add resolver registry system [CU-86ewrbrfc] ([c2e3c80](https://github.com/AtomiCloud/sulfone.zinc/commit/c2e3c80d56f1ff7620b520d8aa224ea3c1083c29))
 
 ### Bug Fixes
 
-* add unique index for template-resolver links [CU-86ewrbrfc] ([1ce4a9d](https://github.com/AtomiCloud/sulfone.zinc/commit/1ce4a9d3cbf53948cf8a4affd1a83e48b9ac4237))
-* address CodeRabbit local review findings [CU-86ewrbrfc] ([8a5b8f1](https://github.com/AtomiCloud/sulfone.zinc/commit/8a5b8f1ac0d4e29ac2c3d47965bb1ffe8c19e960))
-* address CodeRabbit PR review findings [CU-86ewrbrfc] ([e73b93c](https://github.com/AtomiCloud/sulfone.zinc/commit/e73b93cebc1c0cc93b3c678ed2a9100376124653))
+- add unique index for template-resolver links [CU-86ewrbrfc] ([1ce4a9d](https://github.com/AtomiCloud/sulfone.zinc/commit/1ce4a9d3cbf53948cf8a4affd1a83e48b9ac4237))
+- address CodeRabbit local review findings [CU-86ewrbrfc] ([8a5b8f1](https://github.com/AtomiCloud/sulfone.zinc/commit/8a5b8f1ac0d4e29ac2c3d47965bb1ffe8c19e960))
+- address CodeRabbit PR review findings [CU-86ewrbrfc] ([e73b93c](https://github.com/AtomiCloud/sulfone.zinc/commit/e73b93cebc1c0cc93b3c678ed2a9100376124653))
 
 ## [2.3.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.3.0...v2.3.1) (2026-02-26)
 
-
 ### Documentation Updates
 
-* add Zinc registry design and integration documentation ([d0015ae](https://github.com/AtomiCloud/sulfone.zinc/commit/d0015ae67ba844ca84e63d4937be5a85e042b4c6))
-* address additional CodeRabbit review feedback ([7fa2829](https://github.com/AtomiCloud/sulfone.zinc/commit/7fa28298257e4949b2c43a187c9da63f6fb40939))
-* address additional CodeRabbit review feedback ([ee903f0](https://github.com/AtomiCloud/sulfone.zinc/commit/ee903f0ce2401f6e83af1fe833cd4b5f94e81eb0))
-* address additional CodeRabbit review feedback ([3d4949d](https://github.com/AtomiCloud/sulfone.zinc/commit/3d4949d07e98eae238cb1d054c79e7b3f5a47c66))
-* address CodeRabbit review feedback ([733492e](https://github.com/AtomiCloud/sulfone.zinc/commit/733492ee77f0e11f0b4b3d999a740eed966e352f))
-* fix all remaining CodeRabbit review issues ([9737f2f](https://github.com/AtomiCloud/sulfone.zinc/commit/9737f2f62d6abdadd0435670f7cefdf05d10274b))
-* fix CodeRabbit local review findings ([4bdf799](https://github.com/AtomiCloud/sulfone.zinc/commit/4bdf7992d82da5d4456957cf2a976fbc27eb61b3))
-* fix CodeRabbit review issues in documentation ([d47292f](https://github.com/AtomiCloud/sulfone.zinc/commit/d47292fc70b083e6de5a92e80f790360a19ef80d))
-* fix FTS link in startup module ([e8ab10c](https://github.com/AtomiCloud/sulfone.zinc/commit/e8ab10cdb8021c6fdbef5cd76d8828778b15007e))
-* fix LikeRaceConditionError HTTP status and route parameter naming ([6942b9e](https://github.com/AtomiCloud/sulfone.zinc/commit/6942b9e015be0f4afe6c0efe414770705318326a))
-* fix remaining CodeRabbit review issues ([9ee9667](https://github.com/AtomiCloud/sulfone.zinc/commit/9ee9667199b1904eadbcd5340e72b03e01dcdc85))
-* fix Unlike sequence diagram endpoint format ([566990d](https://github.com/AtomiCloud/sulfone.zinc/commit/566990d1244af42dba9921628e837ca6ac3ba109))
-* use consistent {name} parameter in template API routes ([ec4fb1c](https://github.com/AtomiCloud/sulfone.zinc/commit/ec4fb1c4db91f91b05fca7460ff263cacf887aa9))
+- add Zinc registry design and integration documentation ([d0015ae](https://github.com/AtomiCloud/sulfone.zinc/commit/d0015ae67ba844ca84e63d4937be5a85e042b4c6))
+- address additional CodeRabbit review feedback ([7fa2829](https://github.com/AtomiCloud/sulfone.zinc/commit/7fa28298257e4949b2c43a187c9da63f6fb40939))
+- address additional CodeRabbit review feedback ([ee903f0](https://github.com/AtomiCloud/sulfone.zinc/commit/ee903f0ce2401f6e83af1fe833cd4b5f94e81eb0))
+- address additional CodeRabbit review feedback ([3d4949d](https://github.com/AtomiCloud/sulfone.zinc/commit/3d4949d07e98eae238cb1d054c79e7b3f5a47c66))
+- address CodeRabbit review feedback ([733492e](https://github.com/AtomiCloud/sulfone.zinc/commit/733492ee77f0e11f0b4b3d999a740eed966e352f))
+- fix all remaining CodeRabbit review issues ([9737f2f](https://github.com/AtomiCloud/sulfone.zinc/commit/9737f2f62d6abdadd0435670f7cefdf05d10274b))
+- fix CodeRabbit local review findings ([4bdf799](https://github.com/AtomiCloud/sulfone.zinc/commit/4bdf7992d82da5d4456957cf2a976fbc27eb61b3))
+- fix CodeRabbit review issues in documentation ([d47292f](https://github.com/AtomiCloud/sulfone.zinc/commit/d47292fc70b083e6de5a92e80f790360a19ef80d))
+- fix FTS link in startup module ([e8ab10c](https://github.com/AtomiCloud/sulfone.zinc/commit/e8ab10cdb8021c6fdbef5cd76d8828778b15007e))
+- fix LikeRaceConditionError HTTP status and route parameter naming ([6942b9e](https://github.com/AtomiCloud/sulfone.zinc/commit/6942b9e015be0f4afe6c0efe414770705318326a))
+- fix remaining CodeRabbit review issues ([9ee9667](https://github.com/AtomiCloud/sulfone.zinc/commit/9ee9667199b1904eadbcd5340e72b03e01dcdc85))
+- fix Unlike sequence diagram endpoint format ([566990d](https://github.com/AtomiCloud/sulfone.zinc/commit/566990d1244af42dba9921628e837ca6ac3ba109))
+- use consistent {name} parameter in template API routes ([ec4fb1c](https://github.com/AtomiCloud/sulfone.zinc/commit/ec4fb1c4db91f91b05fca7460ff263cacf887aa9))
 
 ## [2.3.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.2.0...v2.3.0) (2025-09-20)
 
-
 ### New Features
 
-* **docker:** allow dots in docker tags ([#40](https://github.com/AtomiCloud/sulfone.zinc/issues/40)) ([2091544](https://github.com/AtomiCloud/sulfone.zinc/commit/209154445c73f7211e1bcf8bca867bd0b81ba8f4))
-* **docker:** allow dots in docker tags ([b5b5b27](https://github.com/AtomiCloud/sulfone.zinc/commit/b5b5b27aa88fb5b6e433baaf2b779cd663105c89))
+- **docker:** allow dots in docker tags ([#40](https://github.com/AtomiCloud/sulfone.zinc/issues/40)) ([2091544](https://github.com/AtomiCloud/sulfone.zinc/commit/209154445c73f7211e1bcf8bca867bd0b81ba8f4))
+- **docker:** allow dots in docker tags ([b5b5b27](https://github.com/AtomiCloud/sulfone.zinc/commit/b5b5b27aa88fb5b6e433baaf2b779cd663105c89))
 
 ## [2.2.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.1...v2.2.0) (2025-08-03)
 
-
 ### New Features
 
-* **eso:** upgrade upstream to v1 ([dbc48bd](https://github.com/AtomiCloud/sulfone.zinc/commit/dbc48bde96deef016b94a35962f8b1e98c860a1b))
-
+- **eso:** upgrade upstream to v1 ([dbc48bd](https://github.com/AtomiCloud/sulfone.zinc/commit/dbc48bde96deef016b94a35962f8b1e98c860a1b))
 
 ### Bug Fixes
 
-* **default:** missing helm lock file ([ab64ebf](https://github.com/AtomiCloud/sulfone.zinc/commit/ab64ebf3a42e80570f678bb8052ae0f291771956))
+- **default:** missing helm lock file ([ab64ebf](https://github.com/AtomiCloud/sulfone.zinc/commit/ab64ebf3a42e80570f678bb8052ae0f291771956))
 
 ## [2.1.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.1.0...v2.1.1) (2025-06-25)
 
-
 ### Bug Fixes
 
-* **default:** broken release pipeline ([#27](https://github.com/AtomiCloud/sulfone.zinc/issues/27)) ([8fdfd8c](https://github.com/AtomiCloud/sulfone.zinc/commit/8fdfd8c2e1befd1552c58850b1eb734f7c9a2f36))
-* **default:** broken release pipeline ([d28187e](https://github.com/AtomiCloud/sulfone.zinc/commit/d28187eb1810beee3a0542d94c0f0c9da9a9250e))
+- **default:** broken release pipeline ([#27](https://github.com/AtomiCloud/sulfone.zinc/issues/27)) ([8fdfd8c](https://github.com/AtomiCloud/sulfone.zinc/commit/8fdfd8c2e1befd1552c58850b1eb734f7c9a2f36))
+- **default:** broken release pipeline ([d28187e](https://github.com/AtomiCloud/sulfone.zinc/commit/d28187eb1810beee3a0542d94c0f0c9da9a9250e))
 
 ## [2.1.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.0.0...v2.1.0) (2025-05-10)
 
-
 ### New Features
 
-* **version:** endpoint to get versions by id ([65ca46e](https://github.com/AtomiCloud/sulfone.zinc/commit/65ca46eeeeb03a96b868a40bb880a3f490a1165f))
+- **version:** endpoint to get versions by id ([65ca46e](https://github.com/AtomiCloud/sulfone.zinc/commit/65ca46eeeeb03a96b868a40bb880a3f490a1165f))
 
 ## [2.0.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.1...v2.0.0) (2025-05-10)
 
-
 ### New Features
 
-* **breaking:** allow templates to be empty ([0d26734](https://github.com/AtomiCloud/sulfone.zinc/commit/0d26734334d3bf8d26c7f65ce3b7fc232916438a))
-* template can store references to other templates ([80d025b](https://github.com/AtomiCloud/sulfone.zinc/commit/80d025b8e588f34089ad80c75544a3b48865394d))
-
+- **breaking:** allow templates to be empty ([0d26734](https://github.com/AtomiCloud/sulfone.zinc/commit/0d26734334d3bf8d26c7f65ce3b7fc232916438a))
+- template can store references to other templates ([80d025b](https://github.com/AtomiCloud/sulfone.zinc/commit/80d025b8e588f34089ad80c75544a3b48865394d))
 
 ### Bug Fixes
 
-* ensure nix shell is used for pushing helm ([c781921](https://github.com/AtomiCloud/sulfone.zinc/commit/c781921806263d3f26b73d37b0e64c169a43ed0c))
-* incorrect labels to call ns runners ([c58c096](https://github.com/AtomiCloud/sulfone.zinc/commit/c58c0966587b040c25ed91c3e61799836c728a64))
-* upgrade CI/CD ([3975cbd](https://github.com/AtomiCloud/sulfone.zinc/commit/3975cbd6393ffa011ae6501ab4dff559fe1c7114))
-* upgrade setup-nix to v2 ([4b6be7a](https://github.com/AtomiCloud/sulfone.zinc/commit/4b6be7a0c25b2233bdd8a4d9350f9ce6a6056721))
+- ensure nix shell is used for pushing helm ([c781921](https://github.com/AtomiCloud/sulfone.zinc/commit/c781921806263d3f26b73d37b0e64c169a43ed0c))
+- incorrect labels to call ns runners ([c58c096](https://github.com/AtomiCloud/sulfone.zinc/commit/c58c0966587b040c25ed91c3e61799836c728a64))
+- upgrade CI/CD ([3975cbd](https://github.com/AtomiCloud/sulfone.zinc/commit/3975cbd6393ffa011ae6501ab4dff559fe1c7114))
+- upgrade setup-nix to v2 ([4b6be7a](https://github.com/AtomiCloud/sulfone.zinc/commit/4b6be7a0c25b2233bdd8a4d9350f9ce6a6056721))
 
 ## [1.18.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.18.0...v1.18.1) (2025-05-04)
 
-
 ### Bug Fixes
 
-* linting etc ([11bf471](https://github.com/AtomiCloud/sulfone.zinc/commit/11bf4711c28ad6ed92bba831c17d0d709de2b8f2))
-* local development ([3f20519](https://github.com/AtomiCloud/sulfone.zinc/commit/3f205191103f785010916f8aa90bb89e60ddd9bf))
-* local development ([593e387](https://github.com/AtomiCloud/sulfone.zinc/commit/593e387e6790e872519d8e294ac7730a09b9f143))
+- linting etc ([11bf471](https://github.com/AtomiCloud/sulfone.zinc/commit/11bf4711c28ad6ed92bba831c17d0d709de2b8f2))
+- local development ([3f20519](https://github.com/AtomiCloud/sulfone.zinc/commit/3f205191103f785010916f8aa90bb89e60ddd9bf))
+- local development ([593e387](https://github.com/AtomiCloud/sulfone.zinc/commit/593e387e6790e872519d8e294ac7730a09b9f143))
 
 ## [1.18.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v1.17.2...v1.18.0) (2025-01-01)
 

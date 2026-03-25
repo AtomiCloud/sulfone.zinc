@@ -33,14 +33,14 @@ flowchart TB
 
 ## Concept Index
 
-| Concept | Description | Related |
-|---------|-------------|---------|
-| [Authentication](./01-authentication.md) | JWT and API Key authentication methods | [Authorization](./02-authorization.md) |
-| [Authorization](./02-authorization.md) | Scope-based access control | [Authentication](./01-authentication.md) |
-| [Registry](./03-registry.md) | Template/Processor/Plugin containers | [Version](./04-version.md) |
-| [Version](./04-version.md) | Auto-incrementing version numbers | [Dependency](./05-dependency.md) |
-| [Dependency](./05-dependency.md) | Cross-version references | [Version](./04-version.md) |
-| [Like](./06-like.md) | User-to-entity association | [Registry](./03-registry.md) |
+| Concept                                  | Description                            | Related                                  |
+| ---------------------------------------- | -------------------------------------- | ---------------------------------------- |
+| [Authentication](./01-authentication.md) | JWT and API Key authentication methods | [Authorization](./02-authorization.md)   |
+| [Authorization](./02-authorization.md)   | Scope-based access control             | [Authentication](./01-authentication.md) |
+| [Registry](./03-registry.md)             | Template/Processor/Plugin containers   | [Version](./04-version.md)               |
+| [Version](./04-version.md)               | Auto-incrementing version numbers      | [Dependency](./05-dependency.md)         |
+| [Dependency](./05-dependency.md)         | Cross-version references               | [Version](./04-version.md)               |
+| [Like](./06-like.md)                     | User-to-entity association             | [Registry](./03-registry.md)             |
 
 ## How Concepts Relate
 
@@ -61,12 +61,12 @@ flowchart TB
 
 Each domain model has multiple representations:
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| `*Data` | Database entity | `TemplateData` |
+| Type         | Purpose              | Example             |
+| ------------ | -------------------- | ------------------- |
+| `*Data`      | Database entity      | `TemplateData`      |
 | `*Principal` | API response (light) | `TemplatePrincipal` |
-| `*Record` | Identity fields | `TemplateRecord` |
-| `*Metadata` | Editable fields | `TemplateMetadata` |
+| `*Record`    | Identity fields      | `TemplateRecord`    |
+| `*Metadata`  | Editable fields      | `TemplateMetadata`  |
 
 ### Version Management
 

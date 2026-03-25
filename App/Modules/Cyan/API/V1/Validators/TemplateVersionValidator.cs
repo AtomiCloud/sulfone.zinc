@@ -38,6 +38,9 @@ public class TemplateReferenceReqValidator : AbstractValidator<TemplateReference
   {
     this.RuleFor(x => x.Username).NotNull().UsernameValid();
     this.RuleFor(x => x.Name).NotNull().UsernameValid();
+    this.RuleFor(x => x.PresetAnswers)
+      .Must(a => a.ValueKind == JsonValueKind.Object)
+      .WithMessage("presetAnswers must be a valid JSON object.");
   }
 }
 

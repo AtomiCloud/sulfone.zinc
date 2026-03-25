@@ -42,7 +42,12 @@ public record PluginReferenceReq(string Username, string Name, uint Version);
 
 public record ProcessorReferenceReq(string Username, string Name, uint Version);
 
-public record TemplateReferenceReq(string Username, string Name, uint Version);
+public record TemplateReferenceReq(
+  string Username,
+  string Name,
+  uint Version,
+  JsonElement PresetAnswers
+);
 
 public record ResolverReferenceReq(
   string Username,
@@ -76,7 +81,7 @@ public record TemplateVersionResp(
   TemplatePrincipalResp Template,
   IEnumerable<PluginVersionPrincipalResp> Plugins,
   IEnumerable<ProcessorVersionPrincipalResp> Processors,
-  IEnumerable<TemplateVersionPrincipalResp> Templates,
+  IEnumerable<TemplateVersionTemplateRefResp> Templates,
   IEnumerable<TemplateVersionResolverResp> Resolvers
 );
 
@@ -89,4 +94,13 @@ public record TemplateVersionResolverResp(
   string DockerTag,
   JsonElement Config,
   string[] Files
+);
+
+public record TemplateVersionTemplateRefResp(
+  Guid Id,
+  ulong Version,
+  DateTime CreatedAt,
+  string Description,
+  TemplatePropertyResp? Properties,
+  JsonElement PresetAnswers
 );

@@ -38,17 +38,17 @@ See [Authorization Feature](../features/02-authorization.md) for details.
 
 ## Common Response Codes
 
-| Code | Description |
-|------|-------------|
-| `200 OK` | Request succeeded |
-| `201 Created` | Resource created successfully |
-| `204 No Content` | Success with no response body |
-| `400 Bad Request` | Validation failed |
-| `401 Unauthorized` | Authentication required or failed |
-| `403 Forbidden` | User lacks required scope |
-| `404 Not Found` | Resource not found |
-| `409 Conflict` | Resource already exists or state conflict |
-| `500 Internal Server Error` | Server error |
+| Code                        | Description                               |
+| --------------------------- | ----------------------------------------- |
+| `200 OK`                    | Request succeeded                         |
+| `201 Created`               | Resource created successfully             |
+| `204 No Content`            | Success with no response body             |
+| `400 Bad Request`           | Validation failed                         |
+| `401 Unauthorized`          | Authentication required or failed         |
+| `403 Forbidden`             | User lacks required scope                 |
+| `404 Not Found`             | Resource not found                        |
+| `409 Conflict`              | Resource already exists or state conflict |
+| `500 Internal Server Error` | Server error                              |
 
 ## Error Format
 
@@ -79,10 +79,10 @@ where scheme/host come from ErrorPortalOption and other fields from AppOption/do
 
 List endpoints support pagination:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `skip` | int | 0 | Number of results to skip |
-| `limit` | int | 50 | Maximum number of results to return |
+| Parameter | Type | Default | Description                         |
+| --------- | ---- | ------- | ----------------------------------- |
+| `skip`    | int  | 0       | Number of results to skip           |
+| `limit`   | int  | 50      | Maximum number of results to return |
 
 ## Full-Text Search
 

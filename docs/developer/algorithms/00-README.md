@@ -33,12 +33,12 @@ flowchart TB
 
 ## Algorithm Index
 
-| Algorithm | Used By | Description |
-|-----------|---------|-------------|
-| [Dependency Resolution](./01-dependency-resolution.md) | Template Version Creation | Validates all referenced versions exist |
-| [Version Resolution](./02-version-resolution.md) | All Registries | Query latest and specific versions |
-| [Full-Text Search](./03-full-text-search.md) | All Registries | PostgreSQL tsvector search with ranking |
-| [Like Optimistic Locking](./04-like-optimistic-locking.md) | All Registries | Race condition detection in like/unlike |
+| Algorithm                                                  | Used By                   | Description                             |
+| ---------------------------------------------------------- | ------------------------- | --------------------------------------- |
+| [Dependency Resolution](./01-dependency-resolution.md)     | Template Version Creation | Validates all referenced versions exist |
+| [Version Resolution](./02-version-resolution.md)           | All Registries            | Query latest and specific versions      |
+| [Full-Text Search](./03-full-text-search.md)               | All Registries            | PostgreSQL tsvector search with ranking |
+| [Like Optimistic Locking](./04-like-optimistic-locking.md) | All Registries            | Race condition detection in like/unlike |
 
 ## How to Use This Section
 
