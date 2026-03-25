@@ -102,6 +102,7 @@ public static class TemplateVersionMapper
       CreatedAt = data.CreatedAt,
       Record = data.ToRecord(),
       Property = data.ToProperty(),
+      Commands = data.Commands,
     };
 
   public static TemplateVersion ToDomain(this TemplateVersionData data) =>

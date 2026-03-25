@@ -146,7 +146,8 @@ public static class TemplateVersionMapper
       principal.Version,
       principal.CreatedAt,
       principal.Record.Description,
-      principal.Property?.ToResp()
+      principal.Property?.ToResp(),
+      principal.Commands
     );
 
   public static TemplateVersionResp ToResp(this TemplateVersion version) =>
@@ -156,7 +157,8 @@ public static class TemplateVersionMapper
       version.Plugins.Select(x => x.ToResp()),
       version.Processors.Select(x => x.ToResp()),
       version.Templates.Select(x => x.ToTemplateRefResp()),
-      version.Resolvers.Select(x => x.ToTemplateResolverResp())
+      version.Resolvers.Select(x => x.ToTemplateResolverResp()),
+      version.Principal.Commands
     );
 
   /// <summary>

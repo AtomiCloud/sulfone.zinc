@@ -66,6 +66,11 @@ public class CreateTemplateVersionReqValidator : AbstractValidator<CreateTemplat
   public CreateTemplateVersionReqValidator()
   {
     this.RuleFor(x => x.Description).DescriptionValid();
+    this.RuleFor(x => x.Commands).NotNull();
+    this.RuleForEach(x => x.Commands!)
+      .NotNull()
+      .Must(cmd => !string.IsNullOrWhiteSpace(cmd))
+      .WithMessage("command cannot be empty or whitespace.");
     this.RuleFor(x => x.Properties!)
       .SetValidator(new TemplatePropertyReqValidator())
       .Unless(x => x.Properties == null);
@@ -116,6 +121,11 @@ public class PushTemplateReqValidator : AbstractValidator<PushTemplateReq>
     this.RuleFor(x => x.Description).DescriptionValid();
     this.RuleFor(x => x.Readme).NotNull();
     this.RuleFor(x => x.VersionDescription).DescriptionValid();
+    this.RuleFor(x => x.Commands).NotNull();
+    this.RuleForEach(x => x.Commands!)
+      .NotNull()
+      .Must(cmd => !string.IsNullOrWhiteSpace(cmd))
+      .WithMessage("command cannot be empty or whitespace.");
     this.RuleFor(x => x.Properties!)
       .SetValidator(new TemplatePropertyReqValidator())
       .Unless(x => x.Properties == null);

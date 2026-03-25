@@ -334,4 +334,94 @@ public class TemplateVersionMapperTests
   }
 
   #endregion
+
+  #region Commands Mapping Tests
+
+  [Fact]
+  public void ToResp_TemplateVersionPrincipal_MapsCommandsCorrectly()
+  {
+    // Arrange
+    var principal = new TemplateVersionPrincipal
+    {
+      Id = Guid.NewGuid(),
+      Version = 2,
+      CreatedAt = DateTime.UtcNow,
+      Record = new TemplateVersionRecord { Description = "Test version" },
+      Property = null,
+      Commands = ["echo hello", "echo world"],
+    };
+
+    // Act
+    var result = principal.ToResp();
+
+    // Assert
+    result.Commands.Should().BeEquivalentTo(new[] { "echo hello", "echo world" });
+  }
+
+  [Fact]
+  public void ToResp_TemplateVersionPrincipal_WithEmptyCommands_MapsCorrectly()
+  {
+    // Arrange
+    var principal = new TemplateVersionPrincipal
+    {
+      Id = Guid.NewGuid(),
+      Version = 1,
+      CreatedAt = DateTime.UtcNow,
+      Record = new TemplateVersionRecord { Description = "Empty commands" },
+      Property = null,
+      Commands = [],
+    };
+
+    // Act
+    var result = principal.ToResp();
+
+    // Assert
+    result.Commands.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void ToResp_TemplateVersion_MapsCommandsFromPrincipal()
+  {
+    // Arrange
+    var createdAt = new DateTime(2024, 6, 1, 12, 0, 0, DateTimeKind.Utc);
+    var version = new TemplateVersion
+    {
+      Principal = new TemplateVersionPrincipal
+      {
+        Id = Guid.NewGuid(),
+        Version = 3,
+        CreatedAt = createdAt,
+        Record = new TemplateVersionRecord { Description = "Full version" },
+        Property = null,
+        Commands = ["npm install", "npm build", "npm test"],
+      },
+      TemplatePrincipal = new TemplatePrincipal
+      {
+        Id = Guid.NewGuid(),
+        Metadata = new TemplateMetadata
+        {
+          Project = "https://example.com",
+          Source = "https://example.com",
+          Email = "test@example.com",
+          Tags = ["tag"],
+          Description = "desc",
+          Readme = "readme",
+        },
+        Record = new TemplateRecord { Name = "test-template" },
+        UserId = "user-123",
+      },
+      Plugins = [],
+      Processors = [],
+      Templates = [],
+      Resolvers = [],
+    };
+
+    // Act
+    var result = version.ToResp();
+
+    // Assert
+    result.Commands.Should().BeEquivalentTo(new[] { "npm install", "npm build", "npm test" });
+  }
+
+  #endregion
 }

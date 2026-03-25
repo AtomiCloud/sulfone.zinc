@@ -119,6 +119,8 @@ public class MainDbContext(IOptionsMonitor<Dictionary<string, DatabaseOption>> o
 
     templateVersion.HasIndex(x => new { x.Id, x.Version }).IsUnique();
 
+    templateVersion.Property(x => x.Commands).HasColumnType("text[]").HasDefaultValueSql("'{}'");
+
     templateVersion
       .HasMany<TemplateProcessorVersionData>(x => x.Processors)
       .WithOne(x => x.Template)

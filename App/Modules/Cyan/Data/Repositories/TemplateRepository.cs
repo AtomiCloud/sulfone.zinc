@@ -589,6 +589,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     string name,
     TemplateVersionRecord record,
     TemplateVersionProperty? property,
+    string[] commands,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<TemplateLink> templates,
@@ -636,6 +637,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         Template = null!,
         Version = latest + 1,
         CreatedAt = DateTime.UtcNow,
+        Commands = commands,
         Plugins = null!,
         Processors = null!,
         Resolvers = null!,
@@ -742,6 +744,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
     Guid id,
     TemplateVersionRecord record,
     TemplateVersionProperty? property,
+    string[] commands,
     IEnumerable<Guid> processors,
     IEnumerable<Guid> plugins,
     IEnumerable<TemplateLink> templates,
@@ -777,6 +780,7 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
         Template = null!,
         Version = latest + 1,
         CreatedAt = DateTime.UtcNow,
+        Commands = commands,
       };
 
       var r = db.TemplateVersions.Add(data);
