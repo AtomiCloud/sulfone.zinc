@@ -1,3 +1,23 @@
+## [2.7.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.6.0...v2.7.0) (2026-03-25)
+
+
+### Documentation Updates
+
+* add implementation plans for CU-86ex0ycvb v1 [CU-86ex0ycvb] ([9d292fe](https://github.com/AtomiCloud/sulfone.zinc/commit/9d292fe779f07e8d6eace62e45946520d78053c1))
+* add task spec for CU-86ex0ycvb [CU-86ex0ycvb] ([48fc5df](https://github.com/AtomiCloud/sulfone.zinc/commit/48fc5df817fdff35a961d9ff84866ccfb8073a5c))
+
+
+### New Features
+
+* add preset answers to template-template junction [CU-86ex0ycvb] ([87d3c4a](https://github.com/AtomiCloud/sulfone.zinc/commit/87d3c4a61e96da14192f1f4c6e95dd5dce0970ab))
+
+
+### Bug Fixes
+
+* add Properties to TemplateVersionTemplateRefResp [CU-86ex0ycvb] ([71ae64d](https://github.com/AtomiCloud/sulfone.zinc/commit/71ae64d4c7bb4fb6cd723e0e6d600ffc34c69a74))
+* pass username to repo.Update in Push method [CU-86ex0ycvb] ([a255b59](https://github.com/AtomiCloud/sulfone.zinc/commit/a255b5934fb3d51f76a3b510e0d3a33873b24c07))
+* update metadata on push for existing template [CU-86ex0ycvb] ([6edb96c](https://github.com/AtomiCloud/sulfone.zinc/commit/6edb96c10abce24cd378d9cf397f36f6ce1e411a))
+
 ## [Unreleased]
 
 ### New Features
