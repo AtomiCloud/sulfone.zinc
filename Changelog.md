@@ -1,3 +1,15 @@
+## [2.8.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.7.0...v2.8.0) (2026-03-25)
+
+
+### Documentation Updates
+
+* add task spec for CU-86ex0yctm ([c70b732](https://github.com/AtomiCloud/sulfone.zinc/commit/c70b7320ca928005b7bebd2651fba0d66a68b3a4))
+
+
+### New Features
+
+* **commands:** add command storage to template versions ([d80893c](https://github.com/AtomiCloud/sulfone.zinc/commit/d80893c714cd32b85acf794697c2505d763ba978))
+
 ## [2.7.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.6.0...v2.7.0) (2026-03-25)
 
 
