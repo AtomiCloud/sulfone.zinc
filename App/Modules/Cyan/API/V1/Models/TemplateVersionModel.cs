@@ -8,6 +8,7 @@ public record SearchTemplateVersionQuery(string? Search, int? Limit, int? Skip);
 
 public record CreateTemplateVersionReq(
   string Description,
+  string[] Commands,
   TemplatePropertyReq? Properties,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors,
@@ -24,6 +25,7 @@ public record PushTemplateReq(
   string Description,
   string Readme,
   string VersionDescription,
+  string[] Commands,
   TemplatePropertyReq? Properties,
   PluginReferenceReq[] Plugins,
   ProcessorReferenceReq[] Processors,
@@ -73,7 +75,8 @@ public record TemplateVersionPrincipalResp(
   ulong Version,
   DateTime CreatedAt,
   string Description,
-  TemplatePropertyResp? Properties
+  TemplatePropertyResp? Properties,
+  string[] Commands
 );
 
 public record TemplateVersionResp(
@@ -82,7 +85,8 @@ public record TemplateVersionResp(
   IEnumerable<PluginVersionPrincipalResp> Plugins,
   IEnumerable<ProcessorVersionPrincipalResp> Processors,
   IEnumerable<TemplateVersionTemplateRefResp> Templates,
-  IEnumerable<TemplateVersionResolverResp> Resolvers
+  IEnumerable<TemplateVersionResolverResp> Resolvers,
+  string[] Commands
 );
 
 public record TemplateVersionResolverResp(

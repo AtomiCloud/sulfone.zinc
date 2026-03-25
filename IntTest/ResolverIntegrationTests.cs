@@ -29,6 +29,7 @@ public class ResolverIntegrationTests
 
     var createReq = new CreateTemplateVersionReq(
       Description: "Version with resolvers",
+      Commands: ["echo hello"],
       Properties: null,
       Plugins: Array.Empty<PluginReferenceReq>(),
       Processors: Array.Empty<ProcessorReferenceReq>(),
@@ -95,6 +96,7 @@ public class ResolverIntegrationTests
       Description: "My CI/CD pipeline",
       Readme: "# Usage\n...",
       VersionDescription: "Initial version",
+      Commands: ["echo hello"],
       Properties: null,
       Plugins: Array.Empty<PluginReferenceReq>(),
       Processors: Array.Empty<ProcessorReferenceReq>(),
@@ -156,6 +158,7 @@ public class ResolverIntegrationTests
     // Arrange - resolver with null Files (invalid)
     var createReq = new CreateTemplateVersionReq(
       Description: "Version with invalid resolver",
+      Commands: ["echo hello"],
       Properties: null,
       Plugins: Array.Empty<PluginReferenceReq>(),
       Processors: Array.Empty<ProcessorReferenceReq>(),

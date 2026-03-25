@@ -163,6 +163,7 @@ public class TemplateService(
     string name,
     TemplateVersionRecord record,
     TemplateVersionProperty? property,
+    string[] commands,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionTemplateInput> templates,
@@ -214,7 +215,7 @@ public class TemplateService(
           userId,
           r.Select(x => x.ResolverId)
         );
-        return repo.CreateVersion(userId, name, record, property, pr, pl, t, r);
+        return repo.CreateVersion(userId, name, record, property, commands, pr, pl, t, r);
       });
   }
 
@@ -223,6 +224,7 @@ public class TemplateService(
     Guid id,
     TemplateVersionRecord record,
     TemplateVersionProperty? property,
+    string[] commands,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionTemplateInput> templates,
@@ -256,7 +258,7 @@ public class TemplateService(
       .ThenAwait(refs =>
       {
         var (pl, pr, t, r) = refs;
-        return repo.CreateVersion(userId, id, record, property, pr, pl, t, r);
+        return repo.CreateVersion(userId, id, record, property, commands, pr, pl, t, r);
       });
   }
 
@@ -286,6 +288,7 @@ public class TemplateService(
     TemplateMetadata metadata,
     TemplateVersionRecord record,
     TemplateVersionProperty? property,
+    string[] commands,
     IEnumerable<ProcessorVersionRef> processors,
     IEnumerable<PluginVersionRef> plugins,
     IEnumerable<TemplateVersionTemplateInput> templates,
@@ -306,6 +309,7 @@ public class TemplateService(
           pRecord.Name,
           record,
           property,
+          commands,
           processors,
           plugins,
           templates,

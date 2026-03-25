@@ -20,6 +20,8 @@ public record TemplateVersionData
 
   public string TemplateDockerTag { get; set; } = string.Empty;
 
+  public string[] Commands { get; set; } = [];
+
   // Foreign Keys
   public Guid TemplateId { get; set; }
 
