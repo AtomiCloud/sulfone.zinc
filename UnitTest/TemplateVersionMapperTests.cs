@@ -259,6 +259,7 @@ public class TemplateVersionMapperTests
         CreatedAt = createdAt,
         Record = new TemplateVersionRecord { Description = "Test sub-template description" },
         Property = null,
+        Commands = [],
       },
       presetAnswers
     );
@@ -289,6 +290,7 @@ public class TemplateVersionMapperTests
         CreatedAt = DateTime.UtcNow,
         Record = new TemplateVersionRecord { Description = "Empty preset answers" },
         Property = null,
+        Commands = [],
       },
       presetAnswers
     );
@@ -316,6 +318,7 @@ public class TemplateVersionMapperTests
         CreatedAt = DateTime.UtcNow,
         Record = new TemplateVersionRecord { Description = "Complex preset answers" },
         Property = null,
+        Commands = [],
       },
       presetAnswers
     );

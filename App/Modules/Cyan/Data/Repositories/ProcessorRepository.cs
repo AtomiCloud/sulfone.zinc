@@ -863,4 +863,68 @@ public class ProcessorRepository(MainDbContext db, ILogger<ProcessorRepository> 
       return e;
     }
   }
+
+  public async Task<Result<ProcessorVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    ProcessorMetadata metadata,
+    ProcessorVersionRecord record,
+    ProcessorVersionProperty property
+  )
+  {
+    await using var transaction = await db.Database.BeginTransactionAsync();
+    try
+    {
+      logger.LogInformation(
+        "Atomically updating processor and creating version for '{Username}/{Name}'",
+        username,
+        name
+      );
+
+      var processor = await db
+        .Processors.Include(x => x.User)
+        .Where(x => x.User.Username == username && x.Name == name)
+        .FirstOrDefaultAsync();
+
+      if (processor == null)
+      {
+        await transaction.CommitAsync();
+        return (ProcessorVersionPrincipal?)null;
+      }
+
+      var updated = processor.HydrateData(metadata) with { User = null! };
+      db.Processors.Update(updated);
+      await db.SaveChangesAsync();
+
+      var latest =
+        db.ProcessorVersions.Where(x => x.ProcessorId == updated.Id).Max(x => x.Version as ulong?)
+        ?? 0;
+
+      var data = new ProcessorVersionData();
+      data = data.HydrateData(record).HydrateData(property) with
+      {
+        ProcessorId = updated.Id,
+        Processor = null!,
+        Version = latest + 1,
+        CreatedAt = DateTime.UtcNow,
+      };
+
+      var r = db.ProcessorVersions.Add(data);
+      await db.SaveChangesAsync();
+
+      await transaction.CommitAsync();
+      return r.Entity.ToPrincipal();
+    }
+    catch (Exception e)
+    {
+      await transaction.RollbackAsync();
+      logger.LogError(
+        e,
+        "Failed to atomically update processor and create version for '{Username}/{Name}'",
+        username,
+        name
+      );
+      return e;
+    }
+  }
 }

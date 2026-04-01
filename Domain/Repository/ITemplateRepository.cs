@@ -107,4 +107,17 @@ public interface ITemplateRepository
     ulong version,
     TemplateVersionRecord record
   );
+
+  Task<Result<TemplateVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    TemplateMetadata metadata,
+    TemplateVersionRecord record,
+    TemplateVersionProperty? property,
+    string[] commands,
+    IEnumerable<Guid> processors,
+    IEnumerable<Guid> plugins,
+    IEnumerable<TemplateLink> templates,
+    IEnumerable<ResolverLink> resolvers
+  );
 }

@@ -839,4 +839,67 @@ public class PluginRepository(MainDbContext db, ILogger<PluginRepository> logger
       return e;
     }
   }
+
+  public async Task<Result<PluginVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    PluginMetadata metadata,
+    PluginVersionRecord record,
+    PluginVersionProperty property
+  )
+  {
+    await using var transaction = await db.Database.BeginTransactionAsync();
+    try
+    {
+      logger.LogInformation(
+        "Atomically updating plugin and creating version for '{Username}/{Name}'",
+        username,
+        name
+      );
+
+      var plugin = await db
+        .Plugins.Include(x => x.User)
+        .Where(x => x.User.Username == username && x.Name == name)
+        .FirstOrDefaultAsync();
+
+      if (plugin == null)
+      {
+        await transaction.CommitAsync();
+        return (PluginVersionPrincipal?)null;
+      }
+
+      var updated = plugin.HydrateData(metadata) with { User = null! };
+      db.Plugins.Update(updated);
+      await db.SaveChangesAsync();
+
+      var latest =
+        db.PluginVersions.Where(x => x.PluginId == updated.Id).Max(x => x.Version as ulong?) ?? 0;
+
+      var data = new PluginVersionData();
+      data = data.HydrateData(record).HydrateData(property) with
+      {
+        PluginId = updated.Id,
+        Plugin = null!,
+        Version = latest + 1,
+        CreatedAt = DateTime.UtcNow,
+      };
+
+      var r = db.PluginVersions.Add(data);
+      await db.SaveChangesAsync();
+
+      await transaction.CommitAsync();
+      return r.Entity.ToPrincipal();
+    }
+    catch (Exception e)
+    {
+      await transaction.RollbackAsync();
+      logger.LogError(
+        e,
+        "Failed to atomically update plugin and create version for '{Username}/{Name}'",
+        username,
+        name
+      );
+      return e;
+    }
+  }
 }
