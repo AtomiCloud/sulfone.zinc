@@ -1,3 +1,10 @@
+## [2.8.1](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.8.0...v2.8.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* **resolver:** auto-generate README.md on entity push [86ex3vvy0] ([0854a34](https://github.com/AtomiCloud/sulfone.zinc/commit/0854a34db29a3f7b1f8ef88dc1b23d60d304add1))
+
 ## [2.8.0](https://github.com/AtomiCloud/sulfone.zinc/compare/v2.7.0...v2.8.0) (2026-03-25)
 
 
