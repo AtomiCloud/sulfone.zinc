@@ -205,10 +205,16 @@ public class ResolverService(
       .ThenAwait(async p =>
       {
         if (p != null)
-          return p.Principal.ToResult();
+          return await repo.UpdateAndCreateVersion(
+            username,
+            pRecord.Name,
+            metadata,
+            record,
+            property
+          );
         return await user.GetByUsername(username)
-          .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata));
-      })
-      .ThenAwait(x => repo.CreateVersion(username, pRecord.Name, record, property));
+          .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata))
+          .ThenAwait(_ => repo.CreateVersion(username, pRecord.Name, record, property));
+      });
   }
 }

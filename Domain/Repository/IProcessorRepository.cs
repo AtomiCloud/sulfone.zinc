@@ -82,4 +82,12 @@ public interface IProcessorRepository
     ulong version,
     ProcessorVersionRecord record
   );
+
+  Task<Result<ProcessorVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    ProcessorMetadata metadata,
+    ProcessorVersionRecord record,
+    ProcessorVersionProperty property
+  );
 }

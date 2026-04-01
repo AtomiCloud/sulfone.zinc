@@ -848,4 +848,68 @@ public class ResolverRepository(MainDbContext db, ILogger<ResolverRepository> lo
       return e;
     }
   }
+
+  public async Task<Result<ResolverVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    ResolverMetadata metadata,
+    ResolverVersionRecord record,
+    ResolverVersionProperty property
+  )
+  {
+    await using var transaction = await db.Database.BeginTransactionAsync();
+    try
+    {
+      logger.LogInformation(
+        "Atomically updating resolver and creating version for '{Username}/{Name}'",
+        username,
+        name
+      );
+
+      var resolver = await db
+        .Resolvers.Include(x => x.User)
+        .Where(x => x.User.Username == username && x.Name == name)
+        .FirstOrDefaultAsync();
+
+      if (resolver == null)
+      {
+        await transaction.CommitAsync();
+        return (ResolverVersionPrincipal?)null;
+      }
+
+      var updated = resolver.HydrateData(metadata) with { User = null! };
+      db.Resolvers.Update(updated);
+      await db.SaveChangesAsync();
+
+      var latest =
+        db.ResolverVersions.Where(x => x.ResolverId == updated.Id).Max(x => x.Version as ulong?)
+        ?? 0;
+
+      var data = new ResolverVersionData();
+      data = data.HydrateData(record).HydrateData(property) with
+      {
+        ResolverId = updated.Id,
+        Resolver = null!,
+        Version = latest + 1,
+        CreatedAt = DateTime.UtcNow,
+      };
+
+      var r = db.ResolverVersions.Add(data);
+      await db.SaveChangesAsync();
+
+      await transaction.CommitAsync();
+      return r.Entity.ToPrincipal();
+    }
+    catch (Exception e)
+    {
+      await transaction.RollbackAsync();
+      logger.LogError(
+        e,
+        "Failed to atomically update resolver and create version for '{Username}/{Name}'",
+        username,
+        name
+      );
+      return e;
+    }
+  }
 }

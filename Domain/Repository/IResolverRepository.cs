@@ -88,4 +88,12 @@ public interface IResolverRepository
     ulong version,
     ResolverVersionRecord record
   );
+
+  Task<Result<ResolverVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    ResolverMetadata metadata,
+    ResolverVersionRecord record,
+    ResolverVersionProperty property
+  );
 }

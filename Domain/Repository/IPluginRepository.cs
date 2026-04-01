@@ -74,4 +74,12 @@ public interface IPluginRepository
     ulong version,
     PluginVersionRecord record
   );
+
+  Task<Result<PluginVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    PluginMetadata metadata,
+    PluginVersionRecord record,
+    PluginVersionProperty property
+  );
 }

@@ -1034,4 +1034,115 @@ public class TemplateRepository(MainDbContext db, ILogger<TemplateRepository> lo
       return e;
     }
   }
+
+  public async Task<Result<TemplateVersionPrincipal?>> UpdateAndCreateVersion(
+    string username,
+    string name,
+    TemplateMetadata metadata,
+    TemplateVersionRecord record,
+    TemplateVersionProperty? property,
+    string[] commands,
+    IEnumerable<Guid> processors,
+    IEnumerable<Guid> plugins,
+    IEnumerable<TemplateLink> templates,
+    IEnumerable<ResolverLink> resolvers
+  )
+  {
+    await using var transaction = await db.Database.BeginTransactionAsync();
+    try
+    {
+      logger.LogInformation(
+        "Atomically updating template and creating version for '{Username}/{Name}'",
+        username,
+        name
+      );
+
+      var template = await db
+        .Templates.Include(x => x.User)
+        .Where(x => x.User.Username == username && x.Name == name)
+        .FirstOrDefaultAsync();
+
+      if (template == null)
+      {
+        await transaction.CommitAsync();
+        return (TemplateVersionPrincipal?)null;
+      }
+
+      var updated = template.HydrateData(metadata) with { User = null! };
+      db.Templates.Update(updated);
+      await db.SaveChangesAsync();
+
+      var latest =
+        db.TemplateVersions.Where(x => x.TemplateId == updated.Id).Max(x => x.Version as ulong?)
+        ?? 0;
+
+      var data = new TemplateVersionData();
+      data = data.HydrateData(record).HydrateData(property) with
+      {
+        TemplateId = updated.Id,
+        Template = null!,
+        Version = latest + 1,
+        CreatedAt = DateTime.UtcNow,
+        Commands = commands,
+      };
+
+      var r = db.TemplateVersions.Add(data);
+      await db.SaveChangesAsync();
+      var t = r.Entity.ToPrincipal();
+
+      var pluginLinks = plugins.Select(x => new TemplatePluginVersionData
+      {
+        PluginId = x,
+        Plugin = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      db.TemplatePluginVersions.AddRange(pluginLinks);
+
+      var processorLinks = processors.Select(x => new TemplateProcessorVersionData
+      {
+        ProcessorId = x,
+        Processor = null!,
+        TemplateId = t.Id,
+        Template = null!,
+      });
+      db.TemplateProcessorVersions.AddRange(processorLinks);
+
+      var resolverLinks = resolvers.Select(x => new TemplateResolverVersionData
+      {
+        ResolverId = x.ResolverId,
+        Resolver = null!,
+        TemplateId = t.Id,
+        Template = null!,
+        Config = JsonSerializer.Serialize(x.Config),
+        Files = x.Files,
+      });
+      db.TemplateResolverVersions.AddRange(resolverLinks);
+
+      var templateLinks = templates.Select(x => new TemplateTemplateVersionData
+      {
+        TemplateRefId = x.TemplateId,
+        TemplateRef = null!,
+        TemplateId = t.Id,
+        Template = null!,
+        PresetAnswers = JsonSerializer.Serialize(x.PresetAnswers),
+      });
+      db.TemplateTemplateVersions.AddRange(templateLinks);
+
+      await db.SaveChangesAsync();
+      await transaction.CommitAsync();
+      return t;
+    }
+    catch (Exception e)
+    {
+      await transaction.RollbackAsync();
+      logger.LogError(
+        e,
+        "Failed to atomically update template and create version for '{Username}/{Name}'",
+        username,
+        name
+      );
+      return e;
+    }
+  }
 }

@@ -299,23 +299,85 @@ public class TemplateService(
       .ThenAwait(async p =>
       {
         if (p != null)
-          return await repo.Update(username, pRecord.Name, metadata);
+        {
+          // Resolve dependencies first (reads are outside the transaction boundary),
+          // then do atomic metadata update + version creation
+          var resolverInputList =
+            resolvers as TemplateVersionResolverInput[] ?? resolvers.ToArray();
+          var templateInputList =
+            templates as TemplateVersionTemplateInput[] ?? templates.ToArray();
+
+          var pluginResults = await plugin.GetAllVersion(plugins);
+          var processorResults = await processor.GetAllVersion(processors);
+          var templateResults = await repo.GetAllVersion(templateInputList.Select(t => t.Template));
+          var resolverRefs = resolverInputList.Select(r => r.Resolver);
+          var resolverResults = await resolver.GetAllVersion(resolverRefs);
+
+          var a =
+            from pl in pluginResults
+            from pr in processorResults
+            from t in templateResults
+            from r in resolverResults
+            select (
+              pl.Select(x => x.Id),
+              pr.Select(x => x.Id),
+              CreateTemplateLinks(templateInputList, t),
+              CreateResolverLinks(resolverInputList, r)
+            );
+
+          return await Task.FromResult(a)
+            .ThenAwait(refs =>
+            {
+              var (pl, pr, tl, rl) = refs;
+              logger.LogInformation(
+                "Pushing template version for '{Username}/{Name}', Processors: {@Processors}",
+                username,
+                pRecord.Name,
+                processors
+              );
+              logger.LogInformation(
+                "Pushing template version for '{Username}/{Name}', Plugins: {@Plugins}",
+                username,
+                pRecord.Name,
+                pl
+              );
+              logger.LogInformation(
+                "Pushing template version for '{Username}/{Name}', Resolvers: {@Resolvers}",
+                username,
+                pRecord.Name,
+                rl.Select(x => x.ResolverId)
+              );
+              return repo.UpdateAndCreateVersion(
+                username,
+                pRecord.Name,
+                metadata,
+                record,
+                property,
+                commands,
+                pr,
+                pl,
+                tl,
+                rl
+              );
+            });
+        }
+
         return await user.GetByUsername(username)
-          .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata));
-      })
-      .ThenAwait(x =>
-        this.CreateVersion(
-          username,
-          pRecord.Name,
-          record,
-          property,
-          commands,
-          processors,
-          plugins,
-          templates,
-          resolvers
-        )
-      );
+          .ThenAwait(u => repo.Create(u!.Principal.Id, pRecord, metadata))
+          .ThenAwait(_ =>
+            this.CreateVersion(
+              username,
+              pRecord.Name,
+              record,
+              property,
+              commands,
+              processors,
+              plugins,
+              templates,
+              resolvers
+            )
+          );
+      });
   }
 
   /// <summary>
